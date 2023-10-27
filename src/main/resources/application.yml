@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: Jan Księgowy 2.3
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  main:
+    allow-bean-definition-overriding: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type:
+          EnumType: trace
+        orm:
+          jdbc:
+            bind: trace
+
+
+databases:
+  main:
+    datasource:
+      url: jdbc:postgresql://localhost:6543/postgres
+      username: postgres
+      password: Sylwia70
+      hikari:
+        schema: jan
+        poolName: mainDataSource
+    packages: pl.janksiegowy
+    liquibase:
+      enabled: true
+      changeLog: classpath:db/changelog-main.yaml
+  tenant:
+    datasource:
+      url-prefix: jdbc:postgresql://localhost:6543/
+    cache:
+      maximumSize: 2
+      expireAfterAccess: 10
+    liquibase:
+      changeLog: classpath:db/changelog-tenant.yaml
+  company:
+    liquibase:
+      changelog: classpath:db/changelog-company.yaml
