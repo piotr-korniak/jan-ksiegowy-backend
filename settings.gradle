@@ -1,4 +1,5 @@
 rootProject.name = 'jan-ksiegowy-backend'
 include 'adapters'
 include 'app'
+include 'domain'
 

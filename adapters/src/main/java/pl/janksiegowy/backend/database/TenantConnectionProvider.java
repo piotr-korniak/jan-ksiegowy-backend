@@ -79,8 +79,8 @@ public class TenantConnectionProvider
     }
 
     @Override
-    public DataSource selectDataSource(String tenantIdentifier) {
-        return sceneDataSources.get( tenantIdentifier);
+    public DataSource selectDataSource( String tenantIdentifier) {
+        return sceneDataSources.get( TenantContext.getCurrentTenant());
     }
 /*
     @Override
