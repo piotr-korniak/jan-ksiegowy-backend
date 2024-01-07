@@ -32,11 +32,12 @@ public class TenantLiquibase implements InitializingBean {
                 .getSpringLiquibase( tenantLiquibaseProperties);
         springLiquibase.setResourceLoader( resourceLoader);
 
-        for( Tenant scene: tenants.findAll()){
-            TenantContext.setCurrentTenant( scene.getCode());
+        for( Tenant tenant: tenants.findAll()){
+            TenantContext.setCurrentTenant(
+                    TenantContext.Context.create().tenant( tenant.getCode()));
 
             springLiquibase.setDataSource( tenantConnectionProvider
-                    .selectDataSource( scene.getCode()));
+                    .selectDataSource( tenant.getCode()));
             springLiquibase.afterPropertiesSet();
 
             TenantContext.clear();

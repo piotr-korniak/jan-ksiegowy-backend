@@ -47,7 +47,8 @@ public class CompanyServiceImpl implements CompanyService {
         if( !companyCode.matches( VALID_SCHEMA_NAME_REGEXP))
             throw new RuntimeException( "Invalid schema name: "+ companyCode);
 
-        var dataSource= tenants.selectDataSource( TenantContext.getCurrentTenant());
+        var dataSource= tenants.selectDataSource(
+                TenantContext.getCurrentTenant().getTenant());
 
         try {
             jdbc.setDataSource( dataSource);

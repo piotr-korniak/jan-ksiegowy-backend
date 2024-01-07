@@ -18,12 +18,18 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
+import java.util.Locale;
 import java.util.Map;
 
 @Configuration
 @EnableJpaRepositories(
         basePackages= { "pl.janksiegowy.backend.metric",
-                        "pl.janksiegowy.backend.entity"},
+                        "pl.janksiegowy.backend.entity",
+                        "pl.janksiegowy.backend.invoice",
+                        "pl.janksiegowy.backend.settlement",
+                        "pl.janksiegowy.backend.register",
+                        "pl.janksiegowy.backend.period",
+                        "pl.janksiegowy.backend.item"},
         entityManagerFactoryRef= "companyEntityManagerFactory",
         transactionManagerRef= "companyTransactionManager"
 )
@@ -43,13 +49,19 @@ public class CompanyPersistenceConfig {
     @Bean
     public LocalContainerEntityManagerFactoryBean companyEntityManagerFactory(
             @Qualifier( "tenantConnectionProvider") MultiTenantConnectionProvider tenantProvider,
-            @Qualifier( "companyIdentifierResolver") CurrentTenantIdentifierResolver companyResolver) {
+            @Qualifier( "tenantIdentifierResolver") CurrentTenantIdentifierResolver companyResolver) {
 
         LocalContainerEntityManagerFactoryBean emf= new LocalContainerEntityManagerFactoryBean();
 
         emf.setPersistenceUnitName( "company-persistence-unit");
         emf.setPackagesToScan( "pl.janksiegowy.backend.metric",
-                               "pl.janksiegowy.backend.entity");
+                               "pl.janksiegowy.backend.entity",
+                               "pl.janksiegowy.backend.invoice",
+                               "pl.janksiegowy.backend.settlement",
+                               "pl.janksiegowy.backend.register",
+                               "pl.janksiegowy.backend.period",
+                               "pl.janksiegowy.backend.item",
+                                "pl.janksiegowy.backend.invoice_line");
         //emf.setPackagesToScan( entityPackages);
 
         JpaVendorAdapter vendorAdapter= new HibernateJpaVendorAdapter();

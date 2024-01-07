@@ -11,7 +11,7 @@ import pl.janksiegowy.backend.company.SqlCompanyRepository;
 import pl.janksiegowy.backend.database.LiquibaseConfig;
 import pl.janksiegowy.backend.tenant.SqlTenantRepository;
 import pl.janksiegowy.backend.tenant.Tenant;
-import pl.janksiegowy.backend.database.TenantConnectionProvider;
+import pl.janksiegowy.backend.database.TenantContext.Context;
 
 public class CompanyLiquibase implements InitializingBean {
 
@@ -38,13 +38,16 @@ public class CompanyLiquibase implements InitializingBean {
         springLiquibase.setResourceLoader( resourceLoader);
 
         for( Tenant tenant: tenants.findAll()){
-            TenantContext.setCurrentTenant( tenant.getCode());
+            TenantContext.setCurrentTenant(
+                    Context.create().tenant( tenant.getCode()));
+
             for( Company company: companies.findAll()){
                 springLiquibase.setDefaultSchema( company.getCode());
                 springLiquibase.setDataSource(
                         tenantConnectionProvider.selectDataSource( tenant.getCode()));
                 springLiquibase.afterPropertiesSet();
             }
+            TenantContext.clear();
         }
     }
 }

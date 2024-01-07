@@ -11,12 +11,12 @@ public class EntityFacade {
     private final EntityFactory factory;
     private final EntityRepository repository;
 
-    public void save( EntityDto source) {
-        repository.save( Optional.ofNullable( source.getEntityId())
-                .map( uuid-> repository.findEntityByEntityIdAndDate( uuid, source.getDate())
-                        .map( item-> factory.update( item, source))     // Update Entity history
-                        .orElse( factory.update( source)))              // New Entity history
-                .orElse( factory.from( source))                         // New Entity
+    public Entity save( EntityDto source) {
+        return repository.save( Optional.ofNullable( source.getEntityId())
+                .map( entityId-> repository.findEntityByEntityIdAndDate( entityId, source.getDate())
+                        .map( entity-> factory.update( source, entity))     // Update Entity history
+                        .orElse( factory.update( source)))                  // New Entity history
+                .orElse( factory.from( source))                             // New Entity
         );
     }
 }

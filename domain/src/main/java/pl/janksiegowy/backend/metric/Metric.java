@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.period.tax.CIT;
+import pl.janksiegowy.backend.period.tax.VAT;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,16 +22,41 @@ public class Metric {
     @Temporal( TemporalType.DATE)
     private LocalDate id;
 
-    private BigDecimal capital;
+    private String taxNumber;
+    private String registrationNumber;
+    private String businessNumber;
     private String name;
-/*
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Revenue us;
-*/
-    //@Value( "false")
-    private boolean vatQuarterly= false;
 
-    //@Value( "fals")
+    private String address;
+    private String town;
+    private String postcode;
+    private String country;
+
+    private BigDecimal capital;
+
+    private boolean vatQuarterly= false;
     private boolean citQuarterly= false;
+    private boolean vatPl= false;
+    private boolean vatUe= false;
+
+    private String rcCode;
+
+    public CIT isCitMonthly() {
+        return citQuarterly? CIT.No: CIT.Yes;
+    }
+    public CIT isCitQuarterly() {
+        return citQuarterly? CIT.Yes: CIT.No;
+    }
+
+    public VAT isVatMonthly() {
+        return vatPl&&!vatQuarterly? VAT.Yes: VAT.No;
+    }
+    public VAT isVatQuarterly() {
+        return vatPl&&vatQuarterly? VAT.Yes: VAT.No;
+    }
+
+    public boolean isTaxQuarterly() {
+        return citQuarterly||vatQuarterly;
+    }
 
 }

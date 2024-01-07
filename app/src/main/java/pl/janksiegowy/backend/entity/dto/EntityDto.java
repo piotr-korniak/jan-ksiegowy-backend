@@ -1,5 +1,8 @@
 package pl.janksiegowy.backend.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.EntityType;
@@ -8,12 +11,15 @@ import pl.janksiegowy.backend.entity.Country;
 import java.time.LocalDate;
 import java.util.UUID;
 
+@JsonDeserialize( as= EntityDto.Proxy.class)
+@JsonPropertyOrder( { "ContactId", "Name"})
 public interface EntityDto {
 
     static Proxy create() {
         return new Proxy();
     }
 
+    @JsonProperty( "ContactId")
     UUID getEntityId();
     String getName();
     LocalDate getDate();

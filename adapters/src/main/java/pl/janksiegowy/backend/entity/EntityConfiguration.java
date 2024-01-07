@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class EntityConfiguration {
-
     @Bean
     EntityFacade entityFacade( final EntityRepository entities) {
         return new EntityFacade( new EntityFactory(), entities);

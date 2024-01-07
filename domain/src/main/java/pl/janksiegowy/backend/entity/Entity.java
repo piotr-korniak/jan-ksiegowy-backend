@@ -17,13 +17,13 @@ import java.util.UUID;
 @jakarta.persistence.Entity
 @Inheritance( strategy= InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING, length= 1)
-abstract class Entity {
+public abstract class Entity {
 
     @Id
     @GeneratedValue( strategy= GenerationType.IDENTITY)
     private long id;
 
-    @UuidGenerator
+    //@UuidGenerator
     private UUID entityId; // for history and query
 
     @Column( insertable= false, updatable= false)
@@ -42,19 +42,9 @@ abstract class Entity {
     @Enumerated( EnumType.STRING)
     private Country country;
 
-    public boolean isSupplier() {
-        return false;
-    }
-    public Entity setSupplier( boolean supplier) {
-        return this;
-    };
+    private boolean supplier= false;
+    private boolean customer= false;
 
-    public boolean isCustomer() {
-        return false;
-    }
-    public Entity setCustomer( boolean customer) {
-        return this;
-    };
 }
 
 @Getter
@@ -64,6 +54,34 @@ abstract class Entity {
 @jakarta.persistence.Entity
 @DiscriminatorValue( value= "C")
 class Contact extends Entity {
-    private boolean supplier;
-    private boolean customer;
+
+}
+@Getter
+@Setter
+@Accessors( chain= true)
+
+@jakarta.persistence.Entity
+@DiscriminatorValue( value= "R")
+class Revenue extends Entity {
+
+}
+
+@Getter
+@Setter
+@Accessors( chain= true)
+
+@jakarta.persistence.Entity
+@DiscriminatorValue( value= "S")
+class Shareholders extends Entity {
+
+}
+
+@Getter
+@Setter
+@Accessors( chain= true)
+
+@jakarta.persistence.Entity
+@DiscriminatorValue( value= "E")
+class Employee extends Entity {
+
 }

@@ -14,7 +14,10 @@ public class CompanyFacade {
             return;
 
         try {
+            System.out.println( "ERROR: create!");
             service.create( source.getCode());
+
+            System.out.println( "ERROR: save!");
             service.save( source);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -5,20 +5,22 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.PostConstruct;
-import org.hibernate.engine.jdbc.connections.spi.AbstractDataSourceBasedMultiTenantConnectionProviderImpl;
+import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.stereotype.Component;
 import pl.janksiegowy.backend.tenant.TenantQueryRepository;
 import pl.janksiegowy.backend.tenant.dto.TenantDto;
+import pl.janksiegowy.backend.database.TenantContext.Context;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class TenantConnectionProvider
-        extends AbstractDataSourceBasedMultiTenantConnectionProviderImpl {
+public class TenantConnectionProvider implements MultiTenantConnectionProvider<Context> {
 
     private LoadingCache<String, HikariDataSource> sceneDataSources;
     private final DataSourceProperties dataSourceProperties;
@@ -59,7 +61,6 @@ public class TenantConnectionProvider
                                 .map( tenantDto-> createAndConfigureDataSource( tenantDto))
                                 .orElseThrow( ()-> new RuntimeException( "No such tenant: " + key))
                     );
-
     }
 
     private HikariDataSource createAndConfigureDataSource( TenantDto tenantDto){
@@ -72,24 +73,45 @@ public class TenantConnectionProvider
         dataSource.setPassword( tenantDto.getPassword());
         return dataSource;
     }
-
-    @Override
-    protected DataSource selectAnyDataSource() {
-        return mainDataSource;
-    }
-
-    @Override
     public DataSource selectDataSource( String tenantIdentifier) {
-        return sceneDataSources.get( TenantContext.getCurrentTenant());
+        return sceneDataSources.get( tenantIdentifier);
     }
-/*
+
+    @Override
+    public Connection getAnyConnection() throws SQLException {
+        return mainDataSource.getConnection();
+    }
+
     @Override
     public void releaseAnyConnection( Connection connection) throws SQLException {
-        mainDataSource.getConnection().close();
-    }*/
-/*
+        connection.close(); // TODO: it is not clear which version is correct
+        //mainDataSource.getConnection().close();
+    }
+
     @Override
-    public void releaseConnection( String tenantIdentifier, Connection connection) throws SQLException {
-        sceneDataSources.invalidate( tenantIdentifier);
-    }*/
+    public Connection getConnection( Context context) throws SQLException {
+        var connection= selectDataSource( context.getTenant()).getConnection();
+        connection.setSchema( context.getCompany());
+        return connection;
+    }
+
+    @Override
+    public void releaseConnection( Context context, Connection connection) throws SQLException {
+        connection.close();
+    }
+
+    @Override
+    public boolean supportsAggressiveRelease() {
+        return false;
+    }
+
+    @Override
+    public boolean isUnwrappableAs(Class<?> unwrapType) {
+        return false;
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> unwrapType) {
+        return null;
+    }
 }

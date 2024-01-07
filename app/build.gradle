@@ -9,8 +9,13 @@ repositories {
     mavenCentral()
 }
 
+bootJar { enabled = false }
+
 dependencies {
     implementation project( ':domain')
+
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.2.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.2.1'
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

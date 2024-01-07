@@ -1,57 +1,58 @@
 package pl.janksiegowy.backend.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
-import org.springframework.core.io.ResourceLoader;
+import lombok.extern.log4j.Log4j2;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.shared.DataLoader;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicReference;
+
+@Log4j2
 
 @AllArgsConstructor
 public class EntityInitializer {
 
-    private final DataLoader loader;
     private final EntityQueryRepository entities;
     private final EntityFacade facade;
+    private final DataLoader loader;
     private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "--- dd.MM.yyyy");
 
     public void init() {
-        LocalDate histDate= LocalDate.now();
+        var history= new Object(){ LocalDate date= LocalDate.EPOCH;};
 
-        for( String line: loader.readEntities()) {
-            String[] fields= loader.getFields( line);
-
-            if( fields[0].startsWith( "--- ")) {    // set date
-                histDate= LocalDate.parse( fields[0], formatter);
+        for( String[] fields: loader.readData( "entities.txt")) {
+            if( fields[0].startsWith( "--- ")) {    // only set date
+                history.date= LocalDate.parse( fields[0], formatter);
                 continue;
             }
+            var type= EntityType.valueOf( fields[0]);
+            var taxNumber= fields[2].replaceAll( "[^a-zA-Z0-9]", "");
+            var country= fields.length>7? Country.valueOf( fields[7]): Country.PL; // PL default
 
-            var entity= create( fields).date( histDate);
+            log.info( ">>> Entity tax number: "+ taxNumber);
+            var entity= entities.findByCountryAndTypeAndTaxNumber( country, type, taxNumber);
 
-            entities.findByCountryAndTypeAndTaxNumber(
-                        entity.getCountry(), entity.getType(), entity.getTaxNumber())
-                .ifPresentOrElse( entityDto-> {
-                    if( entityDto.getDate().isBefore( entity.getDate()))
-                        facade.save( entity.entityId( entityDto.getEntityId()));},
-                ()-> facade.save( entity));
+            if( entity.map( i-> !i.getDate().isBefore( history.date)).orElse( false))
+                continue;   // optimization, omit if Entity already exists
+
+            var role= EntityRole.values()[Integer.parseInt( fields[6])];
+            facade.save( entity
+                    .map( entityDto-> EntityDto.create()    // new Entity history
+                            .entityId( entityDto.getEntityId()))
+                    .orElse( EntityDto.create())            // new Entity
+                            .date( history.date)
+                            .type( type)
+                            .name( fields[1])
+                            .taxNumber( taxNumber)
+                            .address( fields[3])
+                            .postcode( fields[4])
+                            .town( fields[5])
+                            .supplier( role.isSupplier())
+                            .customer( role.isCustomer())
+                            .country( country));
         }
-    }
-
-    private EntityDto.Proxy create( String[] fields) {
-        var role= EntityRole.values()[Integer.parseInt( fields[6])];
-        return EntityDto.create()
-                .type( EntityType.valueOf( fields[0]))
-                .name( fields[1])
-                .taxNumber( fields[2].replaceAll( "[^a-zA-Z0-9]", ""))
-                .address( fields[3])
-                .postcode( fields[4])
-                .town( fields[5])
-                .supplier( role.isSupplier())
-                .customer( role.isCustomer())                       // PL default
-                .country( fields.length>7? Country.valueOf(fields[7]): Country.PL);
     }
 
     private enum EntityRole {   // decode entities Role

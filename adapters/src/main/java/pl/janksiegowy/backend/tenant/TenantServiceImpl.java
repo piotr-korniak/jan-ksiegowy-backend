@@ -69,7 +69,8 @@ public class TenantServiceImpl implements TenantService {
         try {
             createDatabase( tenantCode, password);
         } catch( DataAccessException e) {
-            throw new RuntimeException( "Error when creating db: "+ tenantCode, e);
+            System.err.println( "Próbowano utworzyć bazę: "+ tenantCode);
+            //throw new RuntimeException( "Error when creating db: "+ tenantCode, e);
         }
 
         try( Connection connection= DriverManager
@@ -88,11 +89,13 @@ public class TenantServiceImpl implements TenantService {
     private Tenant from( TenantDto source) {
         return new Tenant()
                 .setId( source.getId())
+                .setName( source.getName())
                 .setCode( source.getCode())
-                .setName( source.getName());
+                .setPassword( source.getPassword());
     }
 
     private void createDatabase( String db, String password) {
+        System.err.println( ">>> Create Database: "+ db);
         jdbc.execute( (StatementCallback<Boolean>) stmt->
                 stmt.execute("CREATE DATABASE "+ db));
         jdbc.execute((StatementCallback<Boolean>) stmt->

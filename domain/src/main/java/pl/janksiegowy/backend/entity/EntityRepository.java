@@ -7,5 +7,7 @@ import java.util.UUID;
 public interface EntityRepository {
     Entity save( Entity entity);
 
+    Optional<Entity> findByEntityIdAndDate( UUID entityId, LocalDate date);
+
     Optional<Entity> findEntityByEntityIdAndDate( UUID entityId, LocalDate date);
 }
