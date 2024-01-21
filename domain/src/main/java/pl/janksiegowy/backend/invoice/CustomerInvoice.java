@@ -1,11 +1,10 @@
 package pl.janksiegowy.backend.invoice;
 
 import jakarta.persistence.*;
-import pl.janksiegowy.backend.register.vat.VatSalesRegister;
-import pl.janksiegowy.backend.settlement.InvoiceSettlement;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
+import pl.janksiegowy.backend.register.invoice.SalesRegister;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Entity
 //@Table( name= "INVOICES")
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 public class CustomerInvoice extends Invoice {
 
     @ManyToOne
-    private VatSalesRegister vatRegister;
+    private SalesRegister vatRegister;
 /*
     @OneToOne(mappedBy = "document", cascade = CascadeType.ALL)
     private InvoiceReceivable settlement;
@@ -32,13 +31,16 @@ public class CustomerInvoice extends Invoice {
         return this;
     }
 */
-    public CustomerInvoice setVatRegister( VatSalesRegister vatRegister) {
+    public CustomerInvoice setVatRegister( SalesRegister vatRegister) {
         this.vatRegister= vatRegister;
         return this;
     }
 
-    @Override public Invoice setSumTotal( BigDecimal sumTotal) {
-        setDt( sumTotal);
+    @Override public Invoice setSumTotal( BigDecimal subTotal, BigDecimal taxTotal ) {
+        if( InvoiceRegisterKind.W== vatRegister.getKind())
+            setDt( subTotal);
+        else
+            setDt( subTotal.add( taxTotal ));
         return this;
     }
 

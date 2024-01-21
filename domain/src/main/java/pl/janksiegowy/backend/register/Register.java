@@ -21,8 +21,6 @@ public abstract class Register {
     @Enumerated( EnumType.STRING)
     private RegisterType type;
 
-    private String kind;
-
     private String code;
     private String name;
 

@@ -29,7 +29,8 @@ import java.util.Map;
                         "pl.janksiegowy.backend.settlement",
                         "pl.janksiegowy.backend.register",
                         "pl.janksiegowy.backend.period",
-                        "pl.janksiegowy.backend.item"},
+                        "pl.janksiegowy.backend.item",
+                        "pl.janksiegowy.backend.invoice_line"},
         entityManagerFactoryRef= "companyEntityManagerFactory",
         transactionManagerRef= "companyTransactionManager"
 )

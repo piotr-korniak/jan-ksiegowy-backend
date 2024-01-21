@@ -56,12 +56,14 @@ public class InvoiceFactory {
                 entities.findByEntityIdAndDate( entityDto.getEntityId(), source.getInvoiceDate())
                         .ifPresent( entity-> invoice.setEntity( entity)));
 
+        Optional.ofNullable( source.getLineItems())
+                .ifPresent( invoiceLines->update( invoiceLines, invoice));
 
-        return update( source.getLineItems(), invoice
+        return invoice
                 .setNumber( source.getNumber())
                 .setDates( source.getInvoiceDate(), source.getIssueDate(), source.getDueDate())
                 .setMetric( metrics.findByDate( source.getInvoiceDate()).orElseThrow())
-                .setPeriod( periods.findMonthByDate( source.getInvoiceDate()).orElseThrow()));
+                .setPeriod( periods.findMonthByDate( source.getInvoiceDate()).orElseThrow());
     }
 
     public Invoice update( List<InvoiceLineDto> lines, Invoice invoice) {

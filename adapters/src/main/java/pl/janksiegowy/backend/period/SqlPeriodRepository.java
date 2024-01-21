@@ -10,11 +10,11 @@ import java.util.Optional;
 public interface SqlPeriodRepository extends JpaRepository<Period, String> {
     Period findAllByBeginLessThanEqualAndEndGreaterThanEqualAndType(
             LocalDate begin, LocalDate end, PeriodType type);
+
+    Period findAllByIdAndType( String id, PeriodType periodType);
 }
 
 interface SqlPeriodQueryRepository extends PeriodQueryRepository, Repository<Period, String> {
-
-
 }
 
 @org.springframework.stereotype.Repository
@@ -22,6 +22,11 @@ interface SqlPeriodQueryRepository extends PeriodQueryRepository, Repository<Per
 class PeriodRepositoryImpl implements PeriodRepository {
 
     private final SqlPeriodRepository repository;
+
+    @Override public Optional<MonthPeriod> findMonthById( String id) {
+        return Optional.ofNullable( (MonthPeriod)repository
+                .findAllByIdAndType( id, PeriodType.M));
+    }
 
     @Override public Optional<MonthPeriod> findMonthByDate( LocalDate date) {
         return Optional.ofNullable( (MonthPeriod)repository.

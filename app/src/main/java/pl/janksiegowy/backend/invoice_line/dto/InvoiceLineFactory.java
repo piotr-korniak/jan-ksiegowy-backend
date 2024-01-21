@@ -25,12 +25,10 @@ public class InvoiceLineFactory {
                     .setTax( invoiceLineDto.getTax())
                     .setTaxRate( invoiceLineDto.getTaxRate());
 
-        System.err.println( "LINE: "+  invoiceLineDto.getItem().getCode());
         Optional.ofNullable( invoiceLineDto.getItem())
                 .map( itemDto-> items.findByItemIdAndDate( itemDto.getItemId(), date)
                         .map( item-> item.getTaxMetod().accept( new TaxMetodVisitor<InvoiceLine>() {
                                 @Override public InvoiceLine visitNL() {
-                                    System.err.println( "Visit Normal!!!");
                                     return line.setBase( line.getAmount())
                                             .setCit( line.getAmount())
                                             .setVat( line.getTax());

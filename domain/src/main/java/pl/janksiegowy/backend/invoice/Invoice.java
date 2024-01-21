@@ -99,7 +99,8 @@ public abstract class Invoice {
                 .map( InvoiceLine::getTax)
                 .reduce( BigDecimal.ZERO, BigDecimal::add);
 
-        setSumTotal( subTotal.add( taxTotal));
+//        setSumTotal( subTotal.add( taxTotal));
+        setSumTotal( subTotal, taxTotal);
         return this;
     }
 
@@ -120,7 +121,7 @@ public abstract class Invoice {
 
     public abstract BigDecimal getAmountDue();
 
-    public abstract Invoice setSumTotal( BigDecimal sumTotal);
+    public abstract Invoice setSumTotal( BigDecimal sumTotal, BigDecimal taxTotal );
 
     protected void setDt( BigDecimal dt) {
         settlement.setDt( dt);

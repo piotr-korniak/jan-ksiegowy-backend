@@ -3,7 +3,7 @@ package pl.janksiegowy.backend.register.dto;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.register.RegisterType;
-import pl.janksiegowy.backend.register.vat.VatRegisterKind;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ public interface VatRegisterDto {
     UUID getRegisterId();
     String getCode();
     RegisterType getType();
-    VatRegisterKind getKind();
+    InvoiceRegisterKind getKind();
     String getName();
 
     @Setter
@@ -26,7 +26,7 @@ public interface VatRegisterDto {
         private UUID registerId;
         private String code;
         private RegisterType type;
-        private VatRegisterKind kind;
+        private InvoiceRegisterKind kind;
         private String name;
 
         @Override public UUID getRegisterId() {
@@ -41,7 +41,7 @@ public interface VatRegisterDto {
             return type;
         }
 
-        public VatRegisterKind getKind() {
+        public InvoiceRegisterKind getKind() {
             return kind;
         }
 

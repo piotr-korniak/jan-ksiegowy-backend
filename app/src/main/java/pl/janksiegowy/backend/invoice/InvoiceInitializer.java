@@ -20,6 +20,7 @@ import pl.janksiegowy.backend.shared.DataLoader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -53,8 +54,7 @@ public class InvoiceInitializer {
                 continue;
 
             var invoice= entities.findByCountryAndTypeAndTaxNumber( country, EntityType.C, taxNumber)
-                    .map( entity-> registers.findByTypeInAndCode(
-                            VatRegisterDto.class, List.of( RegisterType.S, RegisterType.P), fields[0])
+                    .map( entity-> registers.findByCode( VatRegisterDto.class,  fields[0])
                             .map( vatRegister-> vatRegister.getType().accept(
                                     new RegisterTypeVisitor<InvoiceDto.Proxy>() {
                                         @Override public InvoiceDto.Proxy visitPurchaseVatRegister() {

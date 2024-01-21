@@ -3,7 +3,7 @@ package pl.janksiegowy.backend.register;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.register.dto.VatRegisterDto;
-import pl.janksiegowy.backend.register.vat.VatRegisterKind;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 import pl.janksiegowy.backend.shared.DataLoader;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class RegisterInitializer {
                     facade.save( VatRegisterDto.create()
                             .code( register[0])
                             .type( type)
-                            .kind( VatRegisterKind.valueOf( register[2]))
+                            .kind( InvoiceRegisterKind.valueOf( register[2]))
                             .name( register[3]));
                 }
             });

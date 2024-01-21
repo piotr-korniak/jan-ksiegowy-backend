@@ -26,6 +26,10 @@ public class Item {
     private UUID itemId;
     private LocalDate date;
 
+    @Column( insertable= false, updatable= false)
+    @Enumerated( EnumType.STRING)
+    private ItemType type;
+
     @Enumerated( EnumType.STRING)
     private TaxMetod taxMetod;
 
@@ -42,6 +46,12 @@ public class Item {
 }
 
 @Entity
+@DiscriminatorValue( value= "A")
+class Asset extends Item {
+
+}
+
+@Entity
 @DiscriminatorValue( value= "M")
 class Material extends Item {
 
@@ -50,5 +60,12 @@ class Material extends Item {
 @Entity
 @DiscriminatorValue( value= "S")
 class Service extends Item {
+
+}
+
+
+@Entity
+@DiscriminatorValue( value= "P")
+class Product extends Item {
 
 }

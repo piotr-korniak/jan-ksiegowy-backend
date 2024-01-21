@@ -5,6 +5,7 @@ import java.util.Optional;
 
 public interface PeriodRepository {
 
+    Optional<MonthPeriod> findMonthById( String id);
     Optional<MonthPeriod> findMonthByDate( LocalDate date);
     Optional<QuaterPeriod> findQuarterByDate( LocalDate date);
     Optional<AnnualPeriod> findAnnualByDate( LocalDate date);

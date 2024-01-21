@@ -1,9 +1,9 @@
 package pl.janksiegowy.backend.register;
 
 import pl.janksiegowy.backend.register.dto.VatRegisterDto;
-import pl.janksiegowy.backend.register.vat.VatPurchaseRegister;
+import pl.janksiegowy.backend.register.invoice.PurchaseRegister;
 import pl.janksiegowy.backend.register.RegisterType.RegisterTypeVisitor;
-import pl.janksiegowy.backend.register.vat.VatSalesRegister;
+import pl.janksiegowy.backend.register.invoice.SalesRegister;
 
 public class RegisterFactory {
     public Register from( VatRegisterDto source) {
@@ -24,12 +24,12 @@ public class RegisterFactory {
     private Register create( VatRegisterDto source) {
         return source.getType().accept( new RegisterTypeVisitor<Register>() {
             @Override public Register visitSalesVatRegister() {
-                return new VatSalesRegister()
+                return new SalesRegister()
                         .setKind( source.getKind());
             }
 
             @Override public Register visitPurchaseVatRegister() {
-                return new VatPurchaseRegister()
+                return new PurchaseRegister()
                         .setKind( source.getKind());
             }
         });

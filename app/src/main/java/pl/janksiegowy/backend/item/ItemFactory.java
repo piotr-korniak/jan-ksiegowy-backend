@@ -50,8 +50,4 @@ public class ItemFactory implements ItemTypeVisitor<Item> {
         return null;
     }
 
-    @Override public Item visitAllNoAsset() {
-        return null;
-    }
-
 }
