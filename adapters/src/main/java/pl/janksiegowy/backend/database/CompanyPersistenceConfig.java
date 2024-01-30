@@ -30,7 +30,8 @@ import java.util.Map;
                         "pl.janksiegowy.backend.register",
                         "pl.janksiegowy.backend.period",
                         "pl.janksiegowy.backend.item",
-                        "pl.janksiegowy.backend.invoice_line"},
+                        "pl.janksiegowy.backend.invoice_line",
+                        "pl.janksiegowy.backend.statement"},
         entityManagerFactoryRef= "companyEntityManagerFactory",
         transactionManagerRef= "companyTransactionManager"
 )
@@ -62,7 +63,8 @@ public class CompanyPersistenceConfig {
                                "pl.janksiegowy.backend.register",
                                "pl.janksiegowy.backend.period",
                                "pl.janksiegowy.backend.item",
-                                "pl.janksiegowy.backend.invoice_line");
+                                "pl.janksiegowy.backend.invoice_line",
+                                "pl.janksiegowy.backend.statement");
         //emf.setPackagesToScan( entityPackages);
 
         JpaVendorAdapter vendorAdapter= new HibernateJpaVendorAdapter();

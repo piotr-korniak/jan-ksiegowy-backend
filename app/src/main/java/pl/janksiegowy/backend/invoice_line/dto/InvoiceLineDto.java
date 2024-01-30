@@ -3,8 +3,8 @@ package pl.janksiegowy.backend.invoice_line.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.financial.TaxMetod;
-import pl.janksiegowy.backend.financial.TaxRate;
+import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.item.dto.ItemDto;
 
 import java.math.BigDecimal;

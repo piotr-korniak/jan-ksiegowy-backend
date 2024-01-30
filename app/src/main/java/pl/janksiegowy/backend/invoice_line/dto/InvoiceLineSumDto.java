@@ -1,6 +1,6 @@
 package pl.janksiegowy.backend.invoice_line.dto;
 
-import pl.janksiegowy.backend.financial.TaxRate;
+import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.item.ItemType;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 

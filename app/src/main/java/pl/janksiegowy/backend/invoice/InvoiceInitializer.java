@@ -79,8 +79,8 @@ public class InvoiceInitializer {
 
             if( periods.findMonthByDate( invoice.getInvoiceDate()).isEmpty())
                 period.save( PeriodDto.create()
-                            .type( PeriodType.M)
-                            .begin( invoice.getInvoiceDate()));
+                        .type( PeriodType.M)
+                        .begin( invoice.getInvoiceDate()));
 
             this.invoice.save( invoice);
 

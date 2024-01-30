@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.UuidGenerator;
-import pl.janksiegowy.backend.financial.TaxRate;
+import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.item.Item;
 

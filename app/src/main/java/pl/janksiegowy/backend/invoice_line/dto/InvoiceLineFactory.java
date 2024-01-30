@@ -1,7 +1,7 @@
 package pl.janksiegowy.backend.invoice_line.dto;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.financial.TaxMetod.TaxMetodVisitor;
+import pl.janksiegowy.backend.shared.financial.TaxMetod.TaxMetodVisitor;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.item.ItemRepository;
 

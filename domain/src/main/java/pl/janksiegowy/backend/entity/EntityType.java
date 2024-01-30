@@ -11,7 +11,6 @@ public enum EntityType {
         @Override public <T> T accept( EntityTypeVisitor<T> visitor) {
             return visitor.visitRevenue();
         }
-
     },
     S { // Shareholders
         @Override public <T> T accept( EntityTypeVisitor<T> visitor) {

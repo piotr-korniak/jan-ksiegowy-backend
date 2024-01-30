@@ -1,7 +1,7 @@
 
 spring:
   application:
-    name: Jan Księgowy 2.3
+    name: Jan Księgowy 3.0
   jpa:
     hibernate:
       ddl-auto: none

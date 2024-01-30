@@ -16,11 +16,17 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2021._06._09.ed.definicjetypy.TIdentyfikatorOsobyFizycznej2;
 
 /**
  * Skrócony zestaw danych o osobie fizycznej lub niefizycznej z identyfikatorem NIP
  */
+
+@Setter
+@Accessors( fluent= true, chain= true)
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TPodmiotDowolnyBezAdresu", propOrder = {
     "osobaFizyczna",
@@ -169,94 +175,38 @@ public class TPodmiotDowolnyBezAdresu {
 
 
     /**
-     * &lt;p&gt;Java class for anonymous complex type.
-     * <p>
-     * &lt;p&gt;The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * &lt;pre&gt;
-     * &amp;lt;complexType&amp;gt;
-     * &amp;lt;complexContent&amp;gt;
-     * &amp;lt;extension base="{http://crd.gov.pl/wzor/2021/12/27/11149/}TIdentyfikatorOsobyNiefizycznej"&amp;gt;
-     * &amp;lt;sequence&amp;gt;
-     * &amp;lt;element name="Email" type="{http://crd.gov.pl/wzor/2021/12/27/11149/}TAdresEmail"/&amp;gt;
-     * &amp;lt;element name="Telefon" minOccurs="0"&amp;gt;
-     * &amp;lt;simpleType&amp;gt;
-     * &amp;lt;restriction base="{http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/}TZnakowy"&amp;gt;
-     * &amp;lt;maxLength value="16"/&amp;gt;
-     * &amp;lt;/restriction&amp;gt;
-     * &amp;lt;/simpleType&amp;gt;
-     * &amp;lt;/element&amp;gt;
-     * &amp;lt;/sequence&amp;gt;
-     * &amp;lt;/extension&amp;gt;
-     * &amp;lt;/complexContent&amp;gt;
-     * &amp;lt;/complexType&amp;gt;
-     * &lt;/pre&gt;
      */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-            "email",
-            "telefon"
-    })
-    public static class OsobaNiefizyczna
-            extends TIdentyfikatorOsobyNiefizycznej {
+    @Setter
+    @Accessors( fluent= true, chain= true)
 
-        @XmlElement(name = "Email", required = true)
-        @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-        @XmlSchemaType(name = "token")
-        protected String email = "info@eleutheria.pl";
-        ;
-        @XmlElement(name = "Telefon")
-        @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-        protected String telefon = "601-528-601";
-       /*
-        public static OsobaNiefizyczna odbOsobaNiefizyczna(DaiNaglowek naglowek) {
-            return new OsobaNiefizyczna() {{
-                setNIP( naglowek.odbNip());
-                setPelnaNazwa( naglowek.odbNazwaPelna());
-            }};
-        }*/
+    @XmlAccessorType( XmlAccessType.FIELD)
+    @XmlType( name= "", propOrder= { "email", "telefon"})
+    public static class OsobaNiefizyczna extends TIdentyfikatorOsobyNiefizycznej {
 
-        /**
-         * Gets the value of the email property.
-         *
-         * @return possible object is
-         * {@link String }
-         */
-        public String getEmail() {
-            return email;
+        @XmlElement( name= "Email", required= true)
+        protected String email;
+
+        @XmlElement( name= "Telefon")
+        protected String telefon;
+
+        public static OsobaNiefizyczna create() {
+            return new OsobaNiefizyczna();
         }
 
-        /**
-         * Sets the value of the email property.
-         *
-         * @param value allowed object is
-         *              {@link String }
-         */
-        public void setEmail(String value) {
-            this.email = value;
+        public OsobaNiefizyczna nip( String nip) {
+            this.nip= nip;
+            return this;
         }
 
-        /**
-         * Gets the value of the telefon property.
-         *
-         * @return possible object is
-         * {@link String }
-         */
-        public String getTelefon() {
-            return telefon;
+        public OsobaNiefizyczna pelnaNazwa( String pelnaNazwa) {
+            this.pelnaNazwa= pelnaNazwa;
+            return this;
         }
 
-        /**
-         * Sets the value of the telefon property.
-         *
-         * @param value allowed object is
-         *              {@link String }
-         */
-        public void setTelefon(String value) {
-            this.telefon = value;
+        public OsobaNiefizyczna telefon( String telefon) {
+            this.telefon= telefon;
+            return this;
         }
-
-
     }
 
 }

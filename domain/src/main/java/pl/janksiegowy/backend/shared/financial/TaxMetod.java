@@ -1,4 +1,4 @@
-package pl.janksiegowy.backend.financial;
+package pl.janksiegowy.backend.shared.financial;
 
 public enum TaxMetod {
     NL { // Normal, no change

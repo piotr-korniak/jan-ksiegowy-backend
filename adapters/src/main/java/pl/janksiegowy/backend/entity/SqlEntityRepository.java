@@ -30,6 +30,14 @@ interface SqlEntityQueryRepository extends EntityQueryRepository, Repository<Ent
             "FROM Entity M " +
             "LEFT OUTER JOIN Entity P "+
             "ON M.entityId= P.entityId AND M.date < P.date "+
+            "WHERE M.taxNumber= :taxNumber AND M.type= :type AND P.date IS NULL")
+    Optional<EntityDto> findByTypeAndTaxNumber( EntityType type, String taxNumber );
+
+    @Override
+    @Query( value= "SELECT M " +
+            "FROM Entity M " +
+            "LEFT OUTER JOIN Entity P "+
+            "ON M.entityId= P.entityId AND M.date < P.date "+
             "WHERE M.taxNumber= :taxNumber AND M.country= :country AND M.type= :type AND P.date IS NULL")
     Optional<EntityDto> findByCountryAndTypeAndTaxNumber( Country country, EntityType type, String taxNumber);
 

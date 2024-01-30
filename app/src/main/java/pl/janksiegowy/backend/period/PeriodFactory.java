@@ -4,10 +4,6 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.period.PeriodType.PeriodTypeVisitor;
 import pl.janksiegowy.backend.metric.MetricRepository;
-import pl.janksiegowy.backend.period.tax.CIT;
-import pl.janksiegowy.backend.period.tax.JPK;
-import pl.janksiegowy.backend.period.tax.PIT;
-import pl.janksiegowy.backend.period.tax.VAT;
 
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
@@ -43,9 +39,8 @@ public class PeriodFactory {
                 LocalDate begin= source.getBegin();
                 begin= begin.with( begin.getMonth().firstMonthOfQuarter())
                         .with( TemporalAdjusters.firstDayOfMonth());
-                return new QuaterPeriod()
-                        .setId( begin.getYear()+ "Q"+
-                                String.format( "%02d", begin.get( IsoFields.QUARTER_OF_YEAR)))
+                return new QuarterPeriod()
+                        .setId( String.format( "%dQ%02d", begin.getYear(), begin.get( IsoFields.QUARTER_OF_YEAR)))
                         .setBegin( begin)
                         .setEnd( begin.plusMonths( 2)
                                 .with( TemporalAdjusters.lastDayOfMonth()));
@@ -54,8 +49,7 @@ public class PeriodFactory {
             @Override public Period visitMonthPeriod() {
                 LocalDate begin= source.getBegin();
                 return new MonthPeriod()
-                        .setId( begin.getYear()+ "M"+
-                                String.format( "%02d", begin.getMonthValue()))
+                        .setId( String.format( "%dM%02d", begin.getYear(), begin.getMonthValue()))
                         .setBegin( source.getBegin().with( firstDayOfMonth()))
                         .setEnd( source.getBegin().with( lastDayOfMonth()));
             }

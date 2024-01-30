@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 @DiscriminatorValue( value= "Q")
-public class QuaterPeriod extends Period {
+public class QuarterPeriod extends Period {
 
     @ManyToOne( fetch= FetchType.EAGER)
     private AnnualPeriod parent;

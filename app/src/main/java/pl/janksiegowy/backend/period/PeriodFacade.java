@@ -35,7 +35,7 @@ public class PeriodFacade {
                     @Override public Period visitQuarterPeriod() {
                         return metrics.findByDate( source.getBegin())
                                 .map( metric-> periods.findAnnualByDate( source.getBegin())
-                                        .map( parent-> ((QuaterPeriod) visitor.visitQuarterPeriod())
+                                        .map( parent-> ((QuarterPeriod) visitor.visitQuarterPeriod())
                                                 .setParent( parent)
                                                 .setMin( parent.getBegin())
                                                 .setMax( parent.getEnd())
@@ -50,7 +50,7 @@ public class PeriodFacade {
                         return metrics.findByDate( source.getBegin())
                                 .map( metric-> (metric.isTaxQuarterly()?
                                         periods.findQuarterByDate( source.getBegin())
-                                                .or(()->Optional.of((QuaterPeriod)save(
+                                                .or(()->Optional.of((QuarterPeriod)save(
                                                         PeriodDto.create()
                                                                 .type( PeriodType.Q)
                                                                 .begin( source.getBegin())))):

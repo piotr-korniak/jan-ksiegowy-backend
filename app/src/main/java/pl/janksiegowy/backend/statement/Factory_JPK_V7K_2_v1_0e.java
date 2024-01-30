@@ -2,6 +2,7 @@ package pl.janksiegowy.backend.statement;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.springframework.beans.factory.annotation.Value;
 import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e;
 import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e;
 import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.NaglowekDekalaracji;
@@ -9,27 +10,37 @@ import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Deklaracja
 import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Ewidencja;
 import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazWiersz;
 import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupWiersz;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Podmiot1;
+import pl.gov.crd.wzor._2021._12._27._11149.TPodmiotDowolnyBezAdresu.OsobaNiefizyczna;
 
-import pl.janksiegowy.backend.financial.TaxRate;
+
+import pl.gov.crd.wzor._2021._12._27._11149.TNaglowek;
+import pl.janksiegowy.backend.period.dto.PeriodDto;
+import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineQueryRepository;
 import pl.janksiegowy.backend.invoice_line.dto.JpaInvoiceSumDto;
 import pl.janksiegowy.backend.item.ItemType;
+import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class StatementJpkFactory implements JpkVat.Jpk_Vat7kVisitor<Object> {
+public class Factory_JPK_V7K_2_v1_0e {
 
     private final InvoiceLineQueryRepository lines;
-    private final MonthPeriod period;
+    private final MetricRepository metrics;
     private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "yyyy-MM-dd");
+
+    @Value( "${spring.application.name}")
+    private String applicationName;
 
     private final Map<TaxRate, TriConsumer<PozycjeSzczegolowe, BigDecimal, BigDecimal>>
             salesDomesticFunctions= Map.ofEntries(
@@ -61,25 +72,40 @@ public class StatementJpkFactory implements JpkVat.Jpk_Vat7kVisitor<Object> {
                     ItemType.P, ZakupWiersz::addK4243,
                     ItemType.S, ZakupWiersz::addK4243);
 
-    @Override public Object visitJPK_V7K_2_v1_0e() {
+    public Ewidencja_JPK_V7K_2_v1_0e create( MonthPeriod period) {
         var sprzedazCtrl=  Ewidencja.SprzedazCtrl.create();
         var zakupCtrl= Ewidencja.ZakupCtrl.create();
+
+        var metric= metrics.findByDate( period.getBegin()).orElseThrow();
 
         return (isLastMonthOfQuarter( period.getBegin())
                 ? Ewidencja_JPK_V7K_2_v1_0e.create()
                     .deklaracja( Deklaracja_VAT_7K_16_1_0e.create()
                             .naglowek( NaglowekDekalaracji.create()
                                     .kwartal( period.getBegin().get( IsoFields.QUARTER_OF_YEAR)))
-                            .pozycjeSzczegolowe( pozycjeSzczegolowe()))
+                            .pozycjeSzczegolowe( pozycjeSzczegolowe( period)))
                 : Ewidencja_JPK_V7K_2_v1_0e.create())
+                .naglowek( TNaglowek.create()
+                        .kodUrzedu( metric.getRcCode())
+                        .nazwaSystemu( applicationName)
+                        .rok( period.getBegin().getYear())
+                        .miesiac( period.getBegin().getMonthValue())
+                        .dataWytworzeniaJPK( LocalDateTime.now()
+                                .format( DateTimeFormatter.ofPattern( "yyyy-MM-dd'T'HH:mm:ss"))+ "Z"))
+                .podmiot1( Podmiot1.create()
+                        .osobaNiefizyczna( OsobaNiefizyczna.create()
+                                .nip( metric.getTaxNumber())
+                                .pelnaNazwa( metric.getName())
+                                .email( "info@eleutheria.pl")
+                                .telefon( "601-528-601")))
                 .ewidencja( Ewidencja.create()
                         .sprzedazCtrl( sprzedazCtrl)
-                        .sprzedazWiersz( fakturySprzedazy( sprzedazCtrl))
+                        .sprzedazWiersz( fakturySprzedazy( sprzedazCtrl, period))
                         .zakupCtrl( zakupCtrl)
-                        .zakupWiersz( fakturyZakupu( zakupCtrl)));
+                        .zakupWiersz( fakturyZakupu( zakupCtrl, period)));
     }
 
-    private Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe pozycjeSzczegolowe() {
+    private Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe pozycjeSzczegolowe( MonthPeriod period) {
 
         var pozycjeSzczegolowe= Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe.create();
 
@@ -108,11 +134,12 @@ public class StatementJpkFactory implements JpkVat.Jpk_Vat7kVisitor<Object> {
         return pozycjeSzczegolowe.summarize();
     }
 
-    private List<SprzedazWiersz> fakturySprzedazy( Ewidencja.SprzedazCtrl sprzedazCtrl ) {
-        return lines.findByKindAndPeriodGroupByRate(
+    private List<SprzedazWiersz> fakturySprzedazy( Ewidencja.SprzedazCtrl sprzedazCtrl, MonthPeriod period) {
+        return lines.findByKindAndPeriodIdGroupByRate(
                         List.of( InvoiceRegisterKind.D ),
                         List.of( InvoiceRegisterKind.U, InvoiceRegisterKind.W ),
-                        period ).stream()
+                        period.getId())
+                    .stream()
             .collect( Collectors.groupingBy( JpaInvoiceSumDto::getInvoiceId, LinkedHashMap::new,
                         Collectors.collectingAndThen( Collectors.toList(),  // for ascending order
                 lines-> lines.stream()
@@ -160,8 +187,9 @@ public class StatementJpkFactory implements JpkVat.Jpk_Vat7kVisitor<Object> {
                 .toList();
     }
 
-    private List<ZakupWiersz> fakturyZakupu( Ewidencja.ZakupCtrl zakupCtrl) {
-        return lines.findByKindAndPeriodGroupByType( period).stream()
+    private List<ZakupWiersz> fakturyZakupu( Ewidencja.ZakupCtrl zakupCtrl, MonthPeriod period) {
+        return lines.findByKindAndPeriodGroupByType( period.getId())
+                    .stream()
             .collect( Collectors.groupingBy( JpaInvoiceSumDto::getInvoiceId, LinkedHashMap::new,
                         Collectors.collectingAndThen( Collectors.toList(),  // for ascending order
                 lines-> lines.stream()

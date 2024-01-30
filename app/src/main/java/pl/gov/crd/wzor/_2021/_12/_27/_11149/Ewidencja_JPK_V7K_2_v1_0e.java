@@ -11,6 +11,7 @@ package pl.gov.crd.wzor._2021._12._27._11149;
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -25,19 +26,24 @@ import java.util.Optional;
 
 /**
  *
+
  */
+@Setter
 @XmlAccessorType( XmlAccessType.FIELD)
 @XmlType( propOrder = {
         "naglowek", "podmiot1", "deklaracja", "ewidencja"
 })
-@XmlRootElement( name = "JPK")
-@Setter
+@XmlRootElement( name= "JPK")
 @Accessors( fluent= true, chain= true)
 public class Ewidencja_JPK_V7K_2_v1_0e {
 
-    @XmlElement( name= "Naglowek", required = true)
+    @XmlElement( name= "Naglowek", required= true)
     private TNaglowek naglowek;
 
+    @XmlElement( name= "Podmiot1", required= true)
+    private Podmiot1 podmiot1;
+
+    @Getter
     @XmlElement( name= "Deklaracja")
     private Deklaracja_VAT_7K_16_1_0e deklaracja;
 
@@ -50,15 +56,6 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
 
     /**
      * Gets the value of the podmiot1 property.
-     */
-    @XmlElement(name = "Podmiot1", required = true)
-    public Podmiot1 getPodmiot1() {
-        return null;
-    }
-
-
-    /**
-     * Gets the value of the ewidencja property.
      */
 
 
@@ -81,6 +78,7 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
         @XmlElement( name= "Naglowek", required = true)
         private NaglowekDekalaracji naglowek;
 
+        @Getter
         @XmlElement( name= "PozycjeSzczegolowe", required = true)
         private PozycjeSzczegolowe pozycjeSzczegolowe;
 
@@ -298,9 +296,10 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
             @XmlElement(name = "P_50")
 
             protected BigInteger p50;
-            @XmlElement(name = "P_51", required = true)
+
 
             protected BigInteger p51;
+
             @XmlElement(name = "P_52")
             protected BigInteger p52;
             @XmlElement(name = "P_53")
@@ -485,6 +484,11 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
             public PozycjeSzczegolowe addP43( BigDecimal value) {     // actually adding
                 p43= p43!=null? p43.add( value): value;
                 return this;
+            }
+
+            @XmlElement(name = "P_51", required = true)
+            public BigInteger getP51() {
+                return p51!= null? p51: BigInteger.ZERO;
             }
 
             public PozycjeSzczegolowe summarize() {
@@ -2393,60 +2397,22 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
 */
 
     /**
-     * &lt;p&gt;Java class for anonymous complex type.
-     * <p>
-     * &lt;p&gt;The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * &lt;pre&gt;
-     * &amp;lt;complexType&amp;gt;
-     * &amp;lt;complexContent&amp;gt;
-     * &amp;lt;extension base="{http://crd.gov.pl/wzor/2021/12/27/11149/}TPodmiotDowolnyBezAdresu"&amp;gt;
-     * &amp;lt;attribute name="rola" use="required" type="{http://www.w3.org/2001/XMLSchema}string" fixed="Podatnik" /&amp;gt;
-     * &amp;lt;/extension&amp;gt;
-     * &amp;lt;/complexContent&amp;gt;
-     * &amp;lt;/complexType&amp;gt;
-     * &lt;/pre&gt;
      */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
-    public static class Podmiot1
-            extends TPodmiotDowolnyBezAdresu {
+    @XmlAccessorType( XmlAccessType.FIELD)
+    @XmlType( name= "")
+    public static class Podmiot1 extends TPodmiotDowolnyBezAdresu {
 
-        @XmlAttribute(name = "rola", required = true)
-        protected String rola = getRola();    // domyślnie
-/*
-        public static Podmiot1 odbPodmiot( DaiNaglowek naglowek) {
-            return new Podmiot1() {{	// niestety, tu musi być anonimowa
-                setOsobaNiefizyczna( OsobaNiefizyczna.odbOsobaNiefizyczna( naglowek));
+        @XmlAttribute( name= "rola", required= true)
+        protected String rola= "Podatnik";    // default
 
-            }};
-
-        }*/
-
-        /**
-         * Gets the value of the rola property.
-         *
-         * @return possible object is
-         * {@link String }
-         */
-        public String getRola() {
-            if (rola == null) {
-                return "Podatnik";
-            } else {
-                return rola;
-            }
+        public static Podmiot1 create() {
+            return new Podmiot1();
         }
 
-        /**
-         * Sets the value of the rola property.
-         *
-         * @param value allowed object is
-         *              {@link String }
-         */
-        public void setRola(String value) {
-            this.rola = value;
+        public Podmiot1 osobaNiefizyczna( OsobaNiefizyczna osobaNiefizyczna) {
+            this.osobaNiefizyczna= osobaNiefizyczna;
+            return this;
         }
 
     }
-
 }

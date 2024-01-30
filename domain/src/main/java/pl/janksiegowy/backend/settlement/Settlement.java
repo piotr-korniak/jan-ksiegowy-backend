@@ -7,13 +7,13 @@ import org.hibernate.annotations.UuidGenerator;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.metric.Metric;
 import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.period.Period;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
-@Setter
 
 //@MappedSuperclass
 @Entity
@@ -84,6 +84,11 @@ public abstract class Settlement {
 
     public Settlement setCt( BigDecimal ct) {
         this.ct= ct;
+        return this;
+    }
+
+    public Settlement setPeriod( MonthPeriod period) {
+        this.period= period;
         return this;
     }
 

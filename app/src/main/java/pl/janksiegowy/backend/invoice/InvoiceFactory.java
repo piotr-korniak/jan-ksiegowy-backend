@@ -33,20 +33,19 @@ public class InvoiceFactory {
             @Override public Invoice visitPayable() {
                 return registers.findVatPurchaseRegisterByCode( source.getVatRegister().getCode())
                         .map( register-> new SupplierInvoice()
-                                .setVatRegister( register)
-                                .setSettlement( new InvoiceSettlement()))
+                                .setVatRegister( register))
                         .orElseThrow();
 
             }
             @Override public Invoice visitReceivable() {
                 return registers.findVatSalesRegisterByCode( source.getVatRegister().getCode())
                         .map( register-> new CustomerInvoice()
-                                .setVatRegister( register)
-                                .setSettlement( new InvoiceSettlement()))
+                                .setVatRegister( register))
                         .orElseThrow();
             }
 
-        }).setInvoiceId( Optional.ofNullable( source.getInvoiceId())
+        }).setSettlement( new InvoiceSettlement())
+                .setInvoiceId( Optional.ofNullable( source.getInvoiceId())
                 .orElse( UUID.randomUUID())));
     }
 

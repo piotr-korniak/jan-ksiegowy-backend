@@ -2,8 +2,8 @@ package pl.janksiegowy.backend.item.dto;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.financial.TaxMetod;
-import pl.janksiegowy.backend.financial.TaxRate;
+import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.item.ItemType;
 
 import java.time.LocalDate;

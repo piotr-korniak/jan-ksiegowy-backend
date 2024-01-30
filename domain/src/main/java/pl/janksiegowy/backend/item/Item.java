@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.financial.TaxMetod;
-import pl.janksiegowy.backend.financial.TaxRate;
+import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxRate;
 
 import java.time.LocalDate;
 import java.util.UUID;

@@ -14,9 +14,9 @@ import jakarta.persistence.Entity;
 public class MonthPeriod extends Period {
 
     @ManyToOne( fetch= FetchType.EAGER)
-    private QuaterPeriod parent;
+    private QuarterPeriod parent;
 
-    public Period setParent( QuaterPeriod period) {
+    public Period setParent( QuarterPeriod period) {
         this.parent= period;
         return this;
     }

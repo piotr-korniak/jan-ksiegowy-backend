@@ -15,6 +15,7 @@ public interface SqlPeriodRepository extends JpaRepository<Period, String> {
 }
 
 interface SqlPeriodQueryRepository extends PeriodQueryRepository, Repository<Period, String> {
+
 }
 
 @org.springframework.stereotype.Repository
@@ -23,7 +24,7 @@ class PeriodRepositoryImpl implements PeriodRepository {
 
     private final SqlPeriodRepository repository;
 
-    @Override public Optional<MonthPeriod> findMonthById( String id) {
+    @Override public Optional<MonthPeriod> findMonthById( String id ) {
         return Optional.ofNullable( (MonthPeriod)repository
                 .findAllByIdAndType( id, PeriodType.M));
     }
@@ -32,8 +33,8 @@ class PeriodRepositoryImpl implements PeriodRepository {
         return Optional.ofNullable( (MonthPeriod)repository.
                 findAllByBeginLessThanEqualAndEndGreaterThanEqualAndType( date, date, PeriodType.M));
     }
-    @Override public Optional<QuaterPeriod> findQuarterByDate(LocalDate date) {
-        return Optional.ofNullable( (QuaterPeriod)repository.
+    @Override public Optional<QuarterPeriod> findQuarterByDate( LocalDate date) {
+        return Optional.ofNullable( (QuarterPeriod)repository.
                 findAllByBeginLessThanEqualAndEndGreaterThanEqualAndType( date, date, PeriodType.Q));
     }
     @Override public Optional<AnnualPeriod> findAnnualByDate( LocalDate date) {
@@ -41,8 +42,12 @@ class PeriodRepositoryImpl implements PeriodRepository {
                 findAllByBeginLessThanEqualAndEndGreaterThanEqualAndType( date, date, PeriodType.A));
     }
 
-    @Override
-    public Period save( Period period) {
+    @Override public Period save( Period period) {
         return repository.save( period);
     }
+
+    @Override public Optional<Period> findById( String periodId) {
+        return repository.findById( periodId);
+    }
+
 }

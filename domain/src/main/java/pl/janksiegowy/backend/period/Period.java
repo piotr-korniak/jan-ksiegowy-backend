@@ -23,6 +23,9 @@ public class Period {
     @Column( name= "\"END\"")
     private LocalDate end;
 
+  //  @ManyToOne
+  //  private Period parent;
+
     @Column( insertable= false, updatable= false)
     @Enumerated( EnumType.STRING)
     private PeriodType type;

@@ -16,6 +16,7 @@ public interface PeriodDto {
     LocalDate getBegin();
     LocalDate getEnd();
     PeriodType getType();
+    //String getParentId();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -25,6 +26,7 @@ public interface PeriodDto {
         private LocalDate begin;
         private LocalDate end;
         private PeriodType type;
+        private String parent;
 
         @Override public String getId() {
             return id;
@@ -41,6 +43,10 @@ public interface PeriodDto {
         @Override public PeriodType getType() {
             return type;
         }
+
+        //@Override public String getParentId() {
+        //    return parent;
+        //}
     }
 
 }

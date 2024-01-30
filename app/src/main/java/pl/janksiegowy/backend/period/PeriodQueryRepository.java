@@ -1,7 +1,6 @@
 package pl.janksiegowy.backend.period;
 
 import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.period.PeriodType;
 
 import java.time.LocalDate;
 import java.util.Optional;

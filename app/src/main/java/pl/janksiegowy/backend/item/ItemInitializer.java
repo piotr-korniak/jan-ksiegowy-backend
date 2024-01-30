@@ -1,8 +1,8 @@
 package pl.janksiegowy.backend.item;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.financial.TaxMetod;
-import pl.janksiegowy.backend.financial.TaxRate;
+import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.item.dto.ItemDto;
 import pl.janksiegowy.backend.shared.DataLoader;
 

@@ -5,5 +5,5 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue( value= "A")
-public class AnnualPeriod extends QuaterPeriod{
+public class AnnualPeriod extends QuarterPeriod {
 }
