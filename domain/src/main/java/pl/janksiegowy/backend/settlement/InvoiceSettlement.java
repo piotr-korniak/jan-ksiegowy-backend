@@ -1,10 +1,7 @@
 package pl.janksiegowy.backend.settlement;
 
 import jakarta.persistence.*;
-import pl.janksiegowy.backend.invoice.CustomerInvoice;
 import pl.janksiegowy.backend.invoice.Invoice;
-
-import java.util.UUID;
 
 @Entity
 //@Table( name= "SETTLEMENTS")
@@ -23,17 +20,9 @@ public class InvoiceSettlement extends Settlement {
         this.id= invoice.getInvoiceId();
     }
 
+    @Override public <T> T accept( SettlementVisitor<T> visitor) {
+        return visitor.visit( this);
+    }
 
-    /*
-    @OneToOne( mappedBy= "settlement")
-    protected Invoice invoice;
-*/
-    /*
-    public InvoiceSettlement setInvoice( Invoice document) {
-        this.document= document;
-        System.err.println( "UUID: "+ document.getInvoiceId());
-        this.setId( document.getInvoiceId());
-        return this;
-    }*/
 
 }

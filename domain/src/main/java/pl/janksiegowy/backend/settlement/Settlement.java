@@ -2,12 +2,7 @@ package pl.janksiegowy.backend.settlement;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.UuidGenerator;
-import pl.janksiegowy.backend.invoice.Invoice;
-import pl.janksiegowy.backend.metric.Metric;
 import pl.janksiegowy.backend.period.MonthPeriod;
-import pl.janksiegowy.backend.period.Period;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,20 +21,15 @@ public abstract class Settlement {
     //@UuidGenerator
     @Column( name= "DOCUMENT_ID")
     protected UUID id;
-/*
-    @OneToOne( cascade = CascadeType.ALL)
-    @JoinColumn( name= "DOCUMENT_ID")   //, referencedColumnName= "ID")
-    @MapsId
-    protected Invoice invoice;
-*/
+
+    @Enumerated( EnumType.STRING)
+    private SettlementKind kind;
+
     private LocalDate date;
     private LocalDate due;
 
     private String number;
-/*
-    @ManyToOne( fetch= FetchType.LAZY)
-    private Metric metric;
-*/
+
     @ManyToOne( fetch= FetchType.LAZY)
     private MonthPeriod period;
 
@@ -48,15 +38,7 @@ public abstract class Settlement {
 
     @ManyToOne( fetch= FetchType.EAGER)
     protected pl.janksiegowy.backend.entity.Entity entity;
-/*
-    public UUID getId() {
-        return id;
-    }
 
-    public void setId( UUID documentId) {
-        this.id= documentId;
-    }
-*/
     public Settlement setEntity( pl.janksiegowy.backend.entity.Entity entity) {
         this.entity= entity;
         return this;
@@ -90,6 +72,19 @@ public abstract class Settlement {
     public Settlement setPeriod( MonthPeriod period) {
         this.period= period;
         return this;
+    }
+
+    public Settlement setKind( SettlementKind kind) {
+        this.kind= kind;
+        return this;
+    }
+
+    public abstract <T> T accept( SettlementVisitor<T> visitor);
+
+    public interface SettlementVisitor<T> {
+        T visit( InvoiceSettlement invoice );
+        T visit( StatementSettlement statement);
+        T visit( PaymentSettlement payment);
     }
 
 }

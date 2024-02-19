@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface SqlInvoiceRepository extends JpaRepository<Invoice, UUID> {
 }
 
-interface SqlCustomerInvoiceQueryRepository extends InvoiceQueryRepository, Repository<Invoice, UUID> {
+interface SqlInvoiceQueryRepository extends InvoiceQueryRepository, Repository<Invoice, UUID> {
 
 }
 
@@ -17,7 +17,7 @@ interface SqlCustomerInvoiceQueryRepository extends InvoiceQueryRepository, Repo
 @AllArgsConstructor
 class InvoiceRepositoryImpl implements InvoiceRepository {
 
-    private SqlInvoiceRepository repository;
+    private final SqlInvoiceRepository repository;
 
     @Override
     public Invoice save( Invoice invoice) {

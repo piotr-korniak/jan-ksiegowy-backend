@@ -9,8 +9,9 @@ import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
-import pl.janksiegowy.backend.register.RegisterRepository;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
 import pl.janksiegowy.backend.settlement.InvoiceSettlement;
+import pl.janksiegowy.backend.settlement.SettlementKind;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,27 +26,32 @@ public class InvoiceFactory {
     private final EntityRepository entities;
     private final MetricRepository metrics;
     private final PeriodRepository periods;
-    private final RegisterRepository registers;
+    private final InvoiceRegisterRepository registers;
     private final InvoiceLineFactory line;
 
     public Invoice from( InvoiceDto source) {
         return update( source, source.getType().accept( new InvoiceTypeVisitor<Invoice>() {
-            @Override public Invoice visitPayable() {
-                return registers.findVatPurchaseRegisterByCode( source.getVatRegister().getCode())
-                        .map( register-> new SupplierInvoice()
-                                .setVatRegister( register))
-                        .orElseThrow();
 
-            }
-            @Override public Invoice visitReceivable() {
-                return registers.findVatSalesRegisterByCode( source.getVatRegister().getCode())
-                        .map( register-> new CustomerInvoice()
-                                .setVatRegister( register))
+            @Override public Invoice visitSalesInvoice() {
+                return registers.findSalesRegisterByCode( source.getRegister().getCode())
+                        .map( register-> new SalesInvoice()
+                                .setRegister( register)
+                                .setSettlement( (InvoiceSettlement)
+                                        new InvoiceSettlement().setKind( SettlementKind.D)))
                         .orElseThrow();
             }
 
-        }).setSettlement( new InvoiceSettlement())
-                .setInvoiceId( Optional.ofNullable( source.getInvoiceId())
+            @Override public Invoice visitPurchaseInvoice() {
+                return registers.findPurchaseRegisterByCode( source.getRegister().getCode())
+                        .map( register-> new PurchaseInvoice()
+                                .setRegister( register)
+                                .setSettlement( (InvoiceSettlement)
+                                        new InvoiceSettlement().setKind( SettlementKind.C)))
+                        .orElseThrow();
+            }
+
+
+        }).setInvoiceId( Optional.ofNullable( source.getInvoiceId())
                 .orElse( UUID.randomUUID())));
     }
 

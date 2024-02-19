@@ -17,10 +17,6 @@ public abstract class Register {
     @Column( name= "ID")
     private UUID registerId;
 
-    @Column( insertable= false, updatable= false)
-    @Enumerated( EnumType.STRING)
-    private RegisterType type;
-
     private String code;
     private String name;
 

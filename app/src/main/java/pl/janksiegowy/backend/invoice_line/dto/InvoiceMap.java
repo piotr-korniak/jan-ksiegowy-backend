@@ -4,13 +4,12 @@ import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.register.dto.VatRegisterDto;
+import pl.janksiegowy.backend.register.dto.RegisterDto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class InvoiceMap implements InvoiceDto {
 
@@ -33,8 +32,8 @@ public class InvoiceMap implements InvoiceDto {
     }
 
     @Override
-    public VatRegisterDto getVatRegister() {
-        return invoice.getVatRegister();
+    public RegisterDto getRegister() {
+        return invoice.getRegister();
     }
 
     @Override

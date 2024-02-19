@@ -18,4 +18,8 @@ public class StatementSettlement extends Settlement {
         this.id= statement.getStatementId();
         return this;
     }
+
+    @Override public <T> T accept( SettlementVisitor<T> visitor) {
+        return visitor.visit( this );
+    }
 }

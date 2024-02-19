@@ -18,10 +18,14 @@ import pl.janksiegowy.backend.item.ItemQueryRepository;
 import pl.janksiegowy.backend.metric.MetricFactory;
 import pl.janksiegowy.backend.metric.MetricInitializer;
 import pl.janksiegowy.backend.metric.MetricRepository;
+import pl.janksiegowy.backend.payment.ClearingQueryRepository;
+import pl.janksiegowy.backend.payment.PaymentFacade;
+import pl.janksiegowy.backend.payment.PaymentInitializer;
 import pl.janksiegowy.backend.period.*;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
+import pl.janksiegowy.backend.register.InvoiceRegisterQueryRepository;
+import pl.janksiegowy.backend.register.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.register.RegisterInitializer;
-import pl.janksiegowy.backend.register.RegisterQueryRepository;
 import pl.janksiegowy.backend.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.subdomain.TenantController;
@@ -41,20 +45,25 @@ public class MigrationController {
     private final InvoiceInitializer invoices;
     private final ItemInitializer items;
     private final InvoiceLineInitializer lines;
+    private final PaymentInitializer payments;
 
     private final PeriodDto[] initialPeriods= {
             PeriodDto.create().type( PeriodType.A)
                 .begin( LocalDate.of( 2017, 1, 1))
                 .end( LocalDate.of( 2017, 12, 31)),
             PeriodDto.create().type( PeriodType.A)
-                        .begin( LocalDate.of( 2023, 1, 1))
-                        .end( LocalDate.of( 2023, 12, 31))
+                .begin( LocalDate.of( 2023, 1, 1))
+                .end( LocalDate.of( 2023, 12, 31)),
+            PeriodDto.create().type( PeriodType.A)
+                .begin( LocalDate.of( 2024, 1, 1))
+                .end( LocalDate.of( 2024, 12, 31))
     };
 
     public MigrationController( final EntityQueryRepository entities,
                                 final EntityFacade entity,
                                 final MetricRepository metrics,
-                                final RegisterQueryRepository registers,
+                                final InvoiceRegisterQueryRepository invoiceRegisters,
+                                final PaymentRegisterQueryRepository paymentRegisters,
                                 final InvoiceQueryRepository invoices,
                                 final InvoiceFacade invoice,
                                 final PeriodFacade period,
@@ -62,15 +71,19 @@ public class MigrationController {
                                 final SettlementQueryRepository settlements,
                                 final ItemQueryRepository items,
                                 final ItemFacade item,
+                                final ClearingQueryRepository clearing,
+                                final PaymentFacade payments,
                                 final DataLoader loader) {
 
         this.metrics = new MetricInitializer( new MetricFactory(), metrics, loader);
         this.entities= new EntityInitializer( entities, entity, loader);
-        this.registers= new RegisterInitializer( registers, invoice, loader);
+        this.registers= new RegisterInitializer( invoiceRegisters, paymentRegisters, invoice, loader);
         this.periods= new PeriodInitializer( period);
-        this.invoices= new InvoiceInitializer( settlements, registers, periods, entities, period, invoice, loader);
+        this.invoices= new InvoiceInitializer( settlements, invoiceRegisters,
+                                                periods, entities, period, invoice, loader);
         this.items= new ItemInitializer( items, item, loader);
         this.lines= new InvoiceLineInitializer( invoices, invoice, items, loader);
+        this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payments, loader);
     }
 
     @PostMapping
@@ -78,7 +91,7 @@ public class MigrationController {
 
         //TenantContext.setCurrentTenant( "eleftheria", "pl5862321911");
         log.warn( "Migration start...");
-
+/*
         metrics.init();
         log.warn( "Metrics migration complete!");
 
@@ -99,6 +112,8 @@ public class MigrationController {
 
         lines.init();
         log.warn( "Invoices Lines migration complete!");
+*/
+        payments.init();
 
         return ResponseEntity.ok().build();
     }

@@ -8,7 +8,7 @@ import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.register.dto.VatRegisterDto;
+import pl.janksiegowy.backend.register.dto.RegisterDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,7 +25,7 @@ public interface InvoiceDto {
     UUID getInvoiceId();
 
     public InvoiceType getType();
-    VatRegisterDto getVatRegister();
+    RegisterDto getRegister();
 
     PeriodDto getPeriod();
 
@@ -48,7 +48,7 @@ public interface InvoiceDto {
 
         private UUID invoiceId;
         private InvoiceType type;
-        private VatRegisterDto vatRegister;
+        private RegisterDto register;
         private PeriodDto period;
         private String number;
         private LocalDate invoiceDate;
@@ -65,8 +65,8 @@ public interface InvoiceDto {
             return type;
         }
 
-        @Override public VatRegisterDto getVatRegister() {
-            return vatRegister;
+        @Override public RegisterDto getRegister() {
+            return register;
         }
 
         @Override public PeriodDto getPeriod() {

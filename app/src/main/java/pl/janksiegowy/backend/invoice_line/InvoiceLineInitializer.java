@@ -8,8 +8,7 @@ import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceMap;
 import pl.janksiegowy.backend.item.ItemQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
-
-import java.math.BigDecimal;
+import pl.janksiegowy.backend.shared.Util;
 
 @AllArgsConstructor
 public class InvoiceLineInitializer {
@@ -33,35 +32,12 @@ public class InvoiceLineInitializer {
                                     .map( itemDto-> invoiceDto.add( InvoiceLineDto.create()
                                             .item( itemDto)
                                             .taxRate( itemDto.getTaxRate())
-                                            .amount( parse( fields[2], 2))
-                                            .tax( parse( fields[3], 2))))
+                                            .amount( Util.toBigDecimal( fields[2], 2))
+                                            .tax( Util.toBigDecimal( fields[3], 2))))
                                     .orElseThrow());
                         return invoiceDto;
                     });
         }
     }
 
-    private BigDecimal parse(String kwota, int precyzja){
-
-        System.err.println( "Kwota: "+ kwota);
-
-        StringBuilder sb= new StringBuilder( kwota);
-        // dostawiamy zera po przecinku, precyzja dla BigDecimal
-        int n= precyzja;
-        while( n--> 0)
-            sb.append( '0');
-        // zamieniamy przecinek na kropke
-        n= kwota.lastIndexOf( ',');
-
-        if( n>0){
-            sb.replace( n, n+1, ".");
-            sb.delete( n+precyzja+1, 100);
-        }
-        // usuwamy biale znaki
-        while((n=sb.indexOf( "\u00A0"))> 0){
-            sb.delete( n, n+1);
-        }
-
-        return new BigDecimal( sb.toString());
-    }
 }

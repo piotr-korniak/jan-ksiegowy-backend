@@ -3,6 +3,7 @@ package pl.janksiegowy.backend.statement;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
+import pl.janksiegowy.backend.settlement.SettlementKind;
 import pl.janksiegowy.backend.settlement.StatementSettlement;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
 
@@ -25,6 +26,7 @@ public class StatementFactory {
                                 source.getSettlementEntity().getEntityId(), source.getDate()).orElseThrow())
                         .setDue( source.getSettlementDue())
                         .setCt( liability)
+                        .setKind( SettlementKind.C)
                         .setPeriod(  periods.findMonthByDate( period.getEnd()).orElseThrow())))
                 .orElse(  new Statement())
                 .setPattern( source.getPatternId())

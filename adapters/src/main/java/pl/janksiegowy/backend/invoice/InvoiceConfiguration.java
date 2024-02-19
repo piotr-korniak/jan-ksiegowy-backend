@@ -7,8 +7,8 @@ import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.item.ItemRepository;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
-import pl.janksiegowy.backend.register.RegisterFactory;
-import pl.janksiegowy.backend.register.RegisterRepository;
+import pl.janksiegowy.backend.register.InvoiceRegisterFactory;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
 
 
 @Configuration
@@ -18,8 +18,8 @@ public class InvoiceConfiguration {
     InvoiceFacade invoiceFacade( final InvoiceRepository invoices,
                                  final EntityRepository entities,
                                  final MetricRepository metrics,
-                                 final RegisterFactory register,
-                                 final RegisterRepository registers,
+                                 final InvoiceRegisterFactory register,
+                                 final InvoiceRegisterRepository registers,
                                  final PeriodRepository periods,
                                  final ItemRepository items) {
         return new InvoiceFacade(

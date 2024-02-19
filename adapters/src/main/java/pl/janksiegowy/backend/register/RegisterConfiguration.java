@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 public class RegisterConfiguration {
 
     @Bean
-    RegisterFactory registerFactory( ) {
-        return new RegisterFactory();
+    InvoiceRegisterFactory registerFactory( ) {
+        return new InvoiceRegisterFactory();
     }
 }

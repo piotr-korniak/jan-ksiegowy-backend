@@ -29,8 +29,8 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
 
     @Override
     @Query( value= "SELECT L.invoice.invoiceId AS invoiceId, " +
-                    "TREAT( L.invoice as CustomerInvoice).vatRegister.kind AS salesKind, " +
-                    "TREAT( L.invoice as SupplierInvoice).vatRegister.kind AS purchaseKind, " +
+                    "TREAT( L.invoice as SalesInvoice).register.kind AS salesKind, " +
+                    "TREAT( L.invoice as PurchaseInvoice).register.kind AS purchaseKind, " +
                     "L.taxRate AS rate," +
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
@@ -45,22 +45,22 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "L.invoice.settlement.entity.taxNumber AS taxNumber, "+
                     "L.invoice.settlement.entity.country AS entityCountry, "+
                     "L.invoice.invoiceDate AS invoiceDate, "+
-                    "L.invoice.settlement.date AS issueDate, " +
-                    "CASE WHEN L.invoice.type= 'C' " +
-                    "   THEN TREAT(L.invoice AS CustomerInvoice).vatRegister.kind ELSE NULL " +
+                    "L.invoice.settlement.date AS issueDate, "+
+                    "CASE WHEN TYPE( L.invoice) = SalesInvoice "+
+                    "   THEN TREAT( L.invoice AS SalesInvoice).register.kind ELSE NULL " +
                     "END AS salesKind, " +
-                    "CASE WHEN L.invoice.type= 'S' " +
-                    "   THEN TREAT(L.invoice AS SupplierInvoice).vatRegister.kind ELSE NULL " +
+                    "CASE WHEN TYPE( L.invoice)= PurchaseInvoice " +
+                    "   THEN TREAT( L.invoice AS PurchaseInvoice).register.kind ELSE NULL " +
                     "END AS purchaseKind, " +
                     "L.item.type AS itemType, "+
                     "L.taxRate AS taxRate, " +
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
                     "WHERE vat!=0 AND L.invoice.settlement.period.id= :period AND " +
-                    "((L.invoice.type='C' AND "+
-                    "  TREAT(L.invoice AS CustomerInvoice).vatRegister.kind IN :salesKinds) OR"+
-                    " (L.invoice.type='S' AND "+
-                    "  TREAT(L.invoice AS SupplierInvoice).vatRegister.kind IN :purchaseKinds)) "+
+                    "((TYPE( L.invoice) = SalesInvoice AND "+
+                    "  TREAT( L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR"+
+                    " (TYPE( L.invoice) = PurchaseInvoice AND "+
+                    "  TREAT(L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds)) "+
                     "GROUP BY invoiceId, invoiceNumber, entityName, taxNumber, "+
                             "entityCountry, invoiceDate, issueDate, salesKind, purchaseKind, "+
                             "taxRate, itemType "+
@@ -76,7 +76,8 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
             "L.invoice.settlement.period.parent= :period AND " +
-            "(L.invoice.type='C' AND TREAT(L.invoice AS CustomerInvoice).vatRegister.kind= :kind)" +
+            "(TYPE( L.invoice)= SalesInvoice AND" +
+            " TREAT( L.invoice AS SalesInvoice).register.kind= :kind)" +
             "GROUP BY taxRate")
     List<JpaInvoiceSumDto> sumSalesByKindAndPeriodGroupByRate(
             @Param( "kind") InvoiceRegisterKind kind,
@@ -84,12 +85,13 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
 
     @Override
     @Query( value= "SELECT L.item.type AS itemType, " +
-            "TREAT(L.invoice AS CustomerInvoice).vatRegister.kind AS invoiceRegisterKind, " +
+            "TREAT(L.invoice AS SalesInvoice).register.kind AS invoiceRegisterKind, " +
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
             "L.invoice.settlement.period.parent.id= :period AND " +
-            "(L.invoice.type='C' AND TREAT(L.invoice AS CustomerInvoice).vatRegister.kind IN :kinds)" +
+            "(TYPE( L.invoice)= SalesInvoice AND" +
+            " TREAT( L.invoice AS SalesInvoice).register.kind IN :kinds)" +
             "GROUP BY invoiceRegisterKind, itemType")
     List<JpaInvoiceSumDto> sumSalesByKindAndItemTypeGroupByType(
             @Param( "kinds") List<InvoiceRegisterKind> salesKinds,
@@ -97,12 +99,13 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
 
     @Override
     @Query( value= "SELECT L.item.type AS itemType, " +
-            "TREAT(L.invoice AS SupplierInvoice).vatRegister.kind AS purchaseKind, " +
-            "SUM(L.base) AS base, SUM(L.vat) AS vat " +
+            "TREAT( L.invoice AS PurchaseInvoice).register.kind AS purchaseKind, " +
+            "SUM( L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
             "L.invoice.settlement.period.parent= :period AND " +
-            "(L.invoice.type='S' AND TREAT(L.invoice AS SupplierInvoice).vatRegister.kind IN :kinds)" +
+            "(TYPE( L.invoice)= PurchaseInvoice AND" +
+            " TREAT( L.invoice AS PurchaseInvoice).register.kind IN :kinds)" +
             "GROUP BY purchaseKind, itemType")
     List<JpaInvoiceSumDto> sumPurchaseByKindAndItemTypeGroupByType(
             @Param( "kinds") List<InvoiceRegisterKind> purchaseKinds,
@@ -111,20 +114,20 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
 
     @Override
     @Query( value= "SELECT L.taxRate AS rate, " +
-            "CASE WHEN L.invoice.type= 'C' " +
-            "   THEN TREAT(L.invoice AS CustomerInvoice).vatRegister.kind ELSE NULL " +
+            "CASE WHEN TYPE( L.invoice) = SalesInvoice " +
+            "   THEN TREAT( L.invoice AS SalesInvoice).register.kind ELSE NULL " +
             "END AS salesKind, " +
-            "CASE WHEN L.invoice.type= 'S' " +
-            "   THEN TREAT(L.invoice AS SupplierInvoice).vatRegister.kind ELSE NULL " +
+            "CASE WHEN TYPE( L.invoice) = PurchaseInvoice " +
+            "   THEN TREAT( L.invoice AS PurchaseInvoice).register.kind ELSE NULL " +
             "END AS purchaseKind, " +
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
             "L.invoice.settlement.period.parent= :period AND " +
-            "((L.invoice.type='C' AND "+
-            "  TREAT(L.invoice AS CustomerInvoice).vatRegister.kind IN :salesKinds) OR" +
-            " (L.invoice.type='S' AND "+
-            "  TREAT(L.invoice AS SupplierInvoice).vatRegister.kind IN :purchaseKinds)) " +
+            "(( TYPE( L.invoice) = SalesInvoice AND "+
+            "  TREAT(L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR" +
+            " ( TYPE( L.invoice) = PurchaseInvoice AND "+
+            "  TREAT(L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds)) " +
             "GROUP BY salesKind, purchaseKind, L.taxRate")
     List<JpaInvoiceSumDto> sumByKindAndPeriodGroupByRate(
             @Param( "salesKinds") List<InvoiceRegisterKind> salesKinds,
@@ -143,7 +146,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
                     "WHERE vat!=0 AND L.invoice.settlement.period.id= :period AND "+
-                    "L.invoice.type='S' "+
+                    "TYPE( L.invoice)= PurchaseInvoice "+
                     "GROUP BY invoiceId, invoiceNumber, entityName, taxNumber, " +
                             "entityCountry, invoiceDate, issueDate, itemType "+
                     "ORDER BY invoiceDate ASC ")
@@ -151,14 +154,14 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
 
     @Override
     @Query( value= "SELECT L.item.type AS itemType, "+
-            "CASE WHEN L.invoice.type= 'S' " +
-            "   THEN TREAT(L.invoice AS SupplierInvoice).vatRegister.kind ELSE NULL " +
+            "CASE WHEN TYPE( L.invoice)= PurchaseInvoice " +
+            "   THEN TREAT( L.invoice AS PurchaseInvoice).register.kind ELSE NULL " +
             "END AS purchaseKind, " +
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L "+
             "WHERE vat!=0 AND L.invoice.settlement.period.parent= :period AND "+
-            "(L.invoice.type='S' AND "+
-            "  TREAT(L.invoice AS SupplierInvoice).vatRegister.kind IN :purchaseKinds) " +
+            "(TYPE( L.invoice) = PurchaseInvoice AND "+
+            " TREAT( L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds) " +
             "GROUP BY purchaseKind, itemType ")
     List<JpaInvoiceSumDto> sumByKindAndPeriodGroupByType(
             List<InvoiceRegisterKind> purchaseKinds,
@@ -169,7 +172,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L "+
             "WHERE vat!=0 AND L.invoice.settlement.period.parent= :quarterPeriod AND " +
-            "L.invoice.type='S' "+
+            "TYPE( L.invoice) = PurchaseInvoice "+
             "GROUP BY itemType ")
     List<JpaInvoiceSumDto> sumPurchaseByTypeAndPeriodGroupByType( QuarterPeriod quarterPeriod);
 }

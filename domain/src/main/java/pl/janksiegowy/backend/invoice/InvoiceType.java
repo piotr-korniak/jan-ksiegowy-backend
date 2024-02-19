@@ -1,20 +1,20 @@
 package pl.janksiegowy.backend.invoice;
 
 public enum InvoiceType {
-    S { // A bill - commonly known as an Accounts Payable or supplier invoice
+    S { // Sales invoice
         @Override public <T> T accept( InvoiceTypeVisitor<T> visitor) {
-            return visitor.visitPayable();
+            return visitor.visitSalesInvoice();
         }
     },
-    C { // A sales invoice - commonly known as an Accounts Receivable or customer invoice
+    P { // Purchase invoice
         @Override public <T> T accept( InvoiceTypeVisitor<T> visitor) {
-            return visitor.visitReceivable();
+            return visitor.visitPurchaseInvoice();
         }
     };
     public abstract <T> T accept( InvoiceTypeVisitor<T> visitor);
 
     public interface InvoiceTypeVisitor<T> {
-        T visitPayable();
-        T visitReceivable();
+        T visitSalesInvoice();
+        T visitPurchaseInvoice();
     }
 }
