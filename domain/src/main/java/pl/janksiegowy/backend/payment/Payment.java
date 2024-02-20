@@ -3,12 +3,8 @@ package pl.janksiegowy.backend.payment;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
-import pl.janksiegowy.backend.invoice.Invoice;
-import pl.janksiegowy.backend.settlement.InvoiceSettlement;
+import pl.janksiegowy.backend.register.payment.PaymentRegister;
 import pl.janksiegowy.backend.settlement.PaymentSettlement;
-import pl.janksiegowy.backend.settlement.Settlement;
-import pl.janksiegowy.backend.settlement.StatementSettlement;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -27,6 +23,9 @@ public abstract class Payment {
 
     @OneToOne( mappedBy= "payment", cascade = CascadeType.ALL)
     protected PaymentSettlement settlement;
+
+    @ManyToOne
+    private PaymentRegister register;
 
     public Payment setPaymentId( UUID paymentId) {
         this.paymentId= paymentId;
@@ -52,6 +51,11 @@ public abstract class Payment {
     public Payment setDate( LocalDate date) {
         this.settlement.setDate( date);
         this.settlement.setDue( date);
+        return this;
+    }
+
+    public Payment setRegister( PaymentRegister register ) {
+        this.register= register;
         return this;
     }
 

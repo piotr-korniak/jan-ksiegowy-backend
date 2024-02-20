@@ -31,18 +31,37 @@ public class PaymentInitializer {
                     var taxNumber= Util.toTaxNumber( clearing[1]);
 
                     if( amount.signum()> 0) {
+                        if( !clearings.existReceivable( clearing[2], taxNumber, Util.toLocalDate( clearing[3]))) {
+                            settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
+                                    .ifPresent( settlementDto-> {
+                                        registers.findByCode( clearing[0]).ifPresent( register-> {
+
+                                            var receivable= settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
+                                                    .orElseThrow();
+
+                                            var payable= facade.save( PaymentDto.create()
+                                                    .type( PaymentType.R)
+                                                    .amount( amount)
+                                                    .date( Util.toLocalDate( clearing[3]))
+                                                    .register( register));
+
+                                            facade.save( ClearingDto.create()
+                                                    .date( Util.toLocalDate( clearing[3]))
+                                                    .amount( amount)
+                                                    .payable( payable.getPaymentId())
+                                                    .receivable( receivable.getId()));
+                                        } );
+                                    });
+                        }
 
                     } else {
                         if( !clearings.existPayable( clearing[2], taxNumber, Util.toLocalDate( clearing[3]))) {
-                            System.err.println( "Trzeba dodać!");
                             settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
                                 .ifPresent( settlementDto-> {
                                     registers.findByCode( clearing[0]).ifPresent( register-> {
 
-
                                         var payable= settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
                                                 .orElseThrow();
-
 
                                         var receivable= facade.save( PaymentDto.create()
                                                 .type( PaymentType.S)
@@ -50,29 +69,15 @@ public class PaymentInitializer {
                                                 .date( Util.toLocalDate( clearing[3]))
                                                 .register( register));
 
-
                                         facade.save( ClearingDto.create()
                                                 .date( Util.toLocalDate( clearing[3]))
                                                 .amount( amount.negate())
                                                 .payable( payable.getId())
                                                 .receivable( receivable.getPaymentId()));
-
-
                                     } );
-
-
-
-
-
                                 });
-
-
                         }
                     }
-
-
-
-
                 });
     }
 }

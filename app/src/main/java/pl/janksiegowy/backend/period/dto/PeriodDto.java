@@ -8,9 +8,7 @@ import java.time.LocalDate;
 
 public interface PeriodDto {
 
-    static Proxy create() {
-        return new Proxy();
-    }
+    static Proxy create() { return new Proxy();}
 
     String getId();
     LocalDate getBegin();

@@ -28,6 +28,8 @@ import pl.janksiegowy.backend.register.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.register.RegisterInitializer;
 import pl.janksiegowy.backend.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
+import pl.janksiegowy.backend.shared.numerator.*;
+import pl.janksiegowy.backend.shared.numerator.dto.NumeratorDto;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
 import java.time.LocalDate;
@@ -47,6 +49,8 @@ public class MigrationController {
     private final InvoiceLineInitializer lines;
     private final PaymentInitializer payments;
 
+    private final NumeratorInitializer numerators;
+
     private final PeriodDto[] initialPeriods= {
             PeriodDto.create().type( PeriodType.A)
                 .begin( LocalDate.of( 2017, 1, 1))
@@ -57,6 +61,20 @@ public class MigrationController {
             PeriodDto.create().type( PeriodType.A)
                 .begin( LocalDate.of( 2024, 1, 1))
                 .end( LocalDate.of( 2024, 12, 31))
+    };
+
+    private final NumeratorDto[] initialNumerators= {
+            NumeratorDto.create().code( "KP")
+                .type( NumeratorType.Y).mask( "KP %N/%T/%4Y").name( "Kasa Przyjmie"),
+            NumeratorDto.create().code( "KW")
+                .type( NumeratorType.Y).mask( "KW %N/%T/%4Y").name( "Kasa Wyda"),
+            NumeratorDto.create().code( "BP")
+                .type( NumeratorType.Y).mask( "BP %N/%T/%4Y").name( "Bank Przyjmie"),
+            NumeratorDto.create().code( "BW")
+                .type( NumeratorType.Y).mask( "BW %N/%T/%4Y").name( "Bank Wyda"),
+            NumeratorDto.create().code( "FS")
+                .type( NumeratorType.Y).mask( "FS %N/%4Y").name( "Faktura Sprzedaży")
+
     };
 
     public MigrationController( final EntityQueryRepository entities,
@@ -73,6 +91,8 @@ public class MigrationController {
                                 final ItemFacade item,
                                 final ClearingQueryRepository clearing,
                                 final PaymentFacade payments,
+                                final NumeratorQueryRepository numerators,
+                                final NumeratorFacade numerator,
                                 final DataLoader loader) {
 
         this.metrics = new MetricInitializer( new MetricFactory(), metrics, loader);
@@ -84,6 +104,7 @@ public class MigrationController {
         this.items= new ItemInitializer( items, item, loader);
         this.lines= new InvoiceLineInitializer( invoices, invoice, items, loader);
         this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payments, loader);
+        this.numerators= new NumeratorInitializer( numerators, numerator);
     }
 
     @PostMapping
@@ -114,6 +135,9 @@ public class MigrationController {
         log.warn( "Invoices Lines migration complete!");
 */
         payments.init();
+        log.warn( "Payments migration complete!");
+
+        numerators.init( initialNumerators);
 
         return ResponseEntity.ok().build();
     }

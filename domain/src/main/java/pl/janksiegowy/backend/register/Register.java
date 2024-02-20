@@ -1,10 +1,12 @@
 package pl.janksiegowy.backend.register;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.util.Objects;
 import java.util.UUID;
+
+@Getter
 
 @Entity
 @Table( name= "REGISTERS")
@@ -33,4 +35,5 @@ public abstract class Register {
         this.name= name;
         return this;
     }
+
 }
