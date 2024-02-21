@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.payment.dto.PaymentDto;
+import pl.janksiegowy.backend.period.PeriodFacade;
+import pl.janksiegowy.backend.period.PeriodQueryRepository;
+import pl.janksiegowy.backend.period.PeriodType;
+import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.register.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
@@ -19,6 +23,8 @@ public class PaymentInitializer {
     private final SettlementQueryRepository settlements;
     private final PaymentRegisterQueryRepository registers;
     private final PaymentFacade facade;
+    private final PeriodQueryRepository periods;
+    private final PeriodFacade period;
     private final DataLoader loader;
 
     private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "--- dd.MM.yyyy");
@@ -29,6 +35,12 @@ public class PaymentInitializer {
                 .forEach( clearing-> {
                     var amount= Util.toBigDecimal( clearing[4], 2);
                     var taxNumber= Util.toTaxNumber( clearing[1]);
+                    var date= Util.toLocalDate( clearing[3]);
+
+                    if( periods.findMonthByDate( date).isEmpty())
+                        period.save( PeriodDto.create()
+                                .type( PeriodType.M)
+                                .begin( date));
 
                     if( amount.signum()> 0) {
                         if( !clearings.existReceivable( clearing[2], taxNumber, Util.toLocalDate( clearing[3]))) {
@@ -41,12 +53,13 @@ public class PaymentInitializer {
 
                                             var payable= facade.save( PaymentDto.create()
                                                     .type( PaymentType.R)
+                                                    .entity( receivable.getEntity())
                                                     .amount( amount)
-                                                    .date( Util.toLocalDate( clearing[3]))
+                                                    .date( date)
                                                     .register( register));
 
                                             facade.save( ClearingDto.create()
-                                                    .date( Util.toLocalDate( clearing[3]))
+                                                    .date( date)
                                                     .amount( amount)
                                                     .payable( payable.getPaymentId())
                                                     .receivable( receivable.getId()));
@@ -65,12 +78,13 @@ public class PaymentInitializer {
 
                                         var receivable= facade.save( PaymentDto.create()
                                                 .type( PaymentType.S)
+                                                .entity( payable.getEntity() )
                                                 .amount( amount.negate())
-                                                .date( Util.toLocalDate( clearing[3]))
+                                                .date( date)
                                                 .register( register));
 
                                         facade.save( ClearingDto.create()
-                                                .date( Util.toLocalDate( clearing[3]))
+                                                .date( date)
                                                 .amount( amount.negate())
                                                 .payable( payable.getId())
                                                 .receivable( receivable.getPaymentId()));

@@ -103,7 +103,8 @@ public class MigrationController {
                                                 periods, entities, period, invoice, loader);
         this.items= new ItemInitializer( items, item, loader);
         this.lines= new InvoiceLineInitializer( invoices, invoice, items, loader);
-        this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payments, loader);
+        this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payments,
+                periods, period, loader);
         this.numerators= new NumeratorInitializer( numerators, numerator);
     }
 

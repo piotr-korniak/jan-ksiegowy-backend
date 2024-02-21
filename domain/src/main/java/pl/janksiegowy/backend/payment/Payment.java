@@ -3,6 +3,8 @@ package pl.janksiegowy.backend.payment;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import pl.janksiegowy.backend.invoice.Invoice;
+import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.register.payment.PaymentRegister;
 import pl.janksiegowy.backend.settlement.PaymentSettlement;
 
@@ -58,6 +60,16 @@ public abstract class Payment {
         this.register= register;
         return this;
     }
+
+    public Payment setPeriod( MonthPeriod period ) {
+        this.settlement.setPeriod( period);
+        return this;
+    }
+
+    public Payment setEntity( pl.janksiegowy.backend.entity.Entity entity) {
+        settlement.setEntity( entity);
+        return this;
+    };
 
     public interface PaymentVisitor<T> {
         T visit( PaymentReceipt payment);

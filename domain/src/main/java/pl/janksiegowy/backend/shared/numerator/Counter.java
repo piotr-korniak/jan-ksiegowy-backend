@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.util.Map;
-import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,28 +26,26 @@ public class Counter {
     private int month= -1;
     private int year= -1;
 
-    private String type;
+    private String type= "";
     private Long values= 0L;
 
     @Version
     private long version;
 
     @Transient
-    private final static Pattern pattern= Pattern.compile("%(\\d*)([A-Za-z])");
+    private final static Pattern pattern= Pattern.compile("%(\\d*)([MNTY])");
 
-    public String increment() {
+    public Counter increment( StringBuffer result) {
         values++;
-
         Matcher matcher= pattern.matcher( numerator.getMask());
-        StringBuffer result= new StringBuffer();
 
         while( matcher.find()) {
             matcher.appendReplacement( result, generate(
-                    matcher.group(2).charAt( 0),
-                    matcher.group(1).isEmpty()? 0: Integer.parseInt( matcher.group(1))));
+                    matcher.group( 2).charAt( 0),
+                    matcher.group( 1).isEmpty()? 0: Integer.parseInt( matcher.group(1))));
         }
         matcher.appendTail( result);
-        return result.toString();
+        return this;
     }
 
     private String generate( char key, int n) {

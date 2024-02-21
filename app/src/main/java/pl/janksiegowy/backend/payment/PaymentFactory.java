@@ -2,10 +2,11 @@ package pl.janksiegowy.backend.payment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.payment.Payment.PaymentVisitor;
 import pl.janksiegowy.backend.payment.PaymentType.PaymentTypeVisitor;
 import pl.janksiegowy.backend.payment.dto.PaymentDto;
+import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterType.PaymentRegisterTypeVisitor;
 import pl.janksiegowy.backend.settlement.PaymentSettlement;
@@ -21,6 +22,8 @@ public class PaymentFactory {
 
     private final PaymentRegisterRepository registers;
     private final NumeratorFacade numerators;
+    private final PeriodRepository periods;
+    private final EntityRepository entities;
 
     public Payment from( PaymentDto source ) {
         return source.getType().accept( new PaymentTypeVisitor<Payment>() {
@@ -44,45 +47,49 @@ public class PaymentFactory {
                     @Override
                     public Payment visit( PaymentReceipt payment ) {
                         return registers.findByCode( source.getRegister().getCode() )
-                                .map( register -> register.getType().accept( new PaymentRegisterTypeVisitor<Payment>() {
-                                    @Override
-                                    public Payment visitBankAccount() {
-                                        return payment.setNumber( numerators
-                                                .increment( "BP", source.getPaymentDate(), register.getCode() ) );
-                                    }
+                            .map( register-> register.getType().accept( new PaymentRegisterTypeVisitor<Payment>() {
+                                @Override
+                                public Payment visitBankAccount() {
+                                    return payment.setNumber( numerators
+                                        .increment( "BP", source.getPaymentDate(), register.getCode()));
+                                }
 
-                                    @Override
-                                    public Payment visitCashDesk() {
-                                        return payment.setNumber( numerators
-                                                .increment( "KP", source.getPaymentDate(), register.getCode() ) );
-                                    }
-                                } ).setRegister( register ) )
-                                .orElseThrow();
+                                @Override
+                                public Payment visitCashDesk() {
+                                    return payment.setNumber( numerators
+                                        .increment( "KP", source.getPaymentDate(), register.getCode()));
+                                }
+                            }).setRegister( register)
+                            ).orElseThrow();
                     }
 
                     @Override
                     public Payment visit( PaymentSpend payment ) {
                         return registers.findByCode( source.getRegister().getCode() )
-                                .map( register -> register.getType().accept( new PaymentRegisterTypeVisitor<Payment>() {
-                                    @Override
-                                    public Payment visitBankAccount() {
-                                        return payment.setNumber( numerators
-                                                .increment( "BW", source.getPaymentDate(), register.getCode() ) );
-                                    }
+                            .map( register-> register.getType().accept( new PaymentRegisterTypeVisitor<Payment>() {
+                                @Override
+                                public Payment visitBankAccount() {
+                                    return payment.setNumber( numerators
+                                        .increment( "BW", source.getPaymentDate(), register.getCode()));
+                                }
 
-                                    @Override
-                                    public Payment visitCashDesk() {
-                                        return payment.setNumber( numerators
-                                                .increment( "KW", source.getPaymentDate(), register.getCode() ) );
-                                    }
-                                } ) )
-                                .orElseThrow();
+                                @Override
+                                public Payment visitCashDesk() {
+                                    return payment.setNumber( numerators
+                                        .increment( "KW", source.getPaymentDate(), register.getCode()));
+                                }
+                            }).setRegister( register)
+                            ).orElseThrow();
                     }
 
                 } ).setPaymentId( Optional.ofNullable( source.getPaymentId() )
                         .orElse( UUID.randomUUID() ) )
-                .setDate( source.getPaymentDate() );
-
+                .setDate( source.getPaymentDate())
+                .setPeriod( periods.findMonthByDate( source.getPaymentDate()).orElseThrow())
+                .setEntity( Optional.ofNullable( source.getEntity())
+                        .map( entity->
+                                entities.findByEntityIdAndDate( entity.getEntityId(), source.getPaymentDate()))
+                        .orElse( null).get());
 
     }
 }

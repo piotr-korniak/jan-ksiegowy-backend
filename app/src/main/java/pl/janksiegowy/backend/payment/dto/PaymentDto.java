@@ -2,6 +2,7 @@ package pl.janksiegowy.backend.payment.dto;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.payment.PaymentType;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 
@@ -21,6 +22,7 @@ public interface PaymentDto {
     public LocalDate getPaymentDate();
     public BigDecimal getAmount();
     public RegisterDto getRegister();
+    public EntityDto getEntity();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -32,6 +34,7 @@ public interface PaymentDto {
         private LocalDate date;
         private BigDecimal amount;
         private RegisterDto register;
+        private EntityDto entity;
 
         @Override public UUID getPaymentId() {
             return paymentId;
@@ -50,6 +53,9 @@ public interface PaymentDto {
         }
         @Override public RegisterDto getRegister() {
             return register;
+        }
+        @Override public EntityDto getEntity() {
+            return entity;
         }
     }
 }
