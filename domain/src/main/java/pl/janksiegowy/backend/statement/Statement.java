@@ -3,7 +3,7 @@ package pl.janksiegowy.backend.statement;
 import jakarta.persistence.*;
 import lombok.Getter;
 import pl.janksiegowy.backend.period.Period;
-import pl.janksiegowy.backend.settlement.StatementSettlement;
+import pl.janksiegowy.backend.finances.settlement.StatementSettlement;
 import pl.janksiegowy.backend.shared.pattern.PatternCode;
 
 import java.time.LocalDate;

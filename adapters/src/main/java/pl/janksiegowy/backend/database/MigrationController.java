@@ -18,18 +18,17 @@ import pl.janksiegowy.backend.item.ItemQueryRepository;
 import pl.janksiegowy.backend.metric.MetricFactory;
 import pl.janksiegowy.backend.metric.MetricInitializer;
 import pl.janksiegowy.backend.metric.MetricRepository;
-import pl.janksiegowy.backend.payment.ClearingQueryRepository;
-import pl.janksiegowy.backend.payment.PaymentFacade;
-import pl.janksiegowy.backend.payment.PaymentInitializer;
+import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
+import pl.janksiegowy.backend.finances.payment.PaymentFacade;
+import pl.janksiegowy.backend.finances.payment.PaymentInitializer;
 import pl.janksiegowy.backend.period.*;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.register.InvoiceRegisterQueryRepository;
 import pl.janksiegowy.backend.register.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.register.RegisterInitializer;
-import pl.janksiegowy.backend.settlement.SettlementQueryRepository;
+import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.numerator.*;
-import pl.janksiegowy.backend.shared.numerator.dto.NumeratorDto;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
 import java.time.LocalDate;
@@ -38,7 +37,7 @@ import java.time.LocalDate;
 
 @TenantController
 @RequestMapping( "/v2/migrate")
-public class MigrationController {
+public class MigrationController extends MigrationConfiguration {
 
     private final EntityInitializer entities;
     private final MetricInitializer metrics;
@@ -48,7 +47,6 @@ public class MigrationController {
     private final ItemInitializer items;
     private final InvoiceLineInitializer lines;
     private final PaymentInitializer payments;
-
     private final NumeratorInitializer numerators;
 
     private final PeriodDto[] initialPeriods= {
@@ -61,20 +59,6 @@ public class MigrationController {
             PeriodDto.create().type( PeriodType.A)
                 .begin( LocalDate.of( 2024, 1, 1))
                 .end( LocalDate.of( 2024, 12, 31))
-    };
-
-    private final NumeratorDto[] initialNumerators= {
-            NumeratorDto.create().code( "KP")
-                .type( NumeratorType.Y).mask( "KP %N/%T/%4Y").name( "Kasa Przyjmie"),
-            NumeratorDto.create().code( "KW")
-                .type( NumeratorType.Y).mask( "KW %N/%T/%4Y").name( "Kasa Wyda"),
-            NumeratorDto.create().code( "BP")
-                .type( NumeratorType.Y).mask( "BP %N/%T/%4Y").name( "Bank Przyjmie"),
-            NumeratorDto.create().code( "BW")
-                .type( NumeratorType.Y).mask( "BW %N/%T/%4Y").name( "Bank Wyda"),
-            NumeratorDto.create().code( "FS")
-                .type( NumeratorType.Y).mask( "FS %N/%4Y").name( "Faktura Sprzedaży")
-
     };
 
     public MigrationController( final EntityQueryRepository entities,
@@ -111,9 +95,11 @@ public class MigrationController {
     @PostMapping
     public ResponseEntity migrate() {
 
-        //TenantContext.setCurrentTenant( "eleftheria", "pl5862321911");
         log.warn( "Migration start...");
-/*
+
+        numerators.init( getInitialNumerators());
+        log.warn( "Numerators migration complete!");
+
         metrics.init();
         log.warn( "Metrics migration complete!");
 
@@ -134,11 +120,9 @@ public class MigrationController {
 
         lines.init();
         log.warn( "Invoices Lines migration complete!");
-*/
+
         payments.init();
         log.warn( "Payments migration complete!");
-
-        numerators.init( initialNumerators);
 
         return ResponseEntity.ok().build();
     }

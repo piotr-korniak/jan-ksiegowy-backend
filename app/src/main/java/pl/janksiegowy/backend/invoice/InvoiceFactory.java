@@ -10,8 +10,8 @@ import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
-import pl.janksiegowy.backend.settlement.InvoiceSettlement;
-import pl.janksiegowy.backend.settlement.SettlementKind;
+import pl.janksiegowy.backend.finances.settlement.InvoiceSettlement;
+import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 
 import java.time.LocalDate;
 import java.util.List;

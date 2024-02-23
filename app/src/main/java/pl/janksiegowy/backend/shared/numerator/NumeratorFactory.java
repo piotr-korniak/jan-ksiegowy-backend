@@ -17,6 +17,7 @@ public class NumeratorFactory {
                 .setCode( source.getCode())
                 .setName( source.getName())
                 .setMask( source.getMask())
-                .setType( source.getType());
+                .setType( source.getType())
+                .setTyped( source.isTyped());
     }
 }

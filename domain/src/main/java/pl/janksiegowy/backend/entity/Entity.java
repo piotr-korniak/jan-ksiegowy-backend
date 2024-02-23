@@ -39,6 +39,9 @@ public abstract class Entity {
     private String postcode;
     private String town;
 
+    @Column( name= "ACCOUNT_NUMBER")
+    private String accountNumber;
+
     @Enumerated( EnumType.STRING)
     private Country country;
 

@@ -1,18 +1,25 @@
 package pl.janksiegowy.backend.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.entity.EntityType.*;
+import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 
 import java.time.LocalDate;
 import java.util.UUID;
 @Log4j2
-
+@AllArgsConstructor
 public class EntityFactory implements EntityTypeVisitor<Entity> {
+
+    private final NumeratorFacade numerators;
+
     public Entity from( EntityDto source) {     // New Entity
         return update( source, source.getType()
                 .accept( this)
                     .setEntityId( UUID.randomUUID())
+                    .setAccountNumber( EntityType.R== source.getType()?
+                            source.getTaxNumber(): numerators.increment( "EN", source.getType().name()))
                     .setDate( LocalDate.EPOCH.plusDays( 3)));
     }
 
@@ -20,6 +27,7 @@ public class EntityFactory implements EntityTypeVisitor<Entity> {
         return update( source, source.getType()
                 .accept( this)
                     .setEntityId( source.getEntityId())
+                    .setAccountNumber( source.getAccountNumber())
                     .setDate( source.getDate()));
     }
 

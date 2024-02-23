@@ -13,6 +13,7 @@ public interface NumeratorDto {
     String getName();
     String getMask();
     NumeratorType getType();
+    boolean isTyped();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -22,6 +23,7 @@ public interface NumeratorDto {
         private String name;
         private String mask;
         private NumeratorType type;
+        private boolean typed;
 
         @Override public Long getId() {
             return id;
@@ -37,6 +39,9 @@ public interface NumeratorDto {
         }
         @Override public NumeratorType getType() {
             return type;
+        }
+        @Override public boolean isTyped() {
+            return typed;
         }
     }
 }

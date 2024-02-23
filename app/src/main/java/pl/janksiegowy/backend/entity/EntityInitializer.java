@@ -40,9 +40,10 @@ public class EntityInitializer {
             var role= EntityRole.values()[Integer.parseInt( fields[6])];
             facade.save( entity
                     .map( entityDto-> EntityDto.create()    // new Entity history
-                            .entityId( entityDto.getEntityId()))
+                            .entityId( entityDto.getEntityId())
+                            .accountNumber( entityDto.getAccountNumber()))
                     .orElse( EntityDto.create())            // new Entity
-                            .date( history.date)
+                            .date( history.date)            // both of the above!
                             .type( type)
                             .name( fields[1])
                             .taxNumber( taxNumber)

@@ -11,7 +11,7 @@ import pl.janksiegowy.backend.period.PeriodType;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.register.InvoiceRegisterQueryRepository;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterType.InvoiceRegisterTypeVisitor;
-import pl.janksiegowy.backend.settlement.SettlementQueryRepository;
+import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
 

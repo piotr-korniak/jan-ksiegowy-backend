@@ -26,13 +26,12 @@ import java.util.Map;
         basePackages= { "pl.janksiegowy.backend.metric",
                         "pl.janksiegowy.backend.entity",
                         "pl.janksiegowy.backend.invoice",
-                        "pl.janksiegowy.backend.settlement",
+                        "pl.janksiegowy.backend.finances",
                         "pl.janksiegowy.backend.register",
                         "pl.janksiegowy.backend.period",
                         "pl.janksiegowy.backend.item",
                         "pl.janksiegowy.backend.invoice_line",
                         "pl.janksiegowy.backend.statement",
-                        "pl.janksiegowy.backend.payment",
                         "pl.janksiegowy.backend.shared"},
         entityManagerFactoryRef= "companyEntityManagerFactory",
         transactionManagerRef= "companyTransactionManager"
@@ -61,13 +60,12 @@ public class CompanyPersistenceConfig {
         emf.setPackagesToScan( "pl.janksiegowy.backend.metric",
                                "pl.janksiegowy.backend.entity",
                                "pl.janksiegowy.backend.invoice",
-                               "pl.janksiegowy.backend.settlement",
+                               "pl.janksiegowy.backend.finances",
                                "pl.janksiegowy.backend.register",
                                "pl.janksiegowy.backend.period",
                                "pl.janksiegowy.backend.item",
                                 "pl.janksiegowy.backend.invoice_line",
                                 "pl.janksiegowy.backend.statement",
-                                "pl.janksiegowy.backend.payment",
                                 "pl.janksiegowy.backend.shared");
         //emf.setPackagesToScan( entityPackages);
 

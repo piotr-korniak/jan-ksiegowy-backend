@@ -25,6 +25,7 @@ public interface EntityDto {
     LocalDate getDate();
     EntityType getType();
     String getTaxNumber();
+    String getAccountNumber();
     Country getCountry();
     String getAddress();
     String getPostcode();
@@ -41,6 +42,7 @@ public interface EntityDto {
         private LocalDate date;
         private EntityType type;
         private String taxNumber;
+        private String accountNumber;
         private Country country;
         private String address;
         private String postcode;
@@ -62,6 +64,9 @@ public interface EntityDto {
         }
         @Override public String getTaxNumber() {
             return taxNumber;
+        }
+        @Override public String getAccountNumber() {
+            return accountNumber;
         }
         @Override public Country getCountry() {
             return country;

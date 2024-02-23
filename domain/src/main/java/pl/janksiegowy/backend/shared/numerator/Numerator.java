@@ -23,9 +23,6 @@ public class Numerator {
 
     @Enumerated( EnumType.STRING)
     private NumeratorType type;
-
-    public boolean isTypeUsed() {
-        return getMask().contains( "T");
-    }
+    private boolean typed;
 
 }

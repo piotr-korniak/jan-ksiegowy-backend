@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.period.MonthPeriod;
-import pl.janksiegowy.backend.settlement.InvoiceSettlement;
+import pl.janksiegowy.backend.finances.settlement.InvoiceSettlement;
 import pl.janksiegowy.backend.metric.Metric;
 
 import java.math.BigDecimal;
