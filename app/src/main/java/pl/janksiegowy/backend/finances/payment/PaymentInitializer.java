@@ -1,6 +1,8 @@
 package pl.janksiegowy.backend.finances.payment;
 
 import lombok.AllArgsConstructor;
+import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
+import pl.janksiegowy.backend.accounting.decree.DecreeFactory;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
@@ -8,7 +10,7 @@ import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.period.PeriodQueryRepository;
 import pl.janksiegowy.backend.period.PeriodType;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.register.PaymentRegisterQueryRepository;
+import pl.janksiegowy.backend.register.payment.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
@@ -24,9 +26,18 @@ public class PaymentInitializer {
     private final PaymentFacade facade;
     private final PeriodQueryRepository periods;
     private final PeriodFacade period;
+    private final DecreeFacade decree;
     private final DataLoader loader;
 
     private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "--- dd.MM.yyyy");
+
+    private Payment save( PaymentDto source) {
+        var payment= facade.save( source);
+
+        decree.book( payment);
+
+        return payment;
+    }
 
     public void init() {
 
@@ -50,7 +61,7 @@ public class PaymentInitializer {
                                             var receivable= settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
                                                     .orElseThrow();
 
-                                            var payable= facade.save( PaymentDto.create()
+                                            var payable= save( PaymentDto.create()
                                                     .type( PaymentType.R)
                                                     .entity( receivable.getEntity())
                                                     .amount( amount)
@@ -75,7 +86,7 @@ public class PaymentInitializer {
                                         var payable= settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
                                                 .orElseThrow();
 
-                                        var receivable= facade.save( PaymentDto.create()
+                                        var receivable= save( PaymentDto.create()
                                                 .type( PaymentType.S)
                                                 .entity( payable.getEntity() )
                                                 .amount( amount.negate())

@@ -14,10 +14,6 @@ public abstract class PaymentRegister extends Register {
     private PaymentRegisterType type;
 
     @Enumerated( EnumType.STRING)
-    private PaymentRegisterKind kind;
+    private PaymentRegisterKind kind= PaymentRegisterKind.P;
 
-    public PaymentRegister setKind( PaymentRegisterKind kind) {
-        this.kind= kind;
-        return this;
-    }
 }

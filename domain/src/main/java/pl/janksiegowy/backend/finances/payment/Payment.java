@@ -3,6 +3,8 @@ package pl.janksiegowy.backend.finances.payment;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.DiscriminatorOptions;
+import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.register.payment.PaymentRegister;
 import pl.janksiegowy.backend.finances.settlement.PaymentSettlement;
@@ -15,7 +17,8 @@ import java.util.UUID;
 @Entity
 @Table( name= "PAYMENTS")
 @Inheritance( strategy= InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING)
+@DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING, length= 1)
+@DiscriminatorOptions( force= true)
 public abstract class Payment {
 
     @Id
@@ -27,6 +30,15 @@ public abstract class Payment {
 
     @ManyToOne
     private PaymentRegister register;
+
+    public PaymentType getType() {
+        return PaymentType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
+    }
+
+    public LocalDate getDate() {
+        return settlement.getDate();
+    }
+
 
     public Payment setPaymentId( UUID paymentId) {
         this.paymentId= paymentId;

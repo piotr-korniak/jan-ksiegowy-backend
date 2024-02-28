@@ -3,7 +3,8 @@ package pl.janksiegowy.backend.invoice;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.register.Register;
-import pl.janksiegowy.backend.register.InvoiceRegisterFactory;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegister;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterFactory;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 
@@ -22,7 +23,7 @@ public class InvoiceFacade {
         return invoices.save( invoice.from( source));
     }
 
-    public Register save( RegisterDto source) {
+    public InvoiceRegister save( RegisterDto source) {
         return registers.save( Optional.ofNullable( source.getRegisterId())
                 .map( uuid -> register.update( source))
                 .orElse( register.from( source)));

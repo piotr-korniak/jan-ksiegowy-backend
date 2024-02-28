@@ -97,13 +97,13 @@ public class Factory_JPK_V7K_2_v1_0e {
                                 .nip( metric.getTaxNumber())
                                 .pelnaNazwa( metric.getName())
                                 .email( "info@eleutheria.pl")
-                                .telefon( "601-528-601")));
-/*                .ewidencja( Ewidencja.create()
+                                .telefon( "601-528-601")))
+                .ewidencja( Ewidencja.create()
                         .sprzedazCtrl( sprzedazCtrl)
                         .sprzedazWiersz( fakturySprzedazy( sprzedazCtrl, period))
                         .zakupCtrl( zakupCtrl)
                         .zakupWiersz( fakturyZakupu( zakupCtrl, period)));
-*/    }
+    }
 
     private Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe pozycjeSzczegolowe( MonthPeriod period) {
 

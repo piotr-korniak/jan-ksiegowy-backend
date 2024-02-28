@@ -37,7 +37,6 @@ public class Statement {
 
     public Statement setStatementId( UUID statementId) {
         this.statementId= statementId;
-        settlement.setStatement( this);
         return this;
     }
 
@@ -57,13 +56,18 @@ public class Statement {
         return this;
     }
 
-    public Statement setPeriod( Period period ) {
+    public Statement setPeriod( Period period) {
         this.period= period;
         return this;
     }
 
     public Statement setCreated( LocalDateTime created) {
         this.created= created;
+        return this;
+    }
+
+    public Statement setXML( String xml) {
+        this.xml= xml;
         return this;
     }
 }

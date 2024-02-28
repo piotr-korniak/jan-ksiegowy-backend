@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.shared.numerator.dto.NumeratorDto;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class NumeratorFacade {
@@ -12,8 +13,10 @@ public class NumeratorFacade {
     private final NumeratorFactory factory;
 
     private final CounterRepository counters;
-    public Numerator save( NumeratorDto numerator) {
-        return numerators.save( factory.from( numerator));
+    public Numerator save( NumeratorDto source) {
+        return numerators.save( Optional.ofNullable( source.getNumeratorId())
+                            .map( uuid-> factory.update( source) )
+                            .orElse( factory.from( source)));
     }
 
     public String increment( String numeratorCode, String type, LocalDate... date) {

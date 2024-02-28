@@ -1,11 +1,7 @@
-package pl.janksiegowy.backend.register;
+package pl.janksiegowy.backend.register.invoice;
 
 import pl.janksiegowy.backend.register.dto.RegisterDto;
-import pl.janksiegowy.backend.register.invoice.InvoiceRegister;
-import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
-import pl.janksiegowy.backend.register.invoice.PurchaseRegister;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterType.InvoiceRegisterTypeVisitor;
-import pl.janksiegowy.backend.register.invoice.SalesRegister;
 
 public class InvoiceRegisterFactory {
     public InvoiceRegister from( RegisterDto source) {
@@ -24,7 +20,8 @@ public class InvoiceRegisterFactory {
     }
 
     private InvoiceRegister create( RegisterDto source) {
-        return source.getType().accept( new InvoiceRegisterTypeVisitor<InvoiceRegister>() {
+        return InvoiceRegisterType.valueOf( source.getType())
+                .accept( new InvoiceRegisterTypeVisitor<InvoiceRegister>() {
             @Override public InvoiceRegister visitSalesRegister() {
                 return new SalesRegister()
                         .setKind( InvoiceRegisterKind.valueOf( source.getKind()));

@@ -9,7 +9,8 @@ import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.period.PeriodQueryRepository;
 import pl.janksiegowy.backend.period.PeriodType;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.register.InvoiceRegisterQueryRepository;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterQueryRepository;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterType;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterType.InvoiceRegisterTypeVisitor;
 import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
@@ -45,7 +46,7 @@ public class InvoiceInitializer {
 
             var invoice= entities.findByCountryAndTypeAndTaxNumber( country, EntityType.C, taxNumber)
                     .map( entity-> registers.findByCode( fields[0])
-                            .map( register-> register.getType().accept(
+                            .map( register-> InvoiceRegisterType.valueOf( register.getType()).accept(
                                     new InvoiceRegisterTypeVisitor<InvoiceDto.Proxy>() {
                                         @Override public InvoiceDto.Proxy visitPurchaseRegister() {
                                             return InvoiceDto.create().type( InvoiceType.P);

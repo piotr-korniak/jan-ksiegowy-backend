@@ -28,13 +28,14 @@ public class StatementFactory {
                         .setCt( liability)
                         .setKind( SettlementKind.C)
                         .setPeriod(  periods.findMonthByDate( period.getEnd()).orElseThrow())))
-                .orElse(  new Statement())
-                .setPattern( source.getPatternId())
-                .setDate( source.getDate())
-                .setCreated( source.getCreated())
-                .setPeriod( period)
-                .setStatementId( Optional.ofNullable( source.getStatementId())
-                        .orElse( UUID.randomUUID()));
+                .orElse( new Statement())
+                    .setPattern( source.getPatternId())
+                    .setDate( source.getDate())
+                    .setCreated( source.getCreated())
+                    .setPeriod( period)
+                    .setXML( source.getXml())
+                    .setStatementId( Optional.ofNullable( source.getStatementId())
+                            .orElse( UUID.randomUUID()));
 
     }
 }

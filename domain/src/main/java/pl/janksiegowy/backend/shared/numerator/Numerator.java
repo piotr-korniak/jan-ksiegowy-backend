@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Setter
 @Accessors( chain= true)
@@ -14,8 +17,9 @@ import lombok.experimental.Accessors;
 public class Numerator {
 
     @Id
-    @GeneratedValue( strategy= GenerationType.IDENTITY)
-    private Long id;
+    @UuidGenerator
+    @Column( name= "ID")
+    private UUID numeratorId;
 
     private String code;
     private String name;

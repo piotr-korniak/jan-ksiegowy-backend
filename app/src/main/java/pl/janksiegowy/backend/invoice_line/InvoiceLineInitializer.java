@@ -25,17 +25,17 @@ public class InvoiceLineInitializer {
 
             invoices.findBySettlementNumber( InvoiceDto.class, fields[0])
                     .map( InvoiceMap::new)
-                    .map( invoiceDto-> {
-                        if( !invoiceDto.getLineItems().stream()
+                    .map( invoiceMap-> {
+                        if( !invoiceMap.getLineItems().stream()
                                 .anyMatch( i-> i.getItem().getCode().equals( fields[1])))
                             invoice.save( items.findByCode( fields[1])
-                                    .map( itemDto-> invoiceDto.add( InvoiceLineDto.create()
+                                    .map( itemDto-> invoiceMap.add( InvoiceLineDto.create()
                                             .item( itemDto)
                                             .taxRate( itemDto.getTaxRate())
                                             .amount( Util.toBigDecimal( fields[2], 2))
                                             .tax( Util.toBigDecimal( fields[3], 2))))
                                     .orElseThrow());
-                        return invoiceDto;
+                        return invoiceMap;
                     });
         }
     }

@@ -23,7 +23,6 @@ public abstract class Entity {
     @GeneratedValue( strategy= GenerationType.IDENTITY)
     private long id;
 
-    //@UuidGenerator
     private UUID entityId; // for history and query
 
     @Column( insertable= false, updatable= false)
@@ -31,7 +30,6 @@ public abstract class Entity {
     private EntityType type;
 
     private LocalDate date;
-    @Column( name= "TAX_NUMBER")
     private String taxNumber;
 
     private String name;
@@ -39,7 +37,6 @@ public abstract class Entity {
     private String postcode;
     private String town;
 
-    @Column( name= "ACCOUNT_NUMBER")
     private String accountNumber;
 
     @Enumerated( EnumType.STRING)

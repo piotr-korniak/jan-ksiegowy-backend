@@ -28,7 +28,8 @@ public class PaymentFactory {
     public Payment from( PaymentDto source ) {
         return source.getType().accept( new PaymentTypeVisitor<Payment>() {
                     @Override public Payment visitPaymentReceipt() {
-                        return new PaymentReceipt().setSettlement( (PaymentSettlement)
+                        return new PaymentReceipt()
+                                .setSettlement( (PaymentSettlement)
                                 new PaymentSettlement()
                                         .setKind( SettlementKind.C )
                                         .setCt( source.getAmount() ) );

@@ -19,8 +19,5 @@ public class NumeratorInitializer {
             }
 
         }
-
-        //var num= facade.increment( "KP", LocalDate.now());
-        //System.err.println( "Document number: "+ num);
     }
 }

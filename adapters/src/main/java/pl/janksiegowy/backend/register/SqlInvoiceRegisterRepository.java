@@ -19,7 +19,6 @@ interface SqlInvoiceRegisterQueryRepository extends InvoiceRegisterQueryReposito
 class InvoiceRegisterRepositoryImpl implements InvoiceRegisterRepository {
 
     private SqlInvoiceRegisterRepository repository;
-    private SqlPaymentRegisterRepository paymentRegisters;
 
     @Override
     public Optional<SalesRegister> findSalesRegisterByCode( String code) {

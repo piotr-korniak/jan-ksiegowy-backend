@@ -4,6 +4,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.finances.payment.PaymentType;
+import pl.janksiegowy.backend.finances.settlement.SettlementType;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 
 import java.math.BigDecimal;

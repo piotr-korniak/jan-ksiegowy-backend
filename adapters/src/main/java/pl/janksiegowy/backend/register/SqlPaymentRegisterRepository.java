@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.Repository;
 import pl.janksiegowy.backend.register.payment.PaymentRegister;
+import pl.janksiegowy.backend.register.payment.PaymentRegisterFactory;
+import pl.janksiegowy.backend.register.payment.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 
 import java.util.Optional;
@@ -23,7 +25,7 @@ class PaymentRegisterRepositoryImpl implements PaymentRegisterRepository {
 
     private SqlPaymentRegisterRepository repository;
 
-    @Override public Register save( PaymentRegister register ) {
+    @Override public PaymentRegister save( PaymentRegister register ) {
         return repository.save( register);
     }
 

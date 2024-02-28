@@ -13,7 +13,7 @@ public interface RegisterDto {
 
     UUID getRegisterId();
     String getCode();
-    InvoiceRegisterType getType();
+    String getType();
     String getKind();
     String getName();
 
@@ -23,7 +23,7 @@ public interface RegisterDto {
 
         private UUID registerId;
         private String code;
-        private InvoiceRegisterType type;
+        private String type;
         private String kind;
         private String name;
 
@@ -35,7 +35,7 @@ public interface RegisterDto {
             return code;
         }
 
-        @Override public InvoiceRegisterType getType() {
+        @Override public String getType() {
             return type;
         }
 
