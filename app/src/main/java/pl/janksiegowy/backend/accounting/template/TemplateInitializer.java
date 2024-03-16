@@ -1,7 +1,6 @@
 package pl.janksiegowy.backend.accounting.template;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateMap;
 
 import java.util.List;
@@ -13,7 +12,12 @@ public class TemplateInitializer {
     private final TemplateFacade facade;
     public void init( List<TemplateMap> initialTemplates) {
 
-        initialTemplates.forEach( facade::save);
+        initialTemplates.forEach( templateMap-> {
+            if( templates.findByCode( templateMap.getCode())
+                    .map( i-> i.getDate().isBefore( templateMap.getDate()))
+                    .orElseGet( ()->true))
+                facade.save( templateMap);
+        });
 
     }
 }

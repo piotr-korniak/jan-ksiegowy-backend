@@ -10,25 +10,30 @@ import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.shared.pattern.PatternCode;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
-import pl.janksiegowy.backend.shared.pattern.XmlGenerator;
+import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @AllArgsConstructor
-public class StatementApproval extends XmlGenerator{
+public class StatementApproval {
 
     private final PeriodRepository periods;
-    private final StatementFacade statement;
+    private final StatementFacade facade;
 
     private final MetricRepository metrics;
     private final StatementRepository statements;
     private final EntityQueryRepository entities;
     private final InvoiceLineQueryRepository invoiceLines;
+
+
+    private void save( StatementDto source) {
+        facade.approve( facade.save( source));
+    }
+
 
     public void approval( String periodId) {
         var version= PatternId.JPK_V7K_2_v1_0e;
@@ -46,30 +51,31 @@ public class StatementApproval extends XmlGenerator{
                                     .date( LocalDate.now())
                                     .created( LocalDateTime.now()))
                         .patternCode( PatternCode.JPK_V7K)
+                        .type( StatementType.V)
                         .periodId( periodId);
 
-                    Optional.ofNullable( version.accept( new XmlGenerator<BigInteger>(){
 
-                        @Override public BigInteger visit_JPK_V7K_2_v1_0e() {
-                            var source= new Factory_JPK_V7K_2_v1_0e( invoiceLines, metrics).create( period);
-                            statementDto.xml( marshal( source));
+                    var source= version.accept( new PatternId.PatternJpkVisitor<JpkVat>() {
+                        @Override public JpkVat visit_JPK_V7K_2_v1_0e() {
+                            return new Factory_JPK_V7K_2_v1_0e( invoiceLines, metrics).create( period);
+                        }
+                    } );
+                    statementDto.xml( XmlConverter.marshal( source));
+                    statementDto.value1( source.korektaNaleznego());
+                    statementDto.value2( source.korektaNaliczonego());
 
-                            // Pobranie wyniku
-                            return Optional.ofNullable( source.deklaracja())
-                                    .map( deklaracja-> deklaracja.pozycjeSzczegolowe().getP51())
-                                    .orElse( null);
-                        }})
-                    ).ifPresent( bigInteger-> entities
-                            .findByTypeAndTaxNumber( EntityType.R, metric.getRcCode())
-                            .ifPresent( revenue-> { statementDto
-                                    .revenue( revenue)
-                                    .liability( new BigDecimal( bigInteger))
-                                    .number( "VAT-7K "+ period.getEnd().getYear()+ "K"+
+                    Optional.ofNullable( source.getP51())
+                            .ifPresent( bigInteger-> entities
+                                    .findByTypeAndTaxNumber( EntityType.R, metric.getRcCode())
+                                    .ifPresent( revenue-> { statementDto
+                                            .revenue( revenue)
+                                            .liability( new BigDecimal( bigInteger))
+                                            .number( "VAT-7K "+ period.getEnd().getYear()+ "K"+
                                             (( period.getEnd().getMonth().getValue()- 1) / 3 + 1))
-                                    .due( period.getEnd().plusMonths( 1).withDayOfMonth( 25));
+                                            .due( period.getEnd().plusMonths( 1).withDayOfMonth( 25));
                             }));
 
-                    statement.save( statementDto);
+                    save( statementDto);
                     return null;
                 });
     }

@@ -19,8 +19,8 @@ public class TemplateFacade {
         return repository.save( Optional.ofNullable( source.getTemplateId())
                 .map( templateId-> repository.findTemplateByTemplateIdAndDate( templateId, source.getDate())
                     .map( template-> factory.update( source, template))     // Update Template history
-                    .orElse( factory.update( source)))                      // New Template history
-                .orElse( factory.from( source)));                           // New Template
+                    .orElseGet(()-> factory.update( source)))               // New Template history
+                .orElseGet(()-> factory.from( source)));                    // New Template
 
     }
 

@@ -21,7 +21,9 @@ public class Numerator {
     @Column( name= "ID")
     private UUID numeratorId;
 
-    private String code;
+    @Enumerated( EnumType.STRING)
+    private NumeratorCode code;
+
     private String name;
     private String mask;
 

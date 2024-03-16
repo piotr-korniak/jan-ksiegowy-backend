@@ -17,8 +17,12 @@ public enum TaxMetod {
             return visitor.visitC7();
         }
 
-    }
-    ;
+    },
+    NC { // Not CIT
+        @Override public <T> T accept( TaxMetodVisitor<T> visitor) {
+            return visitor.visitNC();
+        }
+    };
 
     public abstract <T> T accept( TaxMetodVisitor<T> visitor);
 
@@ -26,6 +30,7 @@ public enum TaxMetod {
         T visitNL();
         T visitV5();
         T visitC7();
+        T visitNC();
     }
 
 }

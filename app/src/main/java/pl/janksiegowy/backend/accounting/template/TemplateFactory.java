@@ -3,75 +3,79 @@ package pl.janksiegowy.backend.accounting.template;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
 import pl.janksiegowy.backend.accounting.template.DocumentType.DocumentTypeVisitor;
-import pl.janksiegowy.backend.finances.payment.PaymentType;
-import pl.janksiegowy.backend.finances.settlement.SettlementType;
+import pl.janksiegowy.backend.accounting.template.dto.TemplateLineDto;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
+import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class TemplateFactory implements DocumentTypeVisitor<Template> {
+public class TemplateFactory {
 
     private final AccountingRegisterRepository registers;
     private final TemplateLineFactory line;
 
     public Template from( TemplateDto source) {
-        return update( source, source.getType().accept( this)
+        return update( source, new Template()
                 .setTemplateId( UUID.randomUUID())
                 .setDate( source.getDate()));
     }
 
     public Template update( TemplateDto source) {
-        return update( source, source.getType().accept( this)
+        return update( source, new Template()
                 .setTemplateId( source.getTemplateId()));
     }
 
     public Template update( TemplateDto source, Template template) {
-
         Optional.ofNullable( source.getLines())
             .ifPresent( lines-> template.setItems( lines.stream()
-                .map( templateLineDto-> line.from( templateLineDto).setTemplate( template ))
+                .map( templateLineDto-> line.from( templateLineDto, source.getDocumentType().accept(
+                    new DocumentTypeVisitor<TemplateLine>() {
+                        @Override public TemplateLine visitSalesInvoice() {
+                            return new InvoiceTemplateLine().setFunction(
+                                    InvoiceFunction.valueOf( templateLineDto.getFunction()));
+                        }
+                        @Override public TemplateLine visitPurchaseInvoice() {
+                            return new InvoiceTemplateLine().setFunction(
+                                    InvoiceFunction.valueOf( templateLineDto.getFunction()));
+                        }
+
+                        @Override public TemplateLine visitPaymentReceipt() {
+                            return paymentTemplateLine( templateLineDto);
+                        }
+                        @Override public TemplateLine visitPaymentSpend() {
+                            return paymentTemplateLine( templateLineDto);
+                        }
+
+                        @Override public TemplateLine visitVatStatement() {
+                            return new StatementTemplateLine().setFunction(
+                                    StatementFunction.valueOf( templateLineDto.getFunction()));
+                        }
+                        @Override public TemplateLine visitCitStatement() {
+                            return null;
+                        }
+                        @Override public TemplateLine visitPitStatement() {
+                            return null;
+                        }
+                    })).setTemplate( template))
                 .collect( Collectors.toList())));
 
-        return registers.findByCode( source.getRegister().getCode())
+        return registers.findByCode( source.getRegisterCode())
                 .map( register -> template.setRegister( register))
                 .orElseThrow()
+                .setDocumentType( source.getDocumentType())
                 .setCode( source.getCode())
                 .setName( source.getName());
     }
 
-    @Override public Template visitSalesInvoice() {
-        return null;
+    private PaymentTemplateLine paymentTemplateLine( TemplateLineDto templateLineDto) {
+        return Optional.of( new PaymentTemplateLine()
+                        .setFunction( PaymentFunction.valueOf( templateLineDto.getFunction())))
+                .map( line-> templateLineDto.getRegisterType()==null? line:
+                        line.setRegisterType( PaymentRegisterType.valueOf( templateLineDto.getRegisterType())))
+                .get();
     }
 
-    @Override public Template visitPurchaseInvoice() {
-        return null;
-    }
-
-    @Override public Template visitVatStatement() {
-        return null;
-    }
-
-    @Override public Template visitCitStatement() {
-        return null;
-    }
-
-    @Override public Template visitPitStatement() {
-        return null;
-    }
-
-    @Override public Template visitBankReceipt() {
-        return new BankAccountTemplate().setKind( PaymentType.R).setContext( SettlementType.P);
-    }
-    @Override public Template visitBankSpend() {
-        return new BankAccountTemplate().setKind( PaymentType.S).setContext( SettlementType.P);
-    }
-    @Override public Template visitCashReceipt() {
-        return new CashAccountTemplate().setKind( PaymentType.R).setContext( SettlementType.P);
-    }
-    @Override public Template visitCashSpend() {
-        return new CashAccountTemplate().setKind( PaymentType.S).setContext( SettlementType.P);
-    }
 }

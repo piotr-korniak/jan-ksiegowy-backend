@@ -28,36 +28,42 @@ public class InvoiceLineFactory {
         Optional.ofNullable( invoiceLineDto.getItem())
                 .map( itemDto-> items.findByItemIdAndDate( itemDto.getItemId(), date)
                         .map( item-> item.getTaxMetod().accept( new TaxMetodVisitor<InvoiceLine>() {
-                                @Override public InvoiceLine visitNL() {
-                                    return line.setBase( line.getAmount())
-                                            .setCit( line.getAmount())
-                                            .setVat( line.getTax());
-                                }
-                                @Override public InvoiceLine visitV5() {
-                                    var vat= line.getTax()
-                                            .multiply( new BigDecimal("0.5"))
-                                            .setScale( 2, RoundingMode.HALF_DOWN);
+                            @Override public InvoiceLine visitNL() {
+                                return line.setBase( line.getAmount())
+                                        .setCit( line.getAmount())
+                                        .setVat( line.getTax());
+                            }
+                            @Override public InvoiceLine visitNC() {
+                                return line.setBase( line.getAmount())
+                                        .setCit( BigDecimal.ZERO)
+                                        .setVat( line.getTax());
+                            }
+                            @Override public InvoiceLine visitV5() {
+                                var vat= line.getTax()
+                                        .multiply( new BigDecimal("0.5"))
+                                        .setScale( 2, RoundingMode.HALF_DOWN);
 
-                                    return line.setBase( line.getAmount()
-                                                    .multiply( new BigDecimal("0.5"))
-                                                    .setScale( 2, RoundingMode.HALF_DOWN))
-                                            .setVat( vat)
-                                            .setCit( line.getAmount().add( line.getTax().subtract( vat)));
-                                }
-                                @Override public InvoiceLine visitC7() {
-                                    var vat= line.getTax()
-                                            .multiply( new BigDecimal("0.5"))
-                                            .setScale( 2, RoundingMode.HALF_DOWN);
+                                return line.setBase( line.getAmount()
+                                                .multiply( new BigDecimal("0.5"))
+                                                .setScale( 2, RoundingMode.HALF_DOWN))
+                                        .setVat( vat)
+                                        .setCit( line.getAmount().add( line.getTax().subtract( vat)));
+                            }
+                            @Override public InvoiceLine visitC7() {
+                                var vat= line.getTax()
+                                        .multiply( new BigDecimal("0.5"))
+                                        .setScale( 2, RoundingMode.HALF_DOWN);
 
-                                    return line.setBase( line.getAmount()
-                                                    .multiply( new BigDecimal("0.5"))
-                                                    .setScale( 2, RoundingMode.HALF_DOWN))
-                                            .setVat( vat)
-                                            .setCit( line.getAmount().add( line.getTax().subtract( vat))
-                                                    .multiply( new BigDecimal("0.75"))
-                                                    .setScale( 2, RoundingMode.HALF_DOWN));
-                                }
-                            }).setItem( item)))
+                                return line.setBase( line.getAmount()
+                                                .multiply( new BigDecimal("0.5"))
+                                                .setScale( 2, RoundingMode.HALF_DOWN))
+                                        .setVat( vat)
+                                        .setCit( line.getAmount().add( line.getTax().subtract( vat))
+                                                .multiply( new BigDecimal("0.75"))
+                                                .setScale( 2, RoundingMode.HALF_DOWN));
+                            }
+
+                        }).setItem( item)))
                 .orElseThrow( () -> new NoSuchElementException(
                                         "Not found Item: "+ invoiceLineDto.getItem().getCode()));
 

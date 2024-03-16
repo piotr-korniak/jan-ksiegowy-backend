@@ -11,6 +11,7 @@ import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterType.PaymentRegisterTypeVisitor;
 import pl.janksiegowy.backend.finances.settlement.PaymentSettlement;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind;
+import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 
 import java.util.Optional;
@@ -47,12 +48,12 @@ public class PaymentFactory {
                             .map( register-> register.getType().accept( new PaymentRegisterTypeVisitor<Payment>() {
                                 @Override public Payment visitBankAccount() {
                                     return payment.setNumber( Optional.ofNullable( source.getNumber())
-                                            .orElseGet(()-> numerators.increment( "BR",
+                                            .orElseGet(()-> numerators.increment( NumeratorCode.BR,
                                                             register.getCode(), source.getPaymentDate())));
                                 }
                                 @Override public Payment visitCashDesk() {
                                     return payment.setNumber( Optional.ofNullable( source.getNumber())
-                                            .orElseGet(()-> numerators.increment( "CR",
+                                            .orElseGet(()-> numerators.increment( NumeratorCode.CR,
                                                             register.getCode(), source.getPaymentDate())));
                                 }
                             }).setRegister( register)
@@ -64,12 +65,12 @@ public class PaymentFactory {
                             .map( register-> register.getType().accept( new PaymentRegisterTypeVisitor<Payment>() {
                                 @Override public Payment visitBankAccount() {
                                     return payment.setNumber( Optional.ofNullable( source.getNumber())
-                                            .orElseGet(()-> numerators.increment( "BS",
+                                            .orElseGet(()-> numerators.increment( NumeratorCode.BS,
                                                             register.getCode(), source.getPaymentDate())));
                                 }
                                 @Override public Payment visitCashDesk() {
                                     return payment.setNumber( Optional.ofNullable( source.getNumber())
-                                            .orElseGet(()-> numerators.increment( "CS",
+                                            .orElseGet(()-> numerators.increment( NumeratorCode.CS,
                                                             register.getCode(), source.getPaymentDate())));
                                 }
                             }).setRegister( register)
@@ -83,7 +84,7 @@ public class PaymentFactory {
                 .setEntity( Optional.ofNullable( source.getEntity())
                         .map( entity->
                                 entities.findByEntityIdAndDate( entity.getEntityId(), source.getPaymentDate()))
-                        .orElse( null).get());
+                        .orElseGet( null).get());
 
     }
 }

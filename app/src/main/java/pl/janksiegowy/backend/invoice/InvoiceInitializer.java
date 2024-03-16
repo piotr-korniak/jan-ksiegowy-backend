@@ -26,8 +26,13 @@ public class InvoiceInitializer {
     private final PeriodQueryRepository periods;
     private final EntityQueryRepository entities;
     private final PeriodFacade period;
-    private final InvoiceFacade invoice;
+    private final InvoiceFacade facade;
     private final DataLoader loader;
+
+    private Invoice save( InvoiceDto invoice) {
+//        return facade.approve( facade.save( invoice));
+        return facade.save( invoice);
+    }
 
     public void init() {
         for( String[] fields: loader.readData( "invoices.txt")){
@@ -70,7 +75,8 @@ public class InvoiceInitializer {
                         .type( PeriodType.M)
                         .begin( invoice.getInvoiceDate()));
 
-            this.invoice.save( invoice);
+            save( invoice);
+
 
         }
     }

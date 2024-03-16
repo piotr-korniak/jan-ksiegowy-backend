@@ -42,6 +42,7 @@ public interface InvoiceDto {
     @JsonProperty( "line_items")
     List<InvoiceLineDto> getLineItems();
 
+
     @Setter
     @Accessors( fluent= true, chain= true)
     class Proxy implements InvoiceDto {

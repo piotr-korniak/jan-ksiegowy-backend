@@ -9,7 +9,7 @@ public class AccountFacade {
     private final AccountFactory account;
     private final AccountRepository accounts;
 
-    public void save( AccountDto source) {
-        accounts.save( account.from( source));
+    public Account save( AccountDto source) {
+        return accounts.save( account.from( source));
     }
 }

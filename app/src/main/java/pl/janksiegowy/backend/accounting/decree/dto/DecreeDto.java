@@ -17,10 +17,11 @@ public interface DecreeDto {
 
     UUID getDecreeId();
     LocalDate getDate();
+    String getNumber();
     RegisterDto getRegister();
     List<DecreeLineDto> getLines();
     DecreeType getType();
-
+    String getDocument();
 
 
     @Setter
@@ -28,16 +29,21 @@ public interface DecreeDto {
     class Proxy implements DecreeDto{
 
         private UUID degreeId;
+        private String number;
         private LocalDate date;
         private RegisterDto register;
         private List<DecreeLineDto> lines;
         private DecreeType type;
+        private String document;
 
         @Override public UUID getDecreeId() {
             return degreeId;
         }
         @Override public LocalDate getDate() {
             return date;
+        }
+        @Override public String getNumber() {
+            return number;
         }
         @Override public RegisterDto getRegister() {
             return register;
@@ -47,6 +53,9 @@ public interface DecreeDto {
         }
         @Override public DecreeType getType() {
             return type;
+        }
+        @Override public String getDocument() {
+            return document;
         }
     }
 }

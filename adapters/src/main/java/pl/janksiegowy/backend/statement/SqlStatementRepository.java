@@ -14,7 +14,7 @@ public interface SqlStatementRepository extends JpaRepository<Statement, UUID> {
     Optional<Statement> findByPatternIdAndPeriod( PatternCode patternCode, Period period);
 }
 
-interface SqlQuery extends StatementQueryRepository, Repository<Statement, UUID> {
+interface SqlStatementQueryRepository extends StatementQueryRepository, Repository<Statement, UUID> {
 
 }
 

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
+import pl.janksiegowy.backend.item.dto.ItemDto;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -14,14 +16,23 @@ public interface SqlTemplateRepository extends JpaRepository<Template, UUID> {
     @Query( value= "FROM Template M " +
             "LEFT OUTER JOIN Template P "+
             "ON M.templateId= P.templateId AND (P.date <= :date AND M.date < P.date) "+
-            "WHERE M.type= :type AND M.kind= :kind AND M.date <= :date AND P.date IS NULL")
-    Optional<Template> findByTypeAndKindAndDate( TemplateType type, String kind, LocalDate date);
+            "WHERE M.documentType= :type AND M.date <= :date AND P.date IS NULL")
+    Optional<Template> findByTypeAndKindAndDate( DocumentType type, LocalDate date);
 
 
     Optional<Template> findTemplateByTemplateIdAndDate( UUID templateId, LocalDate date );
 }
 
-interface SqlTemplateQueryRepository extends TemplateQueryRepository, Repository<Template, UUID> {}
+interface SqlTemplateQueryRepository extends TemplateQueryRepository, Repository<Template, UUID> {
+
+    @Override
+    @Query( value= "SELECT T " +
+            "FROM Template T " +
+            "LEFT OUTER JOIN Template P "+
+            "ON T.templateId= P.templateId AND T.date < P.date "+
+            "WHERE T.code= :code AND P.date IS NULL")
+    Optional<TemplateDto> findByCode( String code);
+}
 
 @org.springframework.stereotype.Repository
 @AllArgsConstructor
@@ -36,7 +47,7 @@ class TemplateRepositoryImpl implements TemplateRepository {
         return repository.findTemplateByTemplateIdAndDate( templateId, date);
     }
 
-    @Override public Optional<Template> findByTypeAndKindAndDate( TemplateType type, String kind, LocalDate date ) {
-        return repository.findByTypeAndKindAndDate( type, kind, date);
+    @Override public Optional<Template> findByDocumentTypeAndDate( DocumentType type, LocalDate date ) {
+        return repository.findByTypeAndKindAndDate( type, date);
     }
 }

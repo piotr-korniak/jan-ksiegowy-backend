@@ -64,6 +64,9 @@ public class MigrationController extends MigrationConfiguration {
                 .begin( LocalDate.of( 2017, 1, 1))
                 .end( LocalDate.of( 2017, 12, 31)),
             PeriodDto.create().type( PeriodType.A)
+                    .begin( LocalDate.of( 2022, 1, 1))
+                    .end( LocalDate.of( 2022, 12, 31)),
+            PeriodDto.create().type( PeriodType.A)
                 .begin( LocalDate.of( 2023, 1, 1))
                 .end( LocalDate.of( 2023, 12, 31)),
             PeriodDto.create().type( PeriodType.A)
@@ -93,6 +96,7 @@ public class MigrationController extends MigrationConfiguration {
                                 final DecreeFacade decree,
                                 final AccountFacade account,
                                 final AccountQueryRepository accounts,
+
                                 final DataLoader loader) {
 
         this.metrics = new MetricInitializer( new MetricFactory(), metrics, loader);
@@ -105,7 +109,7 @@ public class MigrationController extends MigrationConfiguration {
         this.items= new ItemInitializer( items, item, loader);
         this.lines= new InvoiceLineInitializer( invoices, invoice, items, loader);
         this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payment,
-                periods, period, decree, loader);
+                periods, period, loader);
         this.numerators= new NumeratorInitializer( numerators, numerator);
         this.templates= new TemplateInitializer( templates, template);
         this.accounts= new AccountInitializer( account, accounts);
@@ -115,7 +119,7 @@ public class MigrationController extends MigrationConfiguration {
     public ResponseEntity migrate() {
 
         log.warn( "Migration start...");
-/*
+
         numerators.init( getInitialNumerators());
         log.warn( "Numerators migration complete!");
 
@@ -123,6 +127,13 @@ public class MigrationController extends MigrationConfiguration {
         registers.initPaymentRegisters();
         registers.initAccountingRegisters( getAccountingRegister());
         log.warn( "Registers migration complete!");
+
+
+        accounts.init( getInitialAccount());
+        log.warn( "Accounts migration complete!");
+
+        templates.init( getInitialTemplates());
+        log.warn( "Templates migration complete!");
 
         metrics.init();
         log.warn( "Metrics migration complete!");
@@ -141,17 +152,9 @@ public class MigrationController extends MigrationConfiguration {
 
         lines.init();
         log.warn( "Invoices Lines migration complete!");
-*/
+
         payments.init();
         log.warn( "Payments migration complete!");
-/*
-        accounts.init( getInitialAccount());
-        log.warn( "Accounts migration complete!");
-
-        templates.init( getInitialTemplates());
-        log.warn( "Templates migration complete!");
-*/
-
 
         return ResponseEntity.ok().build();
     }

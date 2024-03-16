@@ -6,5 +6,5 @@ import pl.janksiegowy.backend.statement.dto.StatementDto;
 import java.util.Optional;
 
 public interface StatementQueryRepository {
-    Optional<StatementDto> findByPatternIdAndPeriodId( PatternCode patternCode, String periodId);
+   // Optional<StatementDto> findByPatternIdAndPeriodId( PatternCode patternCode, String periodId);
 }

@@ -2,6 +2,8 @@ package pl.janksiegowy.backend.finances.payment;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import pl.janksiegowy.backend.accounting.decree.DecreeConfiguration;
+import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
 import pl.janksiegowy.backend.accounting.decree.DecreeFactory;
 import pl.janksiegowy.backend.accounting.template.TemplateRepository;
 import pl.janksiegowy.backend.entity.EntityRepository;
@@ -30,10 +32,11 @@ public class PaymentConfiguration {
                                  final NumeratorFacade numerator,
                                  final PeriodRepository periods,
                                  final EntityRepository entities,
-                                 final TemplateRepository templates) {
+                                 final NumeratorFacade numerators,
+                                 final DecreeFacade decrees) {
         return new PaymentFacade(
                 new PaymentFactory( registers, numerator, periods, entities), payments,
                 new ClearingFactory( settlements), clearings,
-                new PaymentRegisterFactory(), registers);
+                new PaymentRegisterFactory( numerators), registers, decrees);
     }
 }

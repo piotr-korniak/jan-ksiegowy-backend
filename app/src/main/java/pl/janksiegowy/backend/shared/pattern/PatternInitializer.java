@@ -1,4 +1,4 @@
-package pl.janksiegowy.backend.pattern;
+package pl.janksiegowy.backend.shared.pattern;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.shared.DataLoader;

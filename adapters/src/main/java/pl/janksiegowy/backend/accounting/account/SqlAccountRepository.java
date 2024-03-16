@@ -9,6 +9,8 @@ import java.util.UUID;
 
 public interface SqlAccountRepository extends JpaRepository<Account, UUID> {
     Optional<Account> findByNumber( String number);
+
+    boolean existsByNumber( String number );
 }
 
 interface SqlAccountQueryRepository extends AccountQueryRepository, Repository<Account, UUID> {}
@@ -25,5 +27,9 @@ class AccountRepositoryImpl implements AccountRepository {
 
     @Override public Optional<Account> findByNumber( String number ) {
         return repository.findByNumber( number);
+    }
+
+    @Override public boolean existsByNumber( String number ) {
+        return repository.existsByNumber( number);
     }
 }

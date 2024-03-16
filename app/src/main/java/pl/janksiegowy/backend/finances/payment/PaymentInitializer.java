@@ -2,7 +2,6 @@ package pl.janksiegowy.backend.finances.payment;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
-import pl.janksiegowy.backend.accounting.decree.DecreeFactory;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
@@ -26,17 +25,12 @@ public class PaymentInitializer {
     private final PaymentFacade facade;
     private final PeriodQueryRepository periods;
     private final PeriodFacade period;
-    private final DecreeFacade decree;
     private final DataLoader loader;
 
     private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "--- dd.MM.yyyy");
 
     private Payment save( PaymentDto source) {
-        var payment= facade.save( source);
-
-        decree.book( payment);
-
-        return payment;
+        return facade.approve( facade.save( source));
     }
 
     public void init() {

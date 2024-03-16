@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.janksiegowy.backend.shared.numerator.Counter;
 import pl.janksiegowy.backend.shared.numerator.CounterRepository;
+import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorRepository;
 
 import java.util.Optional;
@@ -13,9 +14,9 @@ public interface SqlCounterRepository extends JpaRepository<Counter, Long> {
     Optional<Counter> findByNumeratorCodeAndYear( String code, int year);
     Optional<Counter> findByNumeratorCodeAndMonth( String code, int month);
 
-    Optional<Counter> findByNumeratorCodeAndType( String code, String type);
-    Optional<Counter> findByNumeratorCodeAndYearAndType( String code, int year, String type);
-    Optional<Counter> findByNumeratorCodeAndMonthAndType( String code, int month, String type );
+    Optional<Counter> findByNumeratorCodeAndType( NumeratorCode code, String type);
+    Optional<Counter> findByNumeratorCodeAndYearAndType( NumeratorCode code, int year, String type);
+    Optional<Counter> findByNumeratorCodeAndMonthAndType( NumeratorCode code, int month, String type );
 }
 
 @org.springframework.stereotype.Repository
@@ -37,14 +38,14 @@ class CounterRepositoryImpl implements CounterRepository {
         return repository.findByNumeratorCodeAndMonth( code, month);
     }
 
-    @Override public Optional<Counter> findByNumeratorCodeAndType( String code, String type) {
+    @Override public Optional<Counter> findByNumeratorCodeAndType( NumeratorCode code, String type) {
         return repository.findByNumeratorCodeAndType( code, type);
     }
-    @Override public Optional<Counter> findByNumeratorCodeAndYearAndType( String code, int year, String type) {
+    @Override public Optional<Counter> findByNumeratorCodeAndYearAndType( NumeratorCode code, int year, String type) {
         return repository.findByNumeratorCodeAndYearAndType( code, year, type);
     }
 
-    @Override public Optional<Counter> findByNumeratorCodeAndMonthAndType( String code, int month, String type) {
+    @Override public Optional<Counter> findByNumeratorCodeAndMonthAndType( NumeratorCode code, int month, String type) {
         return repository.findByNumeratorCodeAndMonthAndType( code, month, type);
     }
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 @Table( name= "TEMPLATES_LINES")
 @Inheritance( strategy= InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING, length= 1)
-public class TemplateLine {
+public abstract class TemplateLine {
 
     @Id
     @UuidGenerator
@@ -32,4 +32,6 @@ public class TemplateLine {
 
     @ManyToOne
     private Account account;
+
+
 }

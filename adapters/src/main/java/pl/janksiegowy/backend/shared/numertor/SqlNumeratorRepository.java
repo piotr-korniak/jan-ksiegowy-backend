@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.Repository;
 import pl.janksiegowy.backend.shared.numerator.Numerator;
+import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorQueryRepository;
 import pl.janksiegowy.backend.shared.numerator.NumeratorRepository;
 
 import java.util.Optional;
 
 public interface SqlNumeratorRepository extends JpaRepository<Numerator, Long> {
-    Optional<Numerator> findByCode( String code );
+    Optional<Numerator> findByCode( NumeratorCode code );
 }
 
 interface SqlNumeratorQueryRepository extends NumeratorQueryRepository, Repository<Numerator, Long> {
@@ -26,7 +27,7 @@ class NumeratorRepositoryImpl implements NumeratorRepository {
         return repository.save( numerator);
     }
 
-    @Override public Optional<Numerator> findByCode( String code) {
+    @Override public Optional<Numerator> findByCode( NumeratorCode code) {
         return repository.findByCode( code);
     }
 }

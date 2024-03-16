@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.accounting.account.Account;
-import pl.janksiegowy.backend.invoice_line.InvoiceLine;
+import pl.janksiegowy.backend.finances.settlement.Settlement;
+import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.register.accounting.AccountingRegister;
+import pl.janksiegowy.backend.accounting.decree.DecreeLine.DecreeLineVisitor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,11 +24,11 @@ import java.util.UUID;
 
 @Inheritance( strategy= InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING, length= 1)
-public abstract class Decree {
+public abstract class Decree implements DecreeLineVisitor<Decree> {
 
     @Id
     @Column( name= "ID")
-    private UUID decreeId;
+    protected UUID decreeId;
 
     private LocalDate date;
 
@@ -48,14 +49,28 @@ public abstract class Decree {
     @JoinColumn( name= "DECREE_ID")
     private List<DecreeLine> lines;
 
+    public Decree setLines( List<DecreeLine> lines) {
+        dt= BigDecimal.ZERO;
+        ct= BigDecimal.ZERO;
+
+        lines.forEach( decreeLine-> decreeLine.accept( this));
+        this.lines= lines;
+        return this;
+    }
+
+    @Override public Decree visit( DecreeDtLine line) {
+        dt= dt.add( line.getValue());
+        return this;
+    }
+
+    @Override public Decree visit( DecreeCtLine line) {
+        ct= ct.add( line.getValue());
+        return this;
+    }
 }
 
 @Entity
 @DiscriminatorValue( "B")
 class BasicDecree extends Decree {
-}
 
-@Entity
-@DiscriminatorValue( "S")
-class SettlementDecree extends Decree {
 }

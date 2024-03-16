@@ -1,6 +1,8 @@
 package pl.janksiegowy.backend.invoice_line;
 
 import lombok.AllArgsConstructor;
+import pl.janksiegowy.backend.accounting.decree.DecreeRepository;
+import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.invoice.InvoiceQueryRepository;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
@@ -10,13 +12,19 @@ import pl.janksiegowy.backend.item.ItemQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 public class InvoiceLineInitializer {
 
     private final InvoiceQueryRepository invoices;
-    private final InvoiceFacade invoice;
+    private final InvoiceFacade facade;
     private final ItemQueryRepository items;
     private final DataLoader loader;
+
+    private Invoice save( InvoiceDto invoice) {
+        return facade.approve( facade.save( invoice));
+    }
 
     public void init() {
         for( String[] fields: loader.readData( "lines.txt")) {
@@ -28,7 +36,7 @@ public class InvoiceLineInitializer {
                     .map( invoiceMap-> {
                         if( !invoiceMap.getLineItems().stream()
                                 .anyMatch( i-> i.getItem().getCode().equals( fields[1])))
-                            invoice.save( items.findByCode( fields[1])
+                                save( items.findByCode( fields[1])
                                     .map( itemDto-> invoiceMap.add( InvoiceLineDto.create()
                                             .item( itemDto)
                                             .taxRate( itemDto.getTaxRate())

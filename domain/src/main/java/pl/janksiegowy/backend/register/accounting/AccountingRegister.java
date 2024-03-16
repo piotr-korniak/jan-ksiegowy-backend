@@ -6,25 +6,15 @@ import pl.janksiegowy.backend.register.Register;
 
 @Getter
 @Entity
-public abstract class AccountingRegister extends Register {
+@DiscriminatorValue( value= "A")
+public class AccountingRegister extends Register {
 
     @Column( insertable= false, updatable= false)
     @Enumerated( EnumType.STRING)
     private AccountingRegisterType type;
 
     @Enumerated( EnumType.STRING)
-    private AccountingRegisterKind kind= AccountingRegisterKind.A;
+    private AccountingRegisterType kind= AccountingRegisterType.A;
 
 }
 
-@Getter
-@Entity
-@DiscriminatorValue( value= "I")
-class SalesAccountingRegister extends AccountingRegister {
-}
-
-@Getter
-@Entity
-@DiscriminatorValue( value= "Y")
-class PaymentAccountingRegister extends AccountingRegister {
-}

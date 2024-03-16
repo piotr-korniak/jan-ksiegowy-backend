@@ -8,6 +8,6 @@ public class AccountConfiguration {
 
     @Bean
     AccountFacade accountFacade( final AccountRepository accounts) {
-        return new AccountFacade( new AccountFactory(), accounts);
+        return new AccountFacade( new AccountFactory( accounts), accounts);
     }
 }

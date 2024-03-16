@@ -1,6 +1,7 @@
 package pl.janksiegowy.backend.invoice;
 
 import lombok.AllArgsConstructor;
+import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.register.Register;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegister;
@@ -19,6 +20,8 @@ public class InvoiceFacade {
     private final InvoiceRegisterFactory register;
     private final InvoiceRegisterRepository registers;
 
+    private final DecreeFacade decrees;
+
     public Invoice save( InvoiceDto source) {
         return invoices.save( invoice.from( source));
     }
@@ -29,4 +32,8 @@ public class InvoiceFacade {
                 .orElse( register.from( source)));
     }
 
+    public Invoice approve( Invoice invoice) {
+        decrees.book( invoice);
+        return null;// invoices.save( invoice.setDecree( decrees.book( invoice)));
+    }
 }

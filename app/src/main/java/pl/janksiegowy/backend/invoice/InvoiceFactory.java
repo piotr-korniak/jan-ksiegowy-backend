@@ -2,6 +2,7 @@ package pl.janksiegowy.backend.invoice;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import pl.janksiegowy.backend.accounting.decree.DecreeRepository;
 import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
@@ -27,9 +28,11 @@ public class InvoiceFactory {
     private final MetricRepository metrics;
     private final PeriodRepository periods;
     private final InvoiceRegisterRepository registers;
+    private final DecreeRepository decrees;
     private final InvoiceLineFactory line;
 
     public Invoice from( InvoiceDto source) {
+
         return update( source, source.getType().accept( new InvoiceTypeVisitor<Invoice>() {
 
             @Override public Invoice visitSalesInvoice() {
@@ -52,7 +55,7 @@ public class InvoiceFactory {
 
 
         }).setInvoiceId( Optional.ofNullable( source.getInvoiceId())
-                .orElse( UUID.randomUUID())));
+                .orElseGet(()-> UUID.randomUUID())));
     }
 
     public Invoice update( InvoiceDto source, Invoice invoice) {
@@ -63,6 +66,9 @@ public class InvoiceFactory {
 
         Optional.ofNullable( source.getLineItems())
                 .ifPresent( invoiceLines->update( invoiceLines, invoice));
+
+        decrees.findById( invoice.getInvoiceId())
+                .ifPresent( invoice::setDecree);
 
         return invoice
                 .setNumber( source.getNumber())

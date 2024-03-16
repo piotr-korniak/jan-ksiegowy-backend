@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.logging.log4j.util.TriConsumer;
+import pl.janksiegowy.backend.shared.Util;
+import pl.janksiegowy.backend.statement.JpkVat;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
@@ -23,6 +25,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.math.BigDecimal.ROUND_HALF_UP;
 
 /**
  *
@@ -35,7 +39,7 @@ import java.util.Optional;
 })
 @XmlRootElement( name= "JPK")
 @Accessors( fluent= true, chain= true)
-public class Ewidencja_JPK_V7K_2_v1_0e {
+public class Ewidencja_JPK_V7K_2_v1_0e extends JpkVat {
 
     @XmlElement( name= "Naglowek", required= true)
     private TNaglowek naglowek;
@@ -53,6 +57,42 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
     public static Ewidencja_JPK_V7K_2_v1_0e create() {
         return new Ewidencja_JPK_V7K_2_v1_0e();
     }
+
+    @Override public BigInteger getVatNalezny() {
+        if( deklaracja!= null)
+            if( deklaracja.pozycjeSzczegolowe!= null)
+                return deklaracja.pozycjeSzczegolowe.getP38();
+        return BigInteger.ZERO;
+    }
+
+    @Override public BigInteger getVatNaliczony() {
+        if( deklaracja!= null)
+            if( deklaracja.pozycjeSzczegolowe!= null)
+                return deklaracja.pozycjeSzczegolowe.getP48();
+        return BigInteger.ZERO;
+    }
+
+    @Override public BigDecimal korektaNaleznego() {
+        if( deklaracja!= null)
+            if( deklaracja.pozycjeSzczegolowe!= null)
+                return deklaracja.pozycjeSzczegolowe.korektaNaleznego();
+        return BigDecimal.ZERO;
+    }
+
+    @Override public BigDecimal korektaNaliczonego() {
+        if( deklaracja!= null)
+            if( deklaracja.pozycjeSzczegolowe!= null)
+                return deklaracja.pozycjeSzczegolowe.korektaNaliczonego();
+        return BigDecimal.ZERO;
+    }
+
+    @Override public BigInteger getP51() {
+        if( deklaracja!= null)
+            if( deklaracja.pozycjeSzczegolowe!= null)
+                return deklaracja.pozycjeSzczegolowe.getP51();
+        return null;
+    }
+
 
     /**
      * Gets the value of the podmiot1 property.
@@ -208,8 +248,7 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
                 "p69",
                 "pordzu"
         })
-        @Setter
-        @Accessors( fluent= true, chain= true)
+
         @NoArgsConstructor
         public static class PozycjeSzczegolowe {
 
@@ -233,10 +272,10 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
             protected BigInteger p18;
 
             protected BigDecimal p19;
-            protected BigDecimal p20;
+            protected BigDecimal p20; //= BigDecimal.ZERO;
 
             protected BigDecimal p21;
-            protected BigDecimal p22;
+            protected BigDecimal p22; //= BigDecimal.ZERO;
 
             @XmlElement(name = "P_23")
             protected BigInteger p23;
@@ -248,7 +287,7 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
             protected BigInteger p26;
 
             protected BigDecimal p27;
-            protected BigDecimal p28;
+            protected BigDecimal p28; //= BigDecimal.ZERO;
 
             @XmlElement(name = "P_29")
             protected BigInteger p29;
@@ -270,14 +309,18 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
             protected BigInteger p37;
             protected BigInteger p38;
 
+            public void setP38( BigInteger p38) {
+                this.p38= p38;
+            }
+
             @XmlElement(name = "P_39")
             protected BigInteger p39;
 
             protected BigDecimal p40;
-            protected BigDecimal p41;
+            protected BigDecimal p41; //= BigDecimal.ZERO;
 
             protected BigDecimal p42;
-            protected BigDecimal p43;
+            protected BigDecimal p43; //= BigDecimal.ZERO;
 
             @XmlElement(name = "P_44")
             protected BigInteger p44;
@@ -288,8 +331,10 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
             @XmlElement(name = "P_47")
             protected BigInteger p47;
 
-            @XmlElement(name = "P_48")
             protected BigInteger p48;
+            public void setP48( BigInteger p48) {
+                this.p48= p48;
+            }
 
             @XmlElement(name = "P_49")
             protected BigInteger p49;
@@ -299,6 +344,9 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
 
 
             protected BigInteger p51;
+            public void setP51( BigInteger p51) {
+                this.p51= p51;
+            }
 
             @XmlElement(name = "P_52")
             protected BigInteger p52;
@@ -380,55 +428,55 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
 
             @XmlElement( name= "P_19")
             public BigInteger getP19() {
-                return p19!=null? p19.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p19);
             }
             public PozycjeSzczegolowe addP19( BigDecimal value) {
-                p19= p19!= null? p19.add( value): value;
+                p19= Util.addOrAddend( p19, value);
                 return this;
             }
 
             @XmlElement( name= "P_20")
             public BigInteger getP20() {
-                return p20!=null? p20.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p20);
             }
             public PozycjeSzczegolowe addP20( BigDecimal value) {
-                p20= p20!= null? p20.add( value): value;
+                p20= Util.addOrAddend( p20, value);
                 return this;
             }
 
             @XmlElement( name= "P_21")
             public BigInteger getP21() {
-                return p21!=null? p21.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p21);
             }
             public PozycjeSzczegolowe addP21( BigDecimal value) {
-                p21= p21!=null? p21.add( value): value;
+                p21= Util.addOrAddend( p21, value);
                 return this;
             }
 
             @XmlElement( name= "P_22")
             public BigInteger getP22() {
-                return p22!=null? p22.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p22);
             }
             public PozycjeSzczegolowe addP22( BigDecimal value) {
-                p22= p22!=null? p22.add( value): value;
+                p22= Util.addOrAddend( p22, value);
                 return this;
             }
 
             @XmlElement( name= "P_27")
             public BigInteger getP27() {
-                return p27!=null? p27.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p27);
             }
             public PozycjeSzczegolowe addP27( BigDecimal value) {
-                p27= p27!=null? p27.add( value): value;
+                p27= Util.addOrAddend( p27, value);
                 return this;
             }
 
             @XmlElement( name= "P_28")
             public BigInteger getP28() {
-                return p28!=null? p28.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p28);
             }
             public PozycjeSzczegolowe addP28( BigDecimal value) {     // actually adding
-                p28= p28!=null? p28.add( value): value;
+                p28= Util.addOrAddend( p28, value);
                 return this;
             }
 
@@ -452,37 +500,46 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
 
             @XmlElement( name= "P_40")
             public BigInteger getP40() {
-                return p40!= null? p40.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p40);
             }
             public PozycjeSzczegolowe addP40( BigDecimal value) {     // actually adding
-                p40= p40!= null? p40.add( value): value;
+                p40= Util.addOrAddend( p40, value);
                 return this;
             }
 
             @XmlElement( name= "P_41")
             public BigInteger getP41() {
-                return p41!= null? p41.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p41);
             }
             public PozycjeSzczegolowe addP41( BigDecimal value) {     // actually adding
-                p41= p41!=null? p41.add( value): value;
+                p41= Util.addOrAddend( p41, value);
                 return this;
             }
 
             @XmlElement( name= "P_42")
             public BigInteger getP42() {
-                return p42!= null? p42.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p42);
             }
             public PozycjeSzczegolowe addP42( BigDecimal value) {     // actually adding
-                p42= p42!=null? p42.add( value): value;
+                p42= Util.addOrAddend( p42, value);
                 return this;
             }
 
             @XmlElement( name= "P_43")
             public BigInteger getP43() {
-                return p43!= null? p43.toBigInteger(): null;
+                return Util.toBigIntegerOrNull( p43);
             }
             public PozycjeSzczegolowe addP43( BigDecimal value) {     // actually adding
-                p43= p43!=null? p43.add( value): value;
+                p43= Util.addOrAddend( p43, value);
+                return this;
+            }
+
+            @XmlElement( name= "P_48", required= true)
+            public BigInteger getP48() {
+                return p48!= null? p48: BigInteger.ZERO;
+            }
+            private PozycjeSzczegolowe addP48( BigInteger value) {
+                p48= p48!= null? p48.add( value): value;
                 return this;
             }
 
@@ -509,8 +566,20 @@ public class Ewidencja_JPK_V7K_2_v1_0e {
                 }
                 return result;
             }
-        }
 
+            public BigDecimal korektaNaleznego() {
+                return Optional.ofNullable( p20).orElseGet(()-> BigDecimal.ZERO)
+                    .add( Optional.ofNullable( p22).orElseGet(()-> BigDecimal.ZERO))
+                    .add( Optional.ofNullable( p28).orElseGet(()-> BigDecimal.ZERO))
+                    .subtract( Optional.ofNullable( p38).map( BigDecimal::new).orElseGet(()->BigDecimal.ZERO));
+            }
+
+            public BigDecimal korektaNaliczonego() {
+                return Optional.ofNullable( p41).orElseGet(()-> BigDecimal.ZERO)
+                    .add( Optional.ofNullable( p43).orElseGet(()-> BigDecimal.ZERO))
+                    .subtract( Optional.ofNullable( p48).map( BigDecimal::new).orElseGet(()->BigDecimal.ZERO));
+            }
+        }
     }
 
     /**

@@ -2,6 +2,8 @@ package pl.janksiegowy.backend.invoice;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import pl.janksiegowy.backend.accounting.decree.Decree;
+import pl.janksiegowy.backend.accounting.decree.SettlementDecree;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.finances.settlement.InvoiceSettlement;
@@ -9,6 +11,7 @@ import pl.janksiegowy.backend.metric.Metric;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +33,7 @@ public abstract class Invoice {
     @OneToOne( mappedBy= "invoice", cascade = CascadeType.ALL)
     protected InvoiceSettlement settlement;
 
+
 /*  Version: Settlement > Invoice
     @Id
     @Column( name= "ID")
@@ -47,17 +51,17 @@ public abstract class Invoice {
     @Column( name= "DATE")
     private LocalDate invoiceDate;
 
-    @Column( insertable= false, updatable= false)
-    @Enumerated( EnumType.STRING)
-    private InvoiceType type;
-
     @OneToMany( fetch= FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval= true)
     @OrderColumn( name= "NO")
     @JoinColumn( name= "INVOICE_ID")
-    private List<InvoiceLine> lineItems;//= new HashSet<>();
+    private List<InvoiceLine> lineItems= new ArrayList<>();
 
     private BigDecimal subTotal= BigDecimal.ZERO;
     private BigDecimal taxTotal= BigDecimal.ZERO;
+
+    public InvoiceType getType() {
+        return InvoiceType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
+    }
 
     public Invoice setInvoiceId( UUID invoiceId) {
         this.invoiceId= invoiceId;
@@ -146,4 +150,8 @@ public abstract class Invoice {
         return this;
     }
 
+    public Invoice setDecree( Decree decree ) {
+        settlement.setDecree( (SettlementDecree)decree);
+        return this;
+    }
 }

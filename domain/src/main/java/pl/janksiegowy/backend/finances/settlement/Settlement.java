@@ -2,6 +2,11 @@ package pl.janksiegowy.backend.finances.settlement;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.accounting.decree.Decree;
+import pl.janksiegowy.backend.accounting.decree.SettlementDecree;
+import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
 
 import java.math.BigDecimal;
@@ -9,16 +14,17 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
+@Setter
+@Accessors( chain= true)
 
-//@MappedSuperclass
 @Entity
 @Table( name= "SETTLEMENTS")
+
 @Inheritance( strategy= InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING)
+@DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING, length= 1)
 public abstract class Settlement {
 
     @Id
-    //@UuidGenerator
     @Column( name= "DOCUMENT_ID")
     protected UUID id;
 
@@ -38,6 +44,15 @@ public abstract class Settlement {
 
     @ManyToOne( fetch= FetchType.EAGER)
     protected pl.janksiegowy.backend.entity.Entity entity;
+
+    @OneToOne( mappedBy= "settlement", cascade = CascadeType.ALL)
+    protected SettlementDecree decree;
+
+    public Settlement setDecree( SettlementDecree decree ) {
+        this.decree= decree;
+        decree.setSettlement( this);
+        return this;
+    }
 
     public Settlement setEntity( pl.janksiegowy.backend.entity.Entity entity) {
         this.entity= entity;

@@ -18,6 +18,12 @@ public class PeriodFacade {
     private final PeriodRepository periods;
     private final MetricRepository metrics;
 
+    public MonthPeriod findMonthPeriodOrAdd( LocalDate date){
+        return periods.findMonthByDate( date)
+                .orElseGet(()-> (MonthPeriod) save( PeriodDto.create()
+                        .type( PeriodType.M).begin( date)));
+    }
+
     public Period save( PeriodDto source) {
 
         return periods.save( Optional.ofNullable( source.getId())

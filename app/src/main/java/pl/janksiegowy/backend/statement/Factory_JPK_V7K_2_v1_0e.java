@@ -15,7 +15,6 @@ import pl.gov.crd.wzor._2021._12._27._11149.TPodmiotDowolnyBezAdresu.OsobaNiefiz
 
 
 import pl.gov.crd.wzor._2021._12._27._11149.TNaglowek;
-import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineQueryRepository;
 import pl.janksiegowy.backend.invoice_line.dto.JpaInvoiceSumDto;
@@ -35,8 +34,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class Factory_JPK_V7K_2_v1_0e {
 
-    private final InvoiceLineQueryRepository lines;
-    private final MetricRepository metrics;
+    protected final InvoiceLineQueryRepository lines;
+    protected final MetricRepository metrics;
+
     private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "yyyy-MM-dd");
 
     @Value( "${spring.application.name}")
@@ -71,6 +71,7 @@ public class Factory_JPK_V7K_2_v1_0e {
                     ItemType.M, ZakupWiersz::addK4243,
                     ItemType.P, ZakupWiersz::addK4243,
                     ItemType.S, ZakupWiersz::addK4243);
+
 
     public Ewidencja_JPK_V7K_2_v1_0e create( MonthPeriod period) {
         var sprzedazCtrl=  Ewidencja.SprzedazCtrl.create();

@@ -19,13 +19,13 @@ public class NumeratorFacade {
                             .orElse( factory.from( source)));
     }
 
-    public String increment( String numeratorCode, String type, LocalDate... date) {
+    public String increment( NumeratorCode code, String type, LocalDate... date) {
         StringBuffer result= new StringBuffer();
 
-        counters.save( numerators.findByCode( numeratorCode).map( numerator->
+        counters.save( numerators.findByCode( code).map( numerator->
             numerator.getType().accept( new NumeratorType.NumeratorTypeVisitor<Counter>() {
                 @Override public Counter visitYearNumerator() {
-                    return counters.findByNumeratorCodeAndYearAndType( numeratorCode, date[0].getYear(),
+                    return counters.findByNumeratorCodeAndYearAndType( code, date[0].getYear(),
                                     numerator.isTyped()? type: "")
                             .orElse( new Counter()
                                     .setNumerator( numerator)
@@ -34,7 +34,7 @@ public class NumeratorFacade {
                                     .setType( numerator.isTyped()? type: ""));
                 }
                 @Override public Counter visitMonthNumerator() {
-                    return counters.findByNumeratorCodeAndMonthAndType( numeratorCode, date[0].getMonthValue(),
+                    return counters.findByNumeratorCodeAndMonthAndType( code, date[0].getMonthValue(),
                                     numerator.isTyped()? type: "")
                             .orElse( new Counter()
                                     .setNumerator( numerator)
@@ -43,7 +43,7 @@ public class NumeratorFacade {
                                     .setType( numerator.isTyped()? type: ""));
                 }
                 @Override public Counter visitEverNumerator() {
-                    return counters.findByNumeratorCodeAndType( numeratorCode, numerator.isTyped()? type: "")
+                    return counters.findByNumeratorCodeAndType( code, numerator.isTyped()? type: "")
                             .orElse( new Counter()
                                     .setNumerator( numerator)
                                     .setMonth( -1)

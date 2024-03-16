@@ -31,6 +31,10 @@ public class DecreeMap implements DecreeDto {
         return decree.getDate();
     }
 
+    @Override public String getNumber() {
+        return decree.getNumber();
+    }
+
     @Override public RegisterDto getRegister() {
         return decree.getRegister();
     }
@@ -38,9 +42,17 @@ public class DecreeMap implements DecreeDto {
     @Override public DecreeType getType() {
         return decree.getType();
     }
+
+    @Override public String getDocument() {
+        return decree.getDocument();
+    }
+
     @Override public List<DecreeLineDto> getLines() {
         return lines;
     }
 
-
+    public DecreeMap setNumer( String number ) {
+        ((DecreeDto.Proxy)decree).number( number);
+        return this;
+    }
 }

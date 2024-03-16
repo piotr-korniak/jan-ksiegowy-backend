@@ -1,12 +1,21 @@
 package pl.janksiegowy.backend.accounting.decree;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.UuidGenerator;
 import pl.janksiegowy.backend.accounting.account.Account;
-import pl.janksiegowy.backend.accounting.template.Template;
+import pl.janksiegowy.backend.finances.payment.Payment;
+import pl.janksiegowy.backend.finances.payment.PaymentReceipt;
+import pl.janksiegowy.backend.finances.payment.PaymentSpend;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+
+@Setter
+@Accessors( chain= true)
+@Getter
 
 @Entity
 @Table( name= "DECREES_LINES")
@@ -26,9 +35,11 @@ public abstract class DecreeLine {
 
     private BigDecimal value;
 
-    public DecreeLine setDecree( Decree decree ) {
-        this.decree= decree;
-        return this;
+    public abstract <T> T accept( DecreeLineVisitor<T> visitor);
+
+    public interface DecreeLineVisitor<T> {
+        T visit( DecreeDtLine line);
+        T visit( DecreeCtLine line);
     }
 }
 
@@ -36,10 +47,16 @@ public abstract class DecreeLine {
 @DiscriminatorValue( "D")
 class DecreeDtLine extends DecreeLine {
 
+    @Override public <T> T accept( DecreeLineVisitor<T> visitor ) {
+        return visitor.visit( this);
+    }
 }
 
 @Entity
 @DiscriminatorValue( "C")
 class DecreeCtLine extends DecreeLine {
 
+    @Override public <T> T accept( DecreeLineVisitor<T> visitor ) {
+        return visitor.visit( this);
+    }
 }

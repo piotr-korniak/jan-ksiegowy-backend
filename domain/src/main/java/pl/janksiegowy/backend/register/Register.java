@@ -2,11 +2,15 @@ package pl.janksiegowy.backend.register;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
 @Getter
+@Setter
+@Accessors( chain= true)
 
 @Entity
 @Table( name= "REGISTERS")
@@ -22,18 +26,6 @@ public abstract class Register {
     private String code;
     private String name;
 
-    public Register setRegisterId( UUID registerId){
-        this.registerId= registerId;
-        return this;
-    }
-
-    public Register setCode( String code) {
-        this.code= code;
-        return this;
-    }
-    public Register setName( String name) {
-        this.name= name;
-        return this;
-    }
+    private String accountNumber= "";
 
 }

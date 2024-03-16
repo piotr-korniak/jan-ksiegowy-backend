@@ -2,35 +2,36 @@ package pl.janksiegowy.backend.accounting.template;
 
 public enum DocumentType {
 
-    IS { // sales invoice
+    /**
+     * Sales Invoice
+     */
+    IS {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
             return visitor.visitSalesInvoice();
         }
     },
-    IP { // purchase invoice
+    /**
+     * Purchase Invoice
+     */
+    IP {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
             return visitor.visitPurchaseInvoice();
         }
     },
-    BR { // bank receipt
+    /**
+     * Payment Receipt
+     */
+    PR {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
-            return visitor.visitBankReceipt();
+            return visitor.visitPaymentReceipt();
         }
     },
-    BS { // bank spend
+    /**
+     * Payment Spend
+     */
+    PS {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
-            return visitor.visitBankSpend();
-        }
-    },
-
-    CR { // cash receipt
-        @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
-            return visitor.visitCashReceipt();
-        }
-    },
-    CS { // cash spend
-        @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
-            return visitor.visitCashSpend();
+            return visitor.visitPaymentSpend();
         }
     },
 
@@ -64,7 +65,17 @@ public enum DocumentType {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
             return visitor.visitPitStatement();
         }
-    };
+    },
+    /**
+     * National Insurance
+     */
+    SN {
+        @Override
+        public <T> T accept( DocumentTypeVisitor<T> visitor ) {
+            return null;
+        }
+    }
+    ;
 
     public abstract <T> T accept( DocumentTypeVisitor<T> visitor);
 
@@ -72,16 +83,12 @@ public enum DocumentType {
         T visitSalesInvoice();
         T visitPurchaseInvoice();
 
+        T visitPaymentReceipt();
+        T visitPaymentSpend();
+
         T visitVatStatement();
         T visitCitStatement();
         T visitPitStatement();
 
-        T visitBankReceipt();
-
-        T visitBankSpend();
-
-        T visitCashReceipt();
-
-        T visitCashSpend();
     }
 }

@@ -4,6 +4,7 @@ package pl.janksiegowy.backend.finances.payment;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.DiscriminatorOptions;
+import pl.janksiegowy.backend.accounting.decree.Decree;
 import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.register.payment.PaymentRegister;
@@ -81,6 +82,7 @@ public abstract class Payment {
         settlement.setEntity( entity);
         return this;
     };
+
 
     public interface PaymentVisitor<T> {
         T visit( PaymentReceipt payment);

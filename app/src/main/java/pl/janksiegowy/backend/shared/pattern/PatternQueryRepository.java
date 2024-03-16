@@ -1,4 +1,4 @@
-package pl.janksiegowy.backend.pattern;
+package pl.janksiegowy.backend.shared.pattern;
 
 import java.util.Optional;
 

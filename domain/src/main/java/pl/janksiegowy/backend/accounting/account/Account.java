@@ -22,9 +22,20 @@ public abstract class Account {
     @Column( name= "ID")
     private UUID accountId;
 
+    @ManyToOne( fetch= FetchType.EAGER)
+    private Account parent;
+
     private String number;
     private String name;
 
+    public Account setParent( Account parent ) {
+        this.parent= parent;
+        return this;
+    }
+
+    public AccountType getType() {
+        return AccountType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
+    }
 }
 
 @Entity

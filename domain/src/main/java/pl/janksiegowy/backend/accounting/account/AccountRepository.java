@@ -6,4 +6,6 @@ public interface AccountRepository {
     Account save( Account account);
 
     Optional<Account> findByNumber( String number);
+
+    boolean existsByNumber( String number );
 }

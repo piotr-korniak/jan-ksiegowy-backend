@@ -5,5 +5,5 @@ import java.util.Optional;
 public interface NumeratorRepository {
 
     Numerator save( Numerator numerator);
-    Optional<Numerator> findByCode( String code);
+    Optional<Numerator> findByCode( NumeratorCode code);
 }

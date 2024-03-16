@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.entity.EntityType.*;
+import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ public class EntityFactory implements EntityTypeVisitor<Entity> {
                 .accept( this)
                     .setEntityId( UUID.randomUUID())
                     .setAccountNumber( EntityType.R== source.getType()?
-                            source.getTaxNumber(): numerators.increment( "EN", source.getType().name()))
+                            source.getTaxNumber(): numerators.increment( NumeratorCode.EN, source.getType().name()))
                     .setDate( LocalDate.EPOCH.plusDays( 3)));
     }
 

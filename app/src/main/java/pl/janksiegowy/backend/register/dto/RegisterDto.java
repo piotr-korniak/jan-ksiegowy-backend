@@ -16,6 +16,7 @@ public interface RegisterDto {
     String getType();
     String getKind();
     String getName();
+    String getAccountNumber();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -26,6 +27,7 @@ public interface RegisterDto {
         private String type;
         private String kind;
         private String name;
+        private String accountNumber;
 
         @Override public UUID getRegisterId() {
             return registerId;
@@ -45,6 +47,10 @@ public interface RegisterDto {
 
         @Override public String getName() {
             return name;
+        }
+
+        @Override public String getAccountNumber() {
+            return accountNumber;
         }
     }
 }
