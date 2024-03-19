@@ -6,12 +6,13 @@ import org.springframework.data.repository.Repository;
 import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegister;
 import pl.janksiegowy.backend.shared.pattern.PatternCode;
+import pl.janksiegowy.backend.shared.pattern.PatternId;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface SqlStatementRepository extends JpaRepository<Statement, UUID> {
-    Optional<Statement> findByPatternIdAndPeriod( PatternCode patternCode, Period period);
+    Optional<Statement> findByPatternIdAndPeriod( PatternId patternId, Period period);
 }
 
 interface SqlStatementQueryRepository extends StatementQueryRepository, Repository<Statement, UUID> {
@@ -28,7 +29,7 @@ class StatementRepositoryImpl implements StatementRepository {
     }
 
     @Override
-    public Optional<Statement> findByPatternIdAndPeriod( PatternCode patternCode, Period period) {
-        return repository.findByPatternIdAndPeriod( patternCode, period);
+    public Optional<Statement> findByPatternIdAndPeriod( PatternId patternId, Period period) {
+        return repository.findByPatternIdAndPeriod( patternId, period);
     }
 }

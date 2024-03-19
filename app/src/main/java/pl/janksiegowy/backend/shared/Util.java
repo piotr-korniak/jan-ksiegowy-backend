@@ -16,10 +16,10 @@ public class Util {
     }
 
     public static BigDecimal toBigDecimal( String amount, int precision) {
-        return new BigDecimal(
-            String.format( "%s%0" + precision + "d",            // add zeros after the decimal point
-                amount.replace("\u00A0", "")    // delete whitespace characters
-                    .replace(',', '.'), 0));     // Replace the comma with a full stop
+        return new BigDecimal( amount
+                .replace("\u00A0", "")  // delete whitespace characters
+                .replace(',', '.'))      // replace the comma with a full stop
+                .setScale( precision);
     }
 
     public static String toTaxNumber( String taxNumber) {

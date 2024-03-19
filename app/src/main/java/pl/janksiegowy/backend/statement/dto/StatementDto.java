@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.shared.pattern.PatternCode;
+import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.statement.StatementType;
 
 import java.math.BigDecimal;
@@ -20,7 +21,7 @@ public interface StatementDto {
     }
 
     UUID getStatementId();
-    PatternCode getPatternId();
+    PatternId getPatternId();
     StatementType getType();
     LocalDateTime getCreated();
     LocalDate getDate();
@@ -39,7 +40,7 @@ public interface StatementDto {
     class Proxy implements StatementDto {
 
         private UUID statementId;
-        private PatternCode patternCode;
+        private PatternId patternId;
         private StatementType type;
         private LocalDateTime created;
         private LocalDate date;
@@ -55,8 +56,8 @@ public interface StatementDto {
         @Override public UUID getStatementId() {
             return statementId;
         }
-        @Override public PatternCode getPatternId() {
-            return patternCode;
+        @Override public PatternId getPatternId() {
+            return patternId;
         }
         @Override public StatementType getType() {
             return type;

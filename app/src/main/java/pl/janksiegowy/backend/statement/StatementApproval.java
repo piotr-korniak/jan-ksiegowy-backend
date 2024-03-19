@@ -42,7 +42,7 @@ public class StatementApproval {
                 .map( period-> {
                     var metric= metrics.findByDate( period.getBegin()).orElseThrow();
 
-                    var statementDto= statements.findByPatternIdAndPeriod( PatternCode.JPK_V7K, period)
+                    var statementDto= statements.findByPatternIdAndPeriod( version, period)
                             .map( statement-> StatementDto.create()
                                     .statementId( statement.getStatementId())
                                     .date( statement.getDate())
@@ -50,7 +50,7 @@ public class StatementApproval {
                             .orElse( StatementDto.create()
                                     .date( LocalDate.now())
                                     .created( LocalDateTime.now()))
-                        .patternCode( PatternCode.JPK_V7K)
+                        .patternId( version)
                         .type( StatementType.V)
                         .periodId( periodId);
 

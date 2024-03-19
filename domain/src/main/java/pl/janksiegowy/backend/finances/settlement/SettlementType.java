@@ -4,5 +4,7 @@ public enum SettlementType {
 
     I,  // Invoice
     P,  // Payment
-    S;  // Statement
+    S,  // Statement
+    E,  // Employ salary
+    F;  // Financial
 }

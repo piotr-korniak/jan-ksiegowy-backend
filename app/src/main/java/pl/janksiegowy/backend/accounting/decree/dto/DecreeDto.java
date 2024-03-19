@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.accounting.decree.DecreeType;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -57,5 +58,6 @@ public interface DecreeDto {
         @Override public String getDocument() {
             return document;
         }
+
     }
 }

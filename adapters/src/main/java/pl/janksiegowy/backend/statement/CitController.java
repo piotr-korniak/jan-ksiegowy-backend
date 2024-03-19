@@ -21,9 +21,6 @@ public class CitController {
 
     @PostMapping
     public ResponseEntity approval( @PathVariable String period) {
-
-        approval.approval( period);
-
-        return ResponseEntity.ok(  "CIT approval: "+ period);
+        return ResponseEntity.ok(  approval.approval( period).toString());
     }
 }

@@ -2,13 +2,18 @@ package pl.janksiegowy.backend.accounting.decree.dto;
 
 import pl.janksiegowy.backend.accounting.decree.DecreeType;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
+import pl.janksiegowy.backend.shared.Util;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class DecreeMap implements DecreeDto {
+
+    private BigDecimal ct;
+    private BigDecimal dt;
 
     private final DecreeDto decree;
     private final List<DecreeLineDto> lines;
@@ -19,8 +24,21 @@ public class DecreeMap implements DecreeDto {
     }
 
     public DecreeMap add( DecreeLineDto line) {
+        switch (line.getPage()) {
+            case D -> ct= Util.addOrAddend( ct, line.getValue());
+            case C -> dt= Util.addOrAddend( dt, line.getValue());
+        }
         lines.add( line);
         return this;
+    }
+
+    public boolean isBalances() {
+        if( ct== null)
+            return false;
+        if( dt== null)
+            return false;
+
+        return ct.compareTo( dt)== 0;
     }
 
     @Override public UUID getDecreeId() {

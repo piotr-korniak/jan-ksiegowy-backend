@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.finances.settlement.StatementSettlement;
 import pl.janksiegowy.backend.shared.pattern.PatternCode;
+import pl.janksiegowy.backend.shared.pattern.PatternId;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,7 +36,7 @@ public abstract class Statement {
     private Period period;
 
     @Enumerated( EnumType.STRING)
-    private PatternCode patternId;
+    private PatternId patternId;
 
     private LocalDate date;
 
@@ -66,8 +67,8 @@ public abstract class Statement {
         return this;
     }
 
-    public Statement setPattern( PatternCode patternCode) {
-        this.patternId = patternCode;
+    public Statement setPattern( PatternId patternId) {
+        this.patternId= patternId;
         return this;
     }
 

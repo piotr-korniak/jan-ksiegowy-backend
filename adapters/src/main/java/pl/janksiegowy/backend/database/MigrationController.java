@@ -35,6 +35,9 @@ import pl.janksiegowy.backend.register.invoice.InvoiceRegisterQueryRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.register.RegisterInitializer;
 import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
+import pl.janksiegowy.backend.salary.ContractFacade;
+import pl.janksiegowy.backend.salary.ContractInitializer;
+import pl.janksiegowy.backend.salary.ContractQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.numerator.*;
 import pl.janksiegowy.backend.subdomain.TenantController;
@@ -58,6 +61,8 @@ public class MigrationController extends MigrationConfiguration {
     private final NumeratorInitializer numerators;
     private final TemplateInitializer templates;
     private final AccountInitializer accounts;
+
+    private final ContractInitializer contracts;
 
     private final PeriodDto[] initialPeriods= {
             PeriodDto.create().type( PeriodType.A)
@@ -96,6 +101,8 @@ public class MigrationController extends MigrationConfiguration {
                                 final DecreeFacade decree,
                                 final AccountFacade account,
                                 final AccountQueryRepository accounts,
+                                final ContractFacade contract,
+                                final ContractQueryRepository contracts,
 
                                 final DataLoader loader) {
 
@@ -113,10 +120,13 @@ public class MigrationController extends MigrationConfiguration {
         this.numerators= new NumeratorInitializer( numerators, numerator);
         this.templates= new TemplateInitializer( templates, template);
         this.accounts= new AccountInitializer( account, accounts);
+        this.contracts= new ContractInitializer( contracts, entities, contract);
     }
 
     @PostMapping
     public ResponseEntity migrate() {
+
+        var response= new StringBuilder();
 
         log.warn( "Migration start...");
 
@@ -156,6 +166,8 @@ public class MigrationController extends MigrationConfiguration {
         payments.init();
         log.warn( "Payments migration complete!");
 
-        return ResponseEntity.ok().build();
+        response.append( contracts.init( getInitialContracts()));
+
+        return ResponseEntity.ok( response.toString());
     }
 }

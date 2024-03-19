@@ -10,17 +10,32 @@ import pl.janksiegowy.backend.accounting.template.StatementFunction;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateLineDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateMap;
+import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterType;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
+import pl.janksiegowy.backend.salary.ContractType;
+import pl.janksiegowy.backend.salary.dto.ContractDto;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorType;
 import pl.janksiegowy.backend.shared.numerator.dto.NumeratorDto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public class MigrationConfiguration {
+
+    protected List<ContractDto> getInitialContracts() {
+        return List.of(
+            ContractDto.create().type( ContractType.E)
+                    .entity( EntityDto.create().taxNumber( "70010402493"))
+                    .begin( LocalDate.of( 2020, 1, 1 ) )
+                    .number( "Umowa 1/2023")
+                    .salary( new BigDecimal( "525.00"))
+        );
+    }
+
     protected NumeratorDto[] getInitialNumerators() {
         return new NumeratorDto[] {
             NumeratorDto.create().code( NumeratorCode.BR)   // Bank Receipt

@@ -100,6 +100,7 @@ public abstract class Settlement {
         T visit( InvoiceSettlement invoice );
         T visit( StatementSettlement statement);
         T visit( PaymentSettlement payment);
+        T visit( EmploySettlement payslip);
     }
 
 }
