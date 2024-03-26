@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.finances.payment.Payment;
+import pl.janksiegowy.backend.finances.settlement.FinancialSettlement;
+import pl.janksiegowy.backend.finances.settlement.NoteSettlement;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.register.accounting.AccountingRegister;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterFactory;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
+import pl.janksiegowy.backend.salary.Payslip;
 import pl.janksiegowy.backend.statement.Statement;
 
 import java.util.Optional;
@@ -21,6 +24,10 @@ public class DecreeFacade {
     private final DecreeFactory decree;
     private final DecreeRepository decrees;
 
+    public Decree book( FinancialSettlement note) {
+        return save( decree.to( note));
+    }
+
     public Decree book( Payment payment) {
         return save( decree.to( payment));
     }
@@ -31,6 +38,10 @@ public class DecreeFacade {
 
     public Decree book( Statement statement ) {
         return save( decree.to( statement));
+    }
+
+    public Decree book( Payslip payslip) {
+        return save( decree.to( payslip));
     }
 
     public Decree save( DecreeDto source) {

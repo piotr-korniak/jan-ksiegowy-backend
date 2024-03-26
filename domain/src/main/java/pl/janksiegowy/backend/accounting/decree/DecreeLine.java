@@ -35,6 +35,8 @@ public abstract class DecreeLine {
 
     private BigDecimal value;
 
+    private String description;
+
     public abstract <T> T accept( DecreeLineVisitor<T> visitor);
 
     public interface DecreeLineVisitor<T> {

@@ -1,7 +1,6 @@
 package pl.janksiegowy.backend.finances.payment;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
@@ -30,7 +29,7 @@ public class PaymentInitializer {
     private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "--- dd.MM.yyyy");
 
     private Payment save( PaymentDto source) {
-        return facade.approve( facade.save( source));
+        return facade.save( source);
     }
 
     public void init() {
@@ -66,7 +65,9 @@ public class PaymentInitializer {
                                                     .date( date)
                                                     .amount( amount)
                                                     .payable( payable.getPaymentId())
-                                                    .receivable( receivable.getId()));
+                                                    .receivable( receivable.getSettlementId()));
+
+                                            facade.approve( payable);
                                         } );
                                     });
                         }
@@ -90,8 +91,10 @@ public class PaymentInitializer {
                                         facade.save( ClearingDto.create()
                                                 .date( date)
                                                 .amount( amount.negate())
-                                                .payable( payable.getId())
+                                                .payable( payable.getSettlementId())
                                                 .receivable( receivable.getPaymentId()));
+
+                                        facade.approve( receivable);
                                     } );
                                 });
                         }

@@ -16,6 +16,7 @@ public interface DecreeLineDto {
     AccountPage getPage();
     AccountDto getAccount();
     BigDecimal getValue();
+    String getDescription();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -24,6 +25,7 @@ public interface DecreeLineDto {
         private AccountPage page;
         private AccountDto account;
         private BigDecimal value;
+        private String description;
 
         @Override public AccountPage getPage() {
             return page;
@@ -35,6 +37,10 @@ public interface DecreeLineDto {
 
         @Override public BigDecimal getValue() {
             return value;
+        }
+
+        @Override public String getDescription() {
+            return description;
         }
     }
 }

@@ -9,8 +9,12 @@ import pl.janksiegowy.backend.accounting.decree.DecreeType.DecreeTypeVisitor;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.accounting.template.PaymentFunction.PaymentFunctionVisitor;
 import pl.janksiegowy.backend.accounting.template.InvoiceFunction.InvoiceFunctionVisitor;
+import pl.janksiegowy.backend.accounting.template.FinanceFunction.NoteFunctionVisitor;
+import pl.janksiegowy.backend.finances.clearing.Clearing;
+import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
 import pl.janksiegowy.backend.finances.payment.Payment;
-import pl.janksiegowy.backend.finances.payment.PaymentType;
+import pl.janksiegowy.backend.finances.settlement.*;
+import pl.janksiegowy.backend.finances.settlement.FinancialType.FinancialTypeVisitor;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
@@ -18,6 +22,7 @@ import pl.janksiegowy.backend.item.ItemType;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
+import pl.janksiegowy.backend.salary.Payslip;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.shared.pattern.PatternFactory;
@@ -25,17 +30,21 @@ import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.statement.Statement;
 import pl.janksiegowy.backend.statement.StatementType.StatementTypeVisitor;
+import pl.janksiegowy.backend.finances.payment.PaymentType.PaymentTypeVisitor;
+import pl.janksiegowy.backend.finances.settlement.SettlementKind.SettlementKindVisitor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
-                                      PaymentType.PaymentTypeVisitor<DocumentType>,
-                                      StatementTypeVisitor<DocumentType> {
+                                      PaymentTypeVisitor<DocumentType>,
+                                      StatementTypeVisitor<DocumentType>,
+                                      FinancialTypeVisitor<DocumentType> {
 
     private final TemplateRepository templates;
     private final AccountingRegisterRepository registers;
@@ -43,6 +52,7 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
     private final PeriodFacade period;
     private final NumeratorFacade numerators;
     private final PatternFactory patterns;
+    private final ClearingRepository clearings;
 
     public Decree from( DecreeDto source) {
         return update( source, Optional.ofNullable( source.getDecreeId())
@@ -77,6 +87,53 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
             }
         });
     }
+
+    public DecreeDto to( FinancialSettlement settlement) {
+        return templates.findByDocumentTypeAndDate( settlement.getFinancialType()
+                .accept( new FinancialTypeVisitor<DocumentType>() {
+            @Override public DocumentType visitChargeSettlement() {
+                return DocumentType.CH;
+            }
+            @Override public DocumentType visitFeeSettlement() {
+                return DocumentType.FE;
+            }
+            @Override public DocumentType visitNoteSettlement() {
+                return settlement.getKind().accept( new SettlementKindVisitor<DocumentType>() {
+                    @Override public DocumentType visitDebit() {
+                        return DocumentType.NI;
+                    }
+                    @Override public DocumentType visitCredit() {
+                        return DocumentType.NR;
+                    }
+                });
+            }
+        }), settlement.getDate())
+            .map( template -> new Builder() {
+                @Override public BigDecimal getValue( TemplateLine line ) {
+                    return ((FinanceTemplateLine)line).getFunction().accept( new NoteFunctionVisitor<BigDecimal>() {
+                        @Override public BigDecimal visitWartoscZobowiazania() {
+                            return settlement.getCt();
+                        }
+                        @Override public BigDecimal visitWartoscNaleznosci() {
+                            return settlement.getDt();
+                        }
+                    });
+                }
+                @Override public AccountDto getAccount( AccountDto.Proxy account) {
+                    return switch( account.getNumber().replaceAll("[^A-Z]+", "")){
+                        case "P"-> account.name( settlement.getEntity().getName())
+                                .number( account.getNumber().replaceAll( "\\[P\\]",
+                                        settlement.getEntity().getAccountNumber()));
+                        default -> account;
+                    };
+                }
+            }.build( template, settlement.getDate(), settlement.getNumber(), settlement.getSettlementId()))
+                .map( decreeMap-> Optional.ofNullable( settlement.getDecree())
+                        .map( decree-> decreeMap.setNumer( decreeMap.getNumber()))
+                        .orElseGet(()-> decreeMap))
+            .orElseThrow();
+    }
+
 
     public DecreeDto to( Invoice invoice) {
 
@@ -130,7 +187,7 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
             }.build( template, invoice.getIssueDate(), invoice.getNumber(), invoice.getInvoiceId()))
                 .map( decreeMap-> Optional.ofNullable( invoice.getSettlement().getDecree())
                             .map( decree-> decreeMap.setNumer( decree.getNumber()))
-                            .orElse( decreeMap))
+                            .orElseGet(()-> decreeMap))
                 .orElseThrow();
     }
 
@@ -141,13 +198,28 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                     return Optional.of((PaymentTemplateLine) item)
                             .filter( line-> line.getRegisterType()== null
                                         || line.getRegisterType()== payment.getRegister().getType())
-                            .map(line -> line.getFunction().accept(new PaymentFunctionVisitor<BigDecimal>() {
+                            .map(line -> line.getFunction().accept( new PaymentFunctionVisitor<BigDecimal>() {
                                 @Override public BigDecimal visitWplataNaleznosci() {
                                     return payment.getSettlement().getCt();
                                 }
                                 @Override public BigDecimal visitSplataZobowiazania() {
                                     return payment.getSettlement().getDt();
                                 }
+                                @Override public BigDecimal visitWplataNoty() {
+                                    return clearings.payable( payment.getSettlement()).stream()
+                                            .filter( clearing-> clearing.getReverse( payment.getSettlement())
+                                                    .getType()== SettlementType.N)
+                                            .map( Clearing::getAmount )
+                                            .reduce( BigDecimal.ZERO, BigDecimal::add);
+                                }
+                                @Override public BigDecimal visitSplataNoty() {
+                                    return clearings.receivable( payment.getSettlement()).stream()
+                                            .filter( clearing-> clearing.getReverse( payment.getSettlement())
+                                                    .getType()== SettlementType.N)
+                                            .map( Clearing::getAmount )
+                                            .reduce( BigDecimal.ZERO, BigDecimal::add);
+                                }
+
                             })).orElseGet(()-> BigDecimal.ZERO);
                 }
                 @Override public AccountDto getAccount( AccountDto.Proxy account) {
@@ -167,7 +239,7 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
             }.build( template, payment.getDate(), payment.getNumber(), payment.getPaymentId()))
                 .map( decreeMap-> Optional.ofNullable( payment.getSettlement().getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
-                        .orElse( decreeMap))
+                        .orElseGet(()-> decreeMap))
                 .orElseThrow();
     }
 
@@ -181,7 +253,8 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
         return templates.findByDocumentTypeAndDate( statement.getType().accept( this), statement.getDate())
             .map( template-> new Builder() {
                 @Override public BigDecimal getValue( TemplateLine line) {
-                    return ((StatementTemplateLine)line).getFunction().accept( new StatementFunction.StatementFunctionVisitor<BigDecimal>() {
+                    return ((StatementTemplateLine)line).getFunction()
+                            .accept( new StatementFunction.StatementFunctionVisitor<BigDecimal>() {
 
                         @Override public BigDecimal visitPodatekNalezny() {
                             return new BigDecimal( jpkData.getVatNalezny());
@@ -217,8 +290,57 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                     return account;
                 }
             }.build( template, statement.getPeriod().getEnd(), statement.getNumber(), statement.getStatementId()))
+                .map( decreeMap-> Optional.ofNullable( statement.getSettlement().getDecree())
+                        .map( decree-> decreeMap.setNumer( decree.getNumber()))
+                        .orElseGet(()-> decreeMap))
             .orElseThrow();
     }
+
+    public DecreeDto to( Payslip payslip) {
+
+        return templates.findByDocumentTypeAndDate( DocumentType.EP, payslip.getDate())
+                .map( template-> new Builder() {
+                    @Override public BigDecimal getValue( TemplateLine line ) {
+                        return ((PayslipTemplateLine)line).getFunction()
+                                .accept( new PayslipFunction.PayslipFunctionVisitor<BigDecimal>() {
+                            @Override public BigDecimal visitSkladkaPracownika() {
+                                return payslip.getInsuranceEmployee();
+                            }
+                            @Override public BigDecimal visitSkladkaPracodawcy() {
+                                return payslip.getInsuranceEmployer();
+                            }
+                            @Override public BigDecimal visitWynagrodzenieBrutto() {
+                                return payslip.getGross();
+                            }
+
+                            @Override public BigDecimal visitUbezpiecznieZdrowotne() {
+                                return payslip.getInsuranceHealth();
+                            }
+                            @Override public BigDecimal visitZaliczkaPIT() {
+                                return payslip.getTaxAdvance();
+                            }
+                            @Override public BigDecimal visitDoWyplaty() {
+                                return payslip.getSettlement().getCt();
+                            }
+                        } );
+                    }
+
+                    @Override public AccountDto getAccount( AccountDto.Proxy account) {
+                        return switch( account.getNumber().replaceAll("[^A-Z]+", "")){
+                            case "P"-> account.name( payslip.getSettlement().getEntity().getName())
+                                    .number( account.getNumber().replaceAll( "\\[P\\]",
+                                            payslip.getSettlement().getEntity().getAccountNumber()));
+                            default -> account;
+                        };
+                    }
+                }.build( template, payslip.getDate(), payslip.getSettlement().getNumber(), payslip.getPayslipId()))
+                .map( decreeMap-> Optional.ofNullable( payslip.getSettlement().getDecree())
+                        .map( decree-> decreeMap.setNumer( decree.getNumber()))
+                        .orElseGet(()-> decreeMap))
+                .orElseThrow();
+
+    }
+
 
     abstract static class Builder {
 
@@ -241,6 +363,7 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                             .account( getAccount( AccountDto.create()
                                     .number( templateItem.getAccount().getNumber())
                                     .parent( templateItem.getAccount().getNumber())))
+                            .description( templateItem.getDescription())
                             .page( templateItem.getPage())
                             .value( value));
                 }
@@ -274,5 +397,14 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
     }
     @Override public DocumentType visitZusStatement() {
         return DocumentType.SN;
+    }
+    @Override public DocumentType visitChargeSettlement() {
+        return null;
+    }
+    @Override public DocumentType visitFeeSettlement() {
+        return null;
+    }
+    @Override public DocumentType visitNoteSettlement() {
+        return null;
     }
 }

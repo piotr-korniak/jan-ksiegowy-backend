@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.invoice.InvoiceType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,7 +32,15 @@ public abstract class Contract {
     private BigDecimal salary;
 
     @ManyToOne( fetch= FetchType.EAGER)
-    protected pl.janksiegowy.backend.entity.Entity entity;
+    private pl.janksiegowy.backend.entity.Entity entity;
+
+    @Enumerated( EnumType.STRING)
+    @Column( insertable= false, updatable= false)
+    private ContractType type;
+
+    public ContractType getType() {
+        return ContractType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
+    }
 
     public Contract setSalary( BigDecimal salary) {
         this.salary= salary;

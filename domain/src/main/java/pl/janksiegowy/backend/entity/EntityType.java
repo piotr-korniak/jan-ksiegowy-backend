@@ -1,8 +1,18 @@
 package pl.janksiegowy.backend.entity;
 
 public enum EntityType {
-
-    C { // Contact
+    /**
+     * Bank
+     */
+    B {
+        @Override public <T> T accept( EntityTypeVisitor<T> visitor ) {
+            return visitor.visitBank();
+        }
+    },
+    /**
+     * Contact
+     */
+    C {
         @Override public <T> T accept( EntityTypeVisitor<T> visitor) {
             return visitor.visitContact();
         }
@@ -30,5 +40,6 @@ public enum EntityType {
         T visitRevenue();
         T visitShareholders();
         T visitEmployee();
+        T visitBank();
     }
 }

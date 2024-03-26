@@ -15,6 +15,9 @@ import pl.janksiegowy.backend.accounting.template.TemplateQueryRepository;
 import pl.janksiegowy.backend.entity.EntityFacade;
 import pl.janksiegowy.backend.entity.EntityInitializer;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
+import pl.janksiegowy.backend.finances.settlement.SettlementConfiguration;
+import pl.janksiegowy.backend.finances.settlement.SettlementFacade;
+import pl.janksiegowy.backend.finances.settlement.SettlementInitializer;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.invoice.InvoiceInitializer;
 import pl.janksiegowy.backend.invoice.InvoiceQueryRepository;
@@ -63,6 +66,7 @@ public class MigrationController extends MigrationConfiguration {
     private final AccountInitializer accounts;
 
     private final ContractInitializer contracts;
+    private final SettlementInitializer settlements;
 
     private final PeriodDto[] initialPeriods= {
             PeriodDto.create().type( PeriodType.A)
@@ -103,6 +107,7 @@ public class MigrationController extends MigrationConfiguration {
                                 final AccountQueryRepository accounts,
                                 final ContractFacade contract,
                                 final ContractQueryRepository contracts,
+                                final SettlementFacade settlement,
 
                                 final DataLoader loader) {
 
@@ -121,6 +126,7 @@ public class MigrationController extends MigrationConfiguration {
         this.templates= new TemplateInitializer( templates, template);
         this.accounts= new AccountInitializer( account, accounts);
         this.contracts= new ContractInitializer( contracts, entities, contract);
+        this.settlements= new SettlementInitializer( settlements, entities, settlement, decree, loader);
     }
 
     @PostMapping
@@ -157,16 +163,20 @@ public class MigrationController extends MigrationConfiguration {
         items.init();
         log.warn( "Items migration complete!");
 
-        invoices.init();
+        response.append( invoices.init());
         log.warn( "Invoices migration complete!");
 
         lines.init();
         log.warn( "Invoices Lines migration complete!");
 
+        response.append( contracts.init( getInitialContracts()));
+        log.warn( "Contracts migration complete!");
+
+        response.append( settlements.init());
+        log.warn( "Settlements migration complete!");
+
         payments.init();
         log.warn( "Payments migration complete!");
-
-        response.append( contracts.init( getInitialContracts()));
 
         return ResponseEntity.ok( response.toString());
     }

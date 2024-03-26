@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 
 @Entity
 @DiscriminatorValue( "S")
-public class StatementTemplateLine extends TemplateLine{
+public class StatementTemplateLine extends TemplateLine {
 
     @Enumerated( EnumType.STRING)
     private StatementFunction function;

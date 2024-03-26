@@ -22,4 +22,8 @@ class SettlementRepositoryImpl implements SettlementRepository {
     @Override public Optional<Settlement> findByDocument( UUID document) {
         return repository.findById( document);
     }
+
+    @Override public Settlement save( Settlement settlement) {
+        return repository.save( settlement);
+    }
 }

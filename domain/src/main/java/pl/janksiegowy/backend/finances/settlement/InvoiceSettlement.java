@@ -14,7 +14,7 @@ public class InvoiceSettlement extends Settlement {
 
     public void setInvoice( Invoice invoice) {
         this.invoice= invoice;
-        this.id= invoice.getInvoiceId();
+        this.settlementId = invoice.getInvoiceId();
     }
 
     @Override public <T> T accept( SettlementVisitor<T> visitor) {

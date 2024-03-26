@@ -34,8 +34,8 @@ public class NumeratorFacade {
                                     .setType( numerator.isTyped()? type: ""));
                 }
                 @Override public Counter visitMonthNumerator() {
-                    return counters.findByNumeratorCodeAndMonthAndType( code, date[0].getMonthValue(),
-                                    numerator.isTyped()? type: "")
+                    return counters.findByNumeratorCodeAndYearAndMonthAndType( code, date[0].getYear(),
+                                    date[0].getMonthValue(), numerator.isTyped()? type: "")
                             .orElse( new Counter()
                                     .setNumerator( numerator)
                                     .setMonth( date[0].getMonthValue())

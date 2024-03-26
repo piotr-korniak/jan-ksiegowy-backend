@@ -45,7 +45,7 @@ public class TemplateFactory {
                         @Override public TemplateLine visitPaymentReceipt() {
                             return paymentTemplateLine( templateLineDto);
                         }
-                        @Override public TemplateLine visitPaymentSpend() {
+                        @Override public TemplateLine visitPaymentSpending() {
                             return paymentTemplateLine( templateLineDto);
                         }
 
@@ -58,6 +58,28 @@ public class TemplateFactory {
                         }
                         @Override public TemplateLine visitPitStatement() {
                             return null;
+                        }
+
+                        @Override public TemplateLine visitEmployeePayslip() {
+                            return new PayslipTemplateLine().setFunction(
+                                    PayslipFunction.valueOf( templateLineDto.getFunction()));
+                        }
+
+                        @Override public TemplateLine visitNoteIssued() {
+                            return new FinanceTemplateLine().setFunction(
+                                    FinanceFunction.valueOf( templateLineDto.getFunction()));
+                        }
+                        @Override public TemplateLine visitNoteReceived() {
+                            return new FinanceTemplateLine().setFunction(
+                                    FinanceFunction.valueOf( templateLineDto.getFunction()));
+                        }
+                        @Override public TemplateLine visitChargeSettlement() {
+                            return new FinanceTemplateLine().setFunction(
+                                    FinanceFunction.valueOf( templateLineDto.getFunction()));
+                        }
+                        @Override public TemplateLine visitFeeSettlement() {
+                            return new FinanceTemplateLine().setFunction(
+                                    FinanceFunction.valueOf( templateLineDto.getFunction()));
                         }
                     })).setTemplate( template))
                 .collect( Collectors.toList())));

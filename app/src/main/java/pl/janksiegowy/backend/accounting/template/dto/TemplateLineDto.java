@@ -4,9 +4,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.accounting.account.AccountPage;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
-import pl.janksiegowy.backend.accounting.template.InvoiceFunction;
-import pl.janksiegowy.backend.accounting.template.PaymentFunction;
-import pl.janksiegowy.backend.accounting.template.StatementFunction;
+import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
 
 import java.util.UUID;
@@ -22,6 +20,7 @@ public interface TemplateLineDto {
     AccountDto getAccount();
     String getFunction();
     String getRegisterType();
+    String getDescription();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -32,6 +31,7 @@ public interface TemplateLineDto {
         private AccountDto account;
         private String function;
         private String registerType;
+        private String description;
 
         public Proxy function( PaymentFunction function) {
             this.function= function.name();
@@ -41,7 +41,15 @@ public interface TemplateLineDto {
             this.function= function.name();
             return this;
         }
-        public Proxy function( StatementFunction function ) {
+        public Proxy function( StatementFunction function) {
+            this.function= function.name();
+            return this;
+        }
+        public Proxy function( PayslipFunction function) {
+            this.function= function.name();
+            return this;
+        }
+        public Proxy function( FinanceFunction function) {
             this.function= function.name();
             return this;
         }
@@ -65,6 +73,9 @@ public interface TemplateLineDto {
         }
         @Override public String getRegisterType() {
             return registerType;
+        }
+        @Override public String getDescription() {
+            return description;
         }
 
     }

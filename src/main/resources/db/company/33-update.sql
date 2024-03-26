@@ -1,0 +1,8 @@
+--liquibase formatted sql
+--changeset piotrkorniak:33
+
+ALTER TABLE TEMPLATES_LINES
+    ADD DESCRIPTION VARCHAR(96);
+
+ALTER TABLE DECREES_LINES
+    ADD DESCRIPTION VARCHAR(96);

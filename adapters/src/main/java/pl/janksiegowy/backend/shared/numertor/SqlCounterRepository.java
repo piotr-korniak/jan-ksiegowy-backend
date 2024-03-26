@@ -16,7 +16,8 @@ public interface SqlCounterRepository extends JpaRepository<Counter, Long> {
 
     Optional<Counter> findByNumeratorCodeAndType( NumeratorCode code, String type);
     Optional<Counter> findByNumeratorCodeAndYearAndType( NumeratorCode code, int year, String type);
-    Optional<Counter> findByNumeratorCodeAndMonthAndType( NumeratorCode code, int month, String type );
+    Optional<Counter> findByNumeratorCodeAndYearAndMonthAndType( NumeratorCode code, int year,
+                                                                 int month, String type );
 }
 
 @org.springframework.stereotype.Repository
@@ -45,7 +46,10 @@ class CounterRepositoryImpl implements CounterRepository {
         return repository.findByNumeratorCodeAndYearAndType( code, year, type);
     }
 
-    @Override public Optional<Counter> findByNumeratorCodeAndMonthAndType( NumeratorCode code, int month, String type) {
-        return repository.findByNumeratorCodeAndMonthAndType( code, month, type);
+    @Override public Optional<Counter> findByNumeratorCodeAndYearAndMonthAndType( NumeratorCode code,
+                                                                                  int year,
+                                                                                  int month,
+                                                                                  String type) {
+        return repository.findByNumeratorCodeAndYearAndMonthAndType( code, year, month, type);
     }
 }

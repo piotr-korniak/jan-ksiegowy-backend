@@ -47,6 +47,12 @@ public abstract class Entity {
 
 }
 
+@jakarta.persistence.Entity
+@DiscriminatorValue( value= "B")
+class Bank extends Entity {
+
+}
+
 @Getter
 @Setter
 @Accessors( chain= true)

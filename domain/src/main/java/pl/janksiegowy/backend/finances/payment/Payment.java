@@ -5,12 +5,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.DiscriminatorOptions;
 import pl.janksiegowy.backend.accounting.decree.Decree;
+import pl.janksiegowy.backend.finances.clearing.Clearing;
 import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.register.payment.PaymentRegister;
 import pl.janksiegowy.backend.finances.settlement.PaymentSettlement;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -36,7 +38,7 @@ public abstract class Payment {
         return PaymentType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
     }
 
-    public LocalDate getDate() {
+     public LocalDate getDate() {
         return settlement.getDate();
     }
 

@@ -13,4 +13,5 @@ public interface PeriodQueryRepository {
 
     Optional<PeriodDto> findAllByBeginLessThanEqualAndEndGreaterThanEqualAndType(
             LocalDate begin, LocalDate end, PeriodType type);
+
 }

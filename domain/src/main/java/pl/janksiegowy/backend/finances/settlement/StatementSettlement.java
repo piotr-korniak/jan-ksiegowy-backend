@@ -14,7 +14,7 @@ public class StatementSettlement extends Settlement {
 
     public StatementSettlement setStatement( Statement statement) {
         this.statement= statement;
-        this.id= statement.getStatementId();
+        this.settlementId = statement.getStatementId();
         return this;
     }
 

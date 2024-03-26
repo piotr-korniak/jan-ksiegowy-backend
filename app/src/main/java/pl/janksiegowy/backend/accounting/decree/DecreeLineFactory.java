@@ -32,7 +32,8 @@ public class DecreeLineFactory implements AccountPageVisitor<DecreeLine>{
 
         return source.getPage().accept( this)
                 .setValue( source.getValue())
-                .setAccount( account);
+                .setAccount( account)
+                .setDescription( source.getDescription());
     }
 
     @Override public DecreeLine visitDtPage() {

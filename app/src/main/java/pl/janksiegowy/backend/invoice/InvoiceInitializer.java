@@ -34,10 +34,14 @@ public class InvoiceInitializer {
         return facade.save( invoice);
     }
 
-    public void init() {
+    public String init() {
+        var total= 0;
+        var added= 0;
+
         for( String[] fields: loader.readData( "invoices.txt")){
             if( fields[0].startsWith( "---"))
                 continue;
+            total++;
 
             var taxNumber= fields[2].replaceAll( "[^a-zA-Z0-9]", "");
             var country= Country.PL;
@@ -48,6 +52,7 @@ public class InvoiceInitializer {
 
             if( settlements.existsByNumberAndEntityTaxNumber( fields[1], taxNumber))
                 continue;
+            added++;
 
             var invoice= entities.findByCountryAndTypeAndTaxNumber( country, EntityType.C, taxNumber)
                     .map( entity-> registers.findByCode( fields[0])
@@ -79,6 +84,8 @@ public class InvoiceInitializer {
 
 
         }
+        return String.format( "%-40s %16s\n", "Invoice migration complete, added: ",
+                added+ "/"+ total);
     }
 
 }

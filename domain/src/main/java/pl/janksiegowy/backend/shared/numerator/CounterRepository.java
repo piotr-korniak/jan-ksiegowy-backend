@@ -11,6 +11,7 @@ public interface CounterRepository {
 
     Optional<Counter> findByNumeratorCodeAndType( NumeratorCode code, String type );
     Optional<Counter> findByNumeratorCodeAndYearAndType( NumeratorCode code, int year, String type);
-    Optional<Counter> findByNumeratorCodeAndMonthAndType( NumeratorCode code, int month, String type);
+    Optional<Counter> findByNumeratorCodeAndYearAndMonthAndType( NumeratorCode code, int year,
+                                                                 int month, String type);
 
 }

@@ -11,7 +11,7 @@ import pl.janksiegowy.backend.shared.interpreter.Operation.OperationVisitor;
 
 public class Interpreter {
     private final Map<String, BigDecimal> context= new HashMap<>();
-    private final Pattern pattern= Pattern.compile("\\d+|[+\\-*/]");
+    private final Pattern pattern= Pattern.compile( "[a-zA-Z0-9_]+|[+\\-*@]");//("\\d+|[+\\-*/]");
 
     public Interpreter setVariable( String key, BigDecimal value) {
         //System.err.println( "SetVariable ("+key+"): "+ value);
@@ -34,7 +34,7 @@ public class Interpreter {
         pattern.matcher( expression).results()
             .map( MatchResult::group )
             .forEach( x-> {
-                if( x.matches("[+\\-*/]")) {
+                if( x.matches("[+\\-*/@]")) {
                     operator.value= Operation.fromSymbol( x.charAt( 0));
                 } else {
                     result.value= Optional.ofNullable( result.value)
@@ -43,11 +43,16 @@ public class Interpreter {
                                 return new Addition( leftValue, new Variable( x));
                             }
                             @Override public Expression visitSubtraction() {
-                                return null;
+                                return new Subtraction( leftValue, new Variable( x));
                             }
                             @Override public Expression visitMultiplication() {
-                                return null;
+                                return new Multiplication( leftValue, new Variable( x), 2);
                             }
+
+                            @Override public Expression visitMultiplicationInt() {
+                                return new Multiplication( leftValue, new Variable( x), 0);
+                            }
+
                             @Override public Expression visitDivision() {
                                 return null;
                             }

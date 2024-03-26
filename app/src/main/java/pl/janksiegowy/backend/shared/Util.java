@@ -12,7 +12,7 @@ public class Util {
     private static final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "dd.MM.yyyy");
 
     public static LocalDate toLocalDate( String date) {
-        return LocalDate.parse( date, formatter);
+        return LocalDate.parse( date.trim(), formatter);
     }
 
     public static BigDecimal toBigDecimal( String amount, int precision) {

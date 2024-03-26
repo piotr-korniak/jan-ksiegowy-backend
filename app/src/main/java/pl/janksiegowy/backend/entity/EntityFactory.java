@@ -20,7 +20,9 @@ public class EntityFactory implements EntityTypeVisitor<Entity> {
                 .accept( this)
                     .setEntityId( UUID.randomUUID())
                     .setAccountNumber( EntityType.R== source.getType()?
-                            source.getTaxNumber(): numerators.increment( NumeratorCode.EN, source.getType().name()))
+                            source.getTaxNumber(): numerators.increment( NumeratorCode.EN,
+                            EntityType.B== source.getType()?
+                                    EntityType.C.name(): source.getType().name()))
                     .setDate( LocalDate.EPOCH.plusDays( 3)));
     }
 
@@ -59,6 +61,10 @@ public class EntityFactory implements EntityTypeVisitor<Entity> {
 
     @Override public Entity visitEmployee() {
         return new Employee();
+    }
+
+    @Override public Entity visitBank() {
+        return new Bank();
     }
 
 

@@ -19,6 +19,11 @@ public enum Operation {
             return visitor.visitMultiplication();
         }
     },
+    MULTIPLICATION_INT ('@') {
+        @Override public <T> T accept( OperationVisitor<T> visitor ) {
+            return visitor.visitMultiplicationInt();
+        }
+    },
     DIVISION ('/') {
         @Override public <T> T accept( OperationVisitor<T> visitor ) {
             return visitor.visitDivision();
@@ -43,6 +48,7 @@ public enum Operation {
         T visitAddition();
         T visitSubtraction();
         T visitMultiplication();
+        T visitMultiplicationInt();
         T visitDivision();
     }
 }

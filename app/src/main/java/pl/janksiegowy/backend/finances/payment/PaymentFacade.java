@@ -43,6 +43,7 @@ public class PaymentFacade {
     }
 
     public Payment approve( Payment payment) {
-        return null;// payments.save( decrees.book( payment));
+        decrees.book( payment);
+        return payment;// payments.save( decrees.book( payment));
     }
 }

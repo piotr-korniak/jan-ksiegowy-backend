@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.accounting.decree.Decree;
 import pl.janksiegowy.backend.accounting.decree.SettlementDecree;
-import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
 
 import java.math.BigDecimal;
@@ -26,7 +24,7 @@ public abstract class Settlement {
 
     @Id
     @Column( name= "DOCUMENT_ID")
-    protected UUID id;
+    protected UUID settlementId;
 
     @Enumerated( EnumType.STRING)
     private SettlementKind kind;
@@ -47,6 +45,14 @@ public abstract class Settlement {
 
     @OneToOne( mappedBy= "settlement", cascade = CascadeType.ALL)
     protected SettlementDecree decree;
+
+    @Enumerated( EnumType.STRING)
+    @Column( insertable= false, updatable= false)
+    private SettlementType type;
+
+    public SettlementType getType() {
+        return SettlementType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
+    }
 
     public Settlement setDecree( SettlementDecree decree ) {
         this.decree= decree;
@@ -100,7 +106,10 @@ public abstract class Settlement {
         T visit( InvoiceSettlement invoice );
         T visit( StatementSettlement statement);
         T visit( PaymentSettlement payment);
-        T visit( EmploySettlement payslip);
+        T visit( PayslipSettlement payslip);
+        T visit( ChargeSettlement charge);
+        T visit( FeeSettlement fee);
+        T visit( NoteSettlement note);
     }
 
 }

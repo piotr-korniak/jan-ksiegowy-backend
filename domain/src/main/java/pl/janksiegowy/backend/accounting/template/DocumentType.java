@@ -27,20 +27,45 @@ public enum DocumentType {
         }
     },
     /**
-     * Payment Spend
+     * Payment Spending
      */
     PS {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
-            return visitor.visitPaymentSpend();
+            return visitor.visitPaymentSpending();
         }
     },
 
-    /*
-    R { // payrolls
-        @Override public <T> T accept( TemplateTypeVisitor<T> visitor ) {
-            return visitor.visitPayroll();
+    /**
+     * Employee Payslip
+     */
+    EP {
+        @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
+            return visitor.visitEmployeePayslip();
         }
     },
+    /** Note Issued */
+    NI {@Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
+            return visitor.visitNoteIssued();
+    }},
+    /**
+     * Note Received
+     */
+    NR { @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
+            return visitor.visitNoteReceived();
+    }},
+    /**
+     * Charge Settlement
+     */
+    CH { @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
+            return visitor.visitChargeSettlement();
+    }},
+    /**
+     * Fee Settlement
+     */
+    FE { @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
+            return visitor.visitFeeSettlement();
+    }},
+    /*
     A { // assets
         @Override public <T> T accept( TemplateTypeVisitor<T> visitor ) {
             return visitor.visitAsset();
@@ -70,8 +95,7 @@ public enum DocumentType {
      * National Insurance
      */
     SN {
-        @Override
-        public <T> T accept( DocumentTypeVisitor<T> visitor ) {
+        @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
             return null;
         }
     }
@@ -84,11 +108,18 @@ public enum DocumentType {
         T visitPurchaseInvoice();
 
         T visitPaymentReceipt();
-        T visitPaymentSpend();
+        T visitPaymentSpending();
 
         T visitVatStatement();
         T visitCitStatement();
         T visitPitStatement();
+
+        T visitEmployeePayslip();
+
+        T visitNoteIssued();
+        T visitNoteReceived();
+        T visitChargeSettlement();
+        T visitFeeSettlement();
 
     }
 }

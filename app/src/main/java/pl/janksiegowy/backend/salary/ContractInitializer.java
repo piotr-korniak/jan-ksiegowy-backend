@@ -24,7 +24,7 @@ public class ContractInitializer {
                 added.incrementAndGet();
             }
         });
-        return String.format( "%-30s %16s\n", "Contracts migration complete, added: ",
+        return String.format( "%-40s %16s\n", "Contracts migration complete, added: ",
                 added+ "/"+ initialContracts.size());
     }
 }

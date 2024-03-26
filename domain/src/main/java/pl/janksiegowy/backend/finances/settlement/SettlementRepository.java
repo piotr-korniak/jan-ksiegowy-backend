@@ -6,4 +6,6 @@ import java.util.UUID;
 public interface SettlementRepository {
 
     Optional<Settlement> findByDocument( UUID document);
+
+    Settlement save( Settlement entity);
 }

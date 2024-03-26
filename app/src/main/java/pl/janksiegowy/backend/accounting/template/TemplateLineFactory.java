@@ -18,7 +18,8 @@ public class TemplateLineFactory {
                     .map( id-> line.setId( id))
                     .orElseGet(()-> line)
                         .setPage( source.getPage())
-                        .setAccount( account))
+                        .setAccount( account)
+                        .setDescription( source.getDescription()))
                 .orElseThrow();
     }
 
