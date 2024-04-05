@@ -5,10 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.accounting.decree.SettlementDecree;
+import pl.janksiegowy.backend.finances.clearing.Clearing;
 import pl.janksiegowy.backend.period.MonthPeriod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -28,6 +30,11 @@ public abstract class Settlement {
 
     @Enumerated( EnumType.STRING)
     private SettlementKind kind;
+
+    @OneToMany( mappedBy = "receivable")
+    private List<Clearing> receivable;
+    @OneToMany( mappedBy = "payable")
+    private List<Clearing> payable;
 
     private LocalDate date;
     private LocalDate due;

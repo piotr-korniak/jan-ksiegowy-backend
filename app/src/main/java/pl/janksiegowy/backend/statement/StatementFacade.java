@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 public class StatementFacade {
 
@@ -17,6 +19,7 @@ public class StatementFacade {
     }
 
     public void approve( Statement statement) {
-        decrees.book( statement);
+    //    Optional.ofNullable( statement.getSettlement())
+        //      .ifPresent( settlement-> decrees.book( statement));
     }
 }

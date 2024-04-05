@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.janksiegowy.backend.accounting.decree.DecreeLineQueryRepository;
+import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
@@ -15,8 +16,10 @@ public class CitController {
     private final CitApproval approval;
 
     public CitController( final DecreeLineQueryRepository lines,
-                          final PeriodRepository periods) {
-        this.approval= new CitApproval( lines, periods);
+                          final PeriodRepository periods,
+                          final MetricRepository metrics,
+                          final StatementFacade statement) {
+        this.approval= new CitApproval( lines, periods, metrics, statement);
     }
 
     @PostMapping

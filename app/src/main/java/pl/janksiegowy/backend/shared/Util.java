@@ -1,5 +1,8 @@
 package pl.janksiegowy.backend.shared;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -10,9 +13,33 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 public class Util {
 
     private static final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "dd.MM.yyyy");
+    private static final DatatypeFactory datatypeFactory;
+
+    static {
+        try {
+            datatypeFactory= DatatypeFactory.newInstance();
+        } catch ( DatatypeConfigurationException e) {
+            throw new RuntimeException( e);
+        }
+    }
 
     public static LocalDate toLocalDate( String date) {
         return LocalDate.parse( date.trim(), formatter);
+    }
+    public static XMLGregorianCalendar toGregorian( LocalDate date) {
+        return datatypeFactory.newXMLGregorianCalendar( date.toString());
+    }
+
+    public static LocalDate min( LocalDate date1, LocalDate date2) {
+        return date1.isBefore( date2)? date1: date2;
+    }
+
+    public static LocalDate max( LocalDate date1, LocalDate date2) {
+        return date1.isAfter( date2)? date1: date2;
+    }
+
+    public static String toString( LocalDate date) {
+        return date.format( formatter);
     }
 
     public static BigDecimal toBigDecimal( String amount, int precision) {

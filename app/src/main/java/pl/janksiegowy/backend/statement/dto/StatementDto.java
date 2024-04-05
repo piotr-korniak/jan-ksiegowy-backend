@@ -3,8 +3,6 @@ package pl.janksiegowy.backend.statement.dto;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
-import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.shared.pattern.PatternCode;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.statement.StatementType;
 
@@ -12,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.function.BiFunction;
 
 public interface StatementDto {
 
@@ -25,10 +22,10 @@ public interface StatementDto {
     StatementType getType();
     LocalDateTime getCreated();
     LocalDate getDate();
-    LocalDate getSettlementDue();
+    LocalDate getDue();
     String getXml();
-    BigDecimal getSettlementCt();
-    String getSettlementNumber();
+    BigDecimal getLiability();
+    String getNumber();
     EntityDto getSettlementEntity();
     String getPeriodId();
     BigDecimal getValue1();
@@ -68,16 +65,16 @@ public interface StatementDto {
         @Override public LocalDate getDate() {
             return date;
         }
-        @Override public LocalDate getSettlementDue() {
+        @Override public LocalDate getDue() {
             return due;
         }
         @Override public String getXml() {
             return xml;
         }
-        @Override public BigDecimal getSettlementCt() {
+        @Override public BigDecimal getLiability() {
             return liability;
         }
-        @Override public String getSettlementNumber() {
+        @Override public String getNumber() {
             return number;
         }
         @Override public EntityDto getSettlementEntity() {

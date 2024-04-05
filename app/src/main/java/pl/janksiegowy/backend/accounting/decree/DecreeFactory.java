@@ -290,9 +290,9 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                     return account;
                 }
             }.build( template, statement.getPeriod().getEnd(), statement.getNumber(), statement.getStatementId()))
-                .map( decreeMap-> Optional.ofNullable( statement.getSettlement().getDecree())
+/*                .map( decreeMap-> Optional.ofNullable( statement.getSettlement().getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
-                        .orElseGet(()-> decreeMap))
+                        .orElseGet(()-> decreeMap))*/
             .orElseThrow();
     }
 

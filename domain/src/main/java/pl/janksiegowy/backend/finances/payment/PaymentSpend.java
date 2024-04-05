@@ -9,8 +9,10 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue( "S")
-public class PaymentSpend extends Payment{
-
+public class PaymentSpend extends Payment {
+    @Override public List<Clearing> getLines() {
+        return settlement.getPayable();
+    }
 
     @Override public <T> T accept( PaymentVisitor<T> visitor ) {
         return visitor.visit( this);

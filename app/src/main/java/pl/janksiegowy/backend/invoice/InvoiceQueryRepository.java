@@ -1,7 +1,5 @@
 package pl.janksiegowy.backend.invoice;
 
-import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
-
 import java.util.List;
 import java.util.Optional;
 

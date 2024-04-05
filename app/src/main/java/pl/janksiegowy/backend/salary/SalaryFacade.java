@@ -71,8 +71,10 @@ public class SalaryFacade {
                 .setVariable( "zdrowotne", new BigDecimal( "0.09"))
                 .setVariable( "rentowy", new BigDecimal( "0.065"))
                 .setVariable( "wypadkowe", new BigDecimal( "0.0167"))
-                .setVariable( "FPFS", new BigDecimal( "0.0245"))
-                .setVariable( "FGSP", new BigDecimal( "0.001" ));
+                //.setVariable( "FPFS", new BigDecimal( "0.0245"))
+                .setVariable( "FPFS", BigDecimal.ZERO)
+                //.setVariable( "FGSP", new BigDecimal( "0.001" ))
+                .setVariable( "FGSP", BigDecimal.ZERO);
     }
 
 }

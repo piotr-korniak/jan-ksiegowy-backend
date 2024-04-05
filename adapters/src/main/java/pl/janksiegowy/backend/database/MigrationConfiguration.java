@@ -320,7 +320,7 @@ public class MigrationConfiguration {
                             .page( AccountPage.C)
                             .function( PayslipFunction.SkladkaPracodawcy)
                             .account( AccountDto.create().number( "225"))
-                            .description( "składka pracodawcy"))
+                            .description( "składka Pracodawcy"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
                             .function( PayslipFunction.DoWyplaty)

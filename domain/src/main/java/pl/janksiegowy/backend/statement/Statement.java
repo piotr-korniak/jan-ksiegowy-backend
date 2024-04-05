@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.UuidGenerator;
 import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.finances.settlement.StatementSettlement;
@@ -27,11 +28,12 @@ public abstract class Statement {
 
     @Id
     @Column( name= "ID")
+    @UuidGenerator
     private UUID statementId;
-
+/*
     @OneToOne( mappedBy= "statement", cascade = CascadeType.ALL)
     protected StatementSettlement settlement;
-
+*/
     @ManyToOne( fetch= FetchType.EAGER)
     private Period period;
 
@@ -55,13 +57,13 @@ public abstract class Statement {
         this.statementId= statementId;
         return this;
     }
-
+/*
     public Statement setSettlement( StatementSettlement settlement) {
         this.settlement= settlement;
         settlement.setStatement( this);
         return this;
     }
-
+*/
     public Statement setDate( LocalDate date) {
         this.date= date;
         return this;
@@ -88,6 +90,16 @@ public abstract class Statement {
     }
 
     public String getNumber() {
-        return settlement.getNumber();
+        return "";
     }
+
+    public Object getSettlement() {
+        return null;
+    }
+
+
+/*
+    public String getNumber() {
+        return settlement.getNumber();
+    }*/
 }

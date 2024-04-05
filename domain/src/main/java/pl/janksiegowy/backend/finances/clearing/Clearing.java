@@ -6,10 +6,10 @@ import pl.janksiegowy.backend.finances.settlement.Settlement;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+@Getter
 
 @Entity
 @Table( name= "CLEARINGS")
-
 @IdClass( ClearingId.class)
 public class Clearing {
 

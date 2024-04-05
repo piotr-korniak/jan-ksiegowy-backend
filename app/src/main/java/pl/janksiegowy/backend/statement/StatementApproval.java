@@ -71,7 +71,7 @@ public class StatementApproval {
                                             .revenue( revenue)
                                             .liability( new BigDecimal( bigInteger))
                                             .number( "VAT-7K "+ period.getEnd().getYear()+ "K"+
-                                            (( period.getEnd().getMonth().getValue()- 1) / 3 + 1))
+                                                    (( period.getEnd().getMonth().getValue()- 1) / 3 + 1))
                                             .due( period.getEnd().plusMonths( 1).withDayOfMonth( 25));
                             }));
 

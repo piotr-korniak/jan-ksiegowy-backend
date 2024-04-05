@@ -4,9 +4,7 @@ package pl.janksiegowy.backend.finances.payment;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.DiscriminatorOptions;
-import pl.janksiegowy.backend.accounting.decree.Decree;
 import pl.janksiegowy.backend.finances.clearing.Clearing;
-import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.register.payment.PaymentRegister;
 import pl.janksiegowy.backend.finances.settlement.PaymentSettlement;
@@ -34,9 +32,15 @@ public abstract class Payment {
     @ManyToOne
     private PaymentRegister register;
 
+    @Enumerated( EnumType.STRING)
+    @Column( insertable= false, updatable= false)
+    private PaymentType type;
+
     public PaymentType getType() {
         return PaymentType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
     }
+
+    public abstract List<Clearing> getLines();
 
      public LocalDate getDate() {
         return settlement.getDate();
@@ -52,6 +56,7 @@ public abstract class Payment {
     public String getNumber() {
         return settlement.getNumber();
     }
+
     public Payment setNumber( String number) {
         settlement.setNumber( number);
         return this;

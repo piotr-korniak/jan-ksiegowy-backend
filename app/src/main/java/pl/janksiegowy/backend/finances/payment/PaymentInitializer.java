@@ -22,6 +22,7 @@ public class PaymentInitializer {
     private final SettlementQueryRepository settlements;
     private final PaymentRegisterQueryRepository registers;
     private final PaymentFacade facade;
+    //private final PaymentQueryRepository payments;
     private final PeriodQueryRepository periods;
     private final PeriodFacade period;
     private final DataLoader loader;

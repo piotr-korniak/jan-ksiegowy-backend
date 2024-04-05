@@ -1,10 +1,13 @@
 package pl.janksiegowy.backend.finances.settlement;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import pl.janksiegowy.backend.finances.clearing.Clearing;
 import pl.janksiegowy.backend.finances.payment.Payment;
 
 import java.util.List;
+
+@Getter
 
 @Entity
 @DiscriminatorValue( "P")
