@@ -1,47 +1,190 @@
 package pl.janksiegowy.backend.statement;
 
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.NaglowekDekalaracji;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Ewidencja;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazWiersz;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupWiersz;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Naglowek;
 import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Podmiot1;
-import pl.gov.crd.wzor._2021._12._27._11149.TPodmiotDowolnyBezAdresu.OsobaNiefizyczna;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Ewidencja;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e;
 
-
-import pl.gov.crd.wzor._2021._12._27._11149.TNaglowek;
+import pl.gov.crd.wzor._2021._12._27._11149.TKodFormularza;
+import pl.gov.crd.wzor._2021._12._27._11149.TKodFormularzaVATK;
+import pl.janksiegowy.backend.metric.Metric;
+import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
-import pl.janksiegowy.backend.invoice_line.InvoiceLineQueryRepository;
-import pl.janksiegowy.backend.invoice_line.dto.JpaInvoiceSumDto;
-import pl.janksiegowy.backend.item.ItemType;
-import pl.janksiegowy.backend.metric.MetricRepository;
-import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.IsoFields;
 import java.util.*;
-import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-public class Factory_JPK_V7K_2_v1_0e {
 
-    protected final InvoiceLineQueryRepository lines;
-    protected final MetricRepository metrics;
+public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
 
-    private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "yyyy-MM-dd");
+    private final Map<TaxRate, TriConsumer<Ewidencja.SprzedazWiersz, BigDecimal, BigDecimal>>
+            salesDomesticRowFunctions= Map.of(
+                TaxRate.S1, (sprzedazWiersz, base, vat)-> {
+                    sprzedazWiersz.setK19( Util.sum( sprzedazWiersz.getK19(), base));
+                    sprzedazWiersz.setK20( Util.sum( sprzedazWiersz.getK20(), vat));
+    });
+
+    @Override protected Statement_JPK_V7 prepare( Metric metric) {
+
+        var ewidencja= new Ewidencja_JPK_V7K_2_v1_0e();
+        ewidencja.setNaglowek( new Naglowek() {{
+            wariantFormularza= 2;
+            setKodFormularza( new KodFormularza(){{
+                value= TKodFormularza.JPK_VAT;
+                kodSystemowy= getKodSystemowy();
+                wersjaSchemy= getWersjaSchemy();
+            }});
+
+            setRok( Util.toGregorianYear( period.getBegin()));
+            setMiesiac( (byte)period.getBegin().getMonthValue());
+
+        }});
+
+
+        ewidencja.setPodmiot1( new Podmiot1() {{
+            setRola( getRola());
+            setOsobaNiefizyczna( new OsobaNiefizyczna() {{
+                setNIP( metric.getTaxNumber());
+                setPelnaNazwa( metric.getName());
+                setTelefon( "601-528-601");
+                setEmail( "info@eleutheria.pl");
+            }} );
+        }});
+
+        ewidencja.setEwidencja( new Ewidencja() {{
+            var sprzedazCtrl= new SprzedazCtrl();
+            setSprzedazCtrl( sprzedazCtrl);
+
+            salesInvoice.values().forEach( lines-> {
+                lines.stream()
+                    .findFirst()
+                    .ifPresent( invoice-> getSprzedazWiersz()
+                        .add( new SprzedazWiersz() {{
+                            sprzedazCtrl.setLiczbaWierszySprzedazy(
+                                    Util.sum( sprzedazCtrl.getLiczbaWierszySprzedazy(), BigInteger.ONE));
+                            setLpSprzedazy( sprzedazCtrl.getLiczbaWierszySprzedazy());
+
+                            setDowodSprzedazy( invoice.getInvoiceNumber());
+                            setDataWystawienia( Util.toGregorian( invoice.getIssueDate()));
+                            if( !invoice.getInvoiceDate().isEqual( invoice.getIssueDate()))
+                                setDataSprzedazy( Util.toGregorian( invoice.getInvoiceDate()));
+                            setNazwaKontrahenta( invoice.getEntityName());
+                            setNrKontrahenta( invoice.getTaxNumber());
+                            if( !"PL".equals( invoice.getEntityCountry()))
+                                setKodKrajuNadaniaTIN( invoice.getEntityCountry());
+
+                            Optional.ofNullable( invoice.getSalesKind())
+                                .ifPresent( kind-> {
+                                    if( InvoiceRegisterKind.D== kind) {
+                                        lines.forEach( line-> {
+                                            sprzedazCtrl.setPodatekNalezny(
+                                                    Util.sum( sprzedazCtrl.getPodatekNalezny(), line.getVat()));
+                                            salesDomesticRowFunctions.get( line.getTaxRate())
+                                                    .accept( this, line.getBase(), line.getVat());
+                                        });
+                                    }});
+                            Optional.ofNullable( invoice.getPurchaseKind())
+                                .ifPresent( kind-> {
+                                    sprzedazCtrl.setPodatekNalezny(
+                                            Util.sum( sprzedazCtrl.getPodatekNalezny(), invoice.getVat()));
+                                    switch ( kind) {
+                                        case W -> {
+                                            setK27( Util.addOrAddend( getK27(), invoice.getBase()));
+                                            setK28( Util.addOrAddend( getK28(), invoice.getVat()));}
+                                    }
+                                });
+
+                            }}));
+
+
+            });
+
+            var zakupCtrl= new ZakupCtrl();
+            setZakupCtrl( zakupCtrl);
+            purchaseInvoice.values().forEach( lines-> {
+                lines.stream()
+                    .findFirst()
+                    .ifPresent( invoice -> getZakupWiersz()
+                        .add( new ZakupWiersz() {{
+                            zakupCtrl.setLiczbaWierszyZakupow(
+                                    Util.sum( zakupCtrl.getLiczbaWierszyZakupow(), BigInteger.ONE));
+                            setLpZakupu( zakupCtrl.getLiczbaWierszyZakupow());
+
+                            setDowodZakupu( invoice.getInvoiceNumber());
+                            setDataZakupu( Util.toGregorian( invoice.getIssueDate()));
+                            if( !invoice.getInvoiceDate().isEqual( invoice.getIssueDate()))
+                                setDataWplywu( Util.toGregorian( invoice.getInvoiceDate()));
+                            setNazwaDostawcy( invoice.getEntityName());
+                            setNrDostawcy( invoice.getTaxNumber());
+                            if( !"PL".equals( invoice.getEntityCountry()))
+                                setKodKrajuNadaniaTIN( invoice.getEntityCountry());
+
+                            lines.forEach( line-> {
+                                zakupCtrl.setPodatekNaliczony(
+                                        Util.sum( zakupCtrl.getPodatekNaliczony(), line.getVat()));
+                                switch ( line.getItemType()) {
+                                    case A-> {
+                                        setK40( Util.sum( getK40(), line.getBase()));
+                                        setK41( Util.sum( getK41(), line.getVat()));}
+                                    case S, M, P-> {
+                                        setK42( Util.sum( getK42(), line.getBase()));
+                                        setK43( Util.sum( getK43(), line.getVat()));}
+                                }
+                            });
+                        }}));
+            });
+
+        }});
+
+        if( isLastMonthOfQuarter( period.getBegin())) {
+            ewidencja.setDeklaracja( new Deklaracja_VAT_7K_16_1_0e() {{
+               setNaglowek( new Naglowek() {{
+                   wariantFormularzaDekl= 16;
+                   setKodFormularzaDekl( new KodFormularzaDekl() {{
+                       kodSystemowy= getKodSystemowy();
+                       kodPodatku= getKodPodatku();
+                       rodzajZobowiazania= getRodzajZobowiazania();
+                       wersjaSchemy= getWersjaSchemy();
+                       value= TKodFormularzaVATK.VAT_7_K;
+                   }} );
+               }});
+               setPozycjeSzczegolowe( new PozycjeSzczegolowe() {{
+
+                   setP19( Util.toBigIntegerOrNull( account.getVariable( "Sprzedaz_Netto_S1")));
+                   setP20( Util.toBigIntegerOrNull( account.getVariable( "Sprzedaz_Vat_S1")));
+
+                   setP27( Util.toBigIntegerOrNull( account.getVariable( "Import_Uslug_Netto")));
+                   setP28( Util.toBigIntegerOrNull( account.getVariable( "Import_Uslug_Vat")));
+
+                   setP40( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Trwale_Netto")));
+                   setP41( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Trwale_Vat")));
+                   setP42( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Pozostale_Netto")));
+                   setP43( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Pozostale_Vat")));
+
+                   setP37( Util.toBigIntegerOrZero( account.getVariable( "Razem")));
+                   setP38( Util.toBigIntegerOrZero( account.getVariable( "Razem_Nalezny")));
+                   setP48( Util.toBigIntegerOrZero( account.getVariable( "Razem_Naliczony")));
+
+                   setP51( Util.toBigIntegerOrZero( account.getVariable( "Kwota_Zobowiazania")));
+
+               }});
+            }});
+
+        }
+
+        return ewidencja;
+    }
+
 
     @Value( "${spring.application.name}")
     private String applicationName;
-
+/*
     private final Map<TaxRate, TriConsumer<PozycjeSzczegolowe, BigDecimal, BigDecimal>>
             salesDomesticFunctions= Map.ofEntries(
                     Map.entry( TaxRate.S1, PozycjeSzczegolowe::addP1920 ),
@@ -71,21 +214,24 @@ public class Factory_JPK_V7K_2_v1_0e {
                     ItemType.M, ZakupWiersz::addK4243,
                     ItemType.P, ZakupWiersz::addK4243,
                     ItemType.S, ZakupWiersz::addK4243);
-
-
-    public Ewidencja_JPK_V7K_2_v1_0e create( MonthPeriod period) {
+*/
+/*
+    public Ewidencja_JPK_V7K_2_v1_0e_old create( MonthPeriod period) {
         var sprzedazCtrl=  Ewidencja.SprzedazCtrl.create();
         var zakupCtrl= Ewidencja.ZakupCtrl.create();
 
-        var metric= metrics.findByDate( period.getBegin()).orElseThrow();
+        //var metric= metrics.findByDate( period.getBegin()).orElseThrow();
+
+
+        MetricDto.Proxy metric;
 
         return (isLastMonthOfQuarter( period.getBegin())
-                ? Ewidencja_JPK_V7K_2_v1_0e.create()
-                    .deklaracja( Deklaracja_VAT_7K_16_1_0e.create()
+                ? Ewidencja_JPK_V7K_2_v1_0e_old.create()
+                    .deklaracja( Deklaracja_VAT_7K_16_1_0e_old.create()
                             .naglowek( NaglowekDekalaracji.create()
                                     .kwartal( period.getBegin().get( IsoFields.QUARTER_OF_YEAR)))
                             .pozycjeSzczegolowe( pozycjeSzczegolowe( period)))
-                : Ewidencja_JPK_V7K_2_v1_0e.create())
+                : Ewidencja_JPK_V7K_2_v1_0e_old.create())
                 .naglowek( TNaglowek.create()
                         .kodUrzedu( metric.getRcCode())
                         .nazwaSystemu( applicationName)
@@ -105,10 +251,12 @@ public class Factory_JPK_V7K_2_v1_0e {
                         .zakupCtrl( zakupCtrl)
                         .zakupWiersz( fakturyZakupu( zakupCtrl, period)));
     }
+*/
 
-    private Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe pozycjeSzczegolowe( MonthPeriod period) {
+/*
+    private Deklaracja_VAT_7K_16_1_0e_old.PozycjeSzczegolowe pozycjeSzczegolowe( MonthPeriod period) {
 
-        var pozycjeSzczegolowe= Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe.create();
+        var pozycjeSzczegolowe= Deklaracja_VAT_7K_16_1_0e_old.PozycjeSzczegolowe.create();
 
         // Domestic sales divided by tax rate
         lines.sumSalesByKindAndPeriodGroupByRate( InvoiceRegisterKind.D, period.getParent())
@@ -121,7 +269,7 @@ public class Factory_JPK_V7K_2_v1_0e {
                 List.of( InvoiceRegisterKind.U, InvoiceRegisterKind.W), period.getParent());*/
 
         // Other purchase
-        lines.sumPurchaseByKindAndItemTypeGroupByType(
+/*        lines.sumPurchaseByKindAndItemTypeGroupByType(
                 List.of( InvoiceRegisterKind.U, InvoiceRegisterKind.W), period.getParent())
                         .forEach( sum-> pozycjeSzczegolowe
                             .apply( purchaseOtherFunctions.get( sum.getPurchaseKind()).get( sum.getItemType()),
@@ -223,12 +371,13 @@ public class Factory_JPK_V7K_2_v1_0e {
                 .toList();
     }
 
-
+*/
     /**
         The last month of the quarter is March (3), June (6), September (9), or December (12)
      */
     private boolean isLastMonthOfQuarter( LocalDate date) {
         return date.getMonth().getValue() % 3 == 0;
     }
+
 
 }

@@ -7,15 +7,15 @@ import pl.gov.crd.wzor._2024._02._08._13272.TKodFormularza;
 import pl.gov.crd.wzor._2024._02._08._13272.TNaglowek;
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2022._09._13.ed.definicjetypy.TIdentyfikatorOsobyNiefizycznej1;
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2023._09._06.ed.kodykrajow.TKodKraju;
+import pl.janksiegowy.backend.metric.Metric;
 import pl.janksiegowy.backend.shared.Util;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 
 public class Factory_CIT_8_33_v2_0e extends Factory_CIT_8 {
 
-    @Override public Settlement_CIT_8 prepare() {
+    @Override public Statement_CIT_8 prepare( Metric metric) {
         var deklaracja= new Deklaracja_CIT_8_33_v2_0e();
 
         deklaracja.setNaglowek( new TNaglowek(){{
@@ -87,7 +87,7 @@ public class Factory_CIT_8_33_v2_0e extends Factory_CIT_8 {
             p1422= 1;
             setP144( data.getVariable( "podatek"));
             setP146( data.getVariable( "podatek"));
-            setP148( data.getVariable( "podatek_int").toBigInteger());
+            setP148( data.getVariable( "podatek").toBigInteger());
             setP247( data.getVariable( "podatek").toBigInteger());
             setP259( data.getVariable( "podatek").toBigInteger());
             p315= 2;

@@ -5,26 +5,25 @@
 //
 
 
-package pl.gov.crd.wzor._2021._12._27._11149;
+package pl.gov.crd.xml.schematy.dziedzinowe.mf._2021._06._08.ed.definicjetypy;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
- * Podstawowy zestaw danych identyfikacyjnych o osobie niefizycznej
+ * Podstawowy zestaw danych identyfikacyjnych o osobie niefizycznej  - bez elementu Numer REGON
  * 
- * <p>Java class for TIdentyfikatorOsobyNiefizycznej complex type</p>.
+ * <p>Java class for TIdentyfikatorOsobyNiefizycznej1 complex type</p>.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.</p>
  * 
  * <pre>{@code
- * <complexType name="TIdentyfikatorOsobyNiefizycznej">
+ * <complexType name="TIdentyfikatorOsobyNiefizycznej1">
  *   <complexContent>
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
@@ -46,14 +45,11 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TIdentyfikatorOsobyNiefizycznej", propOrder = {
+@XmlType(name = "TIdentyfikatorOsobyNiefizycznej1", propOrder = {
     "nip",
     "pelnaNazwa"
 })
-@XmlSeeAlso({
-    TPodmiotDowolnyBezAdresu.OsobaNiefizyczna.class
-})
-public class TIdentyfikatorOsobyNiefizycznej {
+public class TIdentyfikatorOsobyNiefizycznej1 {
 
     /**
      * Identyfikator podatkowy NIP

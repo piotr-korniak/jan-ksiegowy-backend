@@ -12,7 +12,8 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 
 public class Util {
 
-    private static final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "dd.MM.yyyy");
+    private static final DateTimeFormatter dd_MM_yyyy= DateTimeFormatter.ofPattern( "dd.MM.yyyy");
+    private static final DateTimeFormatter yyyy_MM_dd= DateTimeFormatter.ofPattern( "yyyy-MM-dd");
     private static final DatatypeFactory datatypeFactory;
 
     static {
@@ -24,10 +25,26 @@ public class Util {
     }
 
     public static LocalDate toLocalDate( String date) {
-        return LocalDate.parse( date.trim(), formatter);
+        return LocalDate.parse( date.trim(), dd_MM_yyyy);
     }
+    public static String format( LocalDate date) {
+        return date.format( yyyy_MM_dd);
+    }
+
     public static XMLGregorianCalendar toGregorian( LocalDate date) {
         return datatypeFactory.newXMLGregorianCalendar( date.toString());
+    }
+
+    public static XMLGregorianCalendar toGregorianYear( LocalDate date) {
+        var year= datatypeFactory.newXMLGregorianCalendar();
+        year.setYear( date.getYear());
+        return year;
+    }
+
+    public static XMLGregorianCalendar toGregorianMonth( LocalDate date) {
+        var month= datatypeFactory.newXMLGregorianCalendar();
+        month.setMonth( date.getMonthValue());
+        return month;
     }
 
     public static LocalDate min( LocalDate date1, LocalDate date2) {
@@ -39,7 +56,7 @@ public class Util {
     }
 
     public static String toString( LocalDate date) {
-        return date.format( formatter);
+        return date.format( dd_MM_yyyy );
     }
 
     public static BigDecimal toBigDecimal( String amount, int precision) {
@@ -63,6 +80,22 @@ public class Util {
 
     public static BigDecimal addOrAddend( BigDecimal augend, BigDecimal addend) {
         return augend!=null? augend.add( addend): addend;
+    }
+
+    public static BigDecimal sum( BigDecimal... addends) {
+        BigDecimal result= BigDecimal.ZERO;
+        for( BigDecimal addend: addends) {
+            result= addend!=null? result.add( addend): result;
+        }
+        return result;
+    }
+
+    public static BigInteger sum( BigInteger... addends) {
+        BigInteger result= BigInteger.ZERO;
+        for( BigInteger addend: addends) {
+            result= addend!=null? result.add( addend): result;
+        }
+        return result;
     }
 
 }

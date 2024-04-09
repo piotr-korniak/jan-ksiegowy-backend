@@ -8,7 +8,6 @@ import pl.janksiegowy.backend.invoice_line.InvoiceLineQueryRepository;
 import pl.janksiegowy.backend.metric.MetricRepository;
 
 import pl.janksiegowy.backend.period.PeriodRepository;
-import pl.janksiegowy.backend.shared.pattern.PatternCode;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
@@ -42,6 +41,11 @@ public class StatementApproval {
                 .map( period-> {
                     var metric= metrics.findByDate( period.getBegin()).orElseThrow();
 
+                    var source= XmlConverter.marshal(
+                            Factory_JPK_V7.create( period, invoiceLines).prepare( metric));
+                    System.err.println( source);
+
+/*
                     var statementDto= statements.findByPatternIdAndPeriod( version, period)
                             .map( statement-> StatementDto.create()
                                     .statementId( statement.getStatementId())
@@ -55,8 +59,8 @@ public class StatementApproval {
                         .periodId( periodId);
 
 
-                    var source= version.accept( new PatternId.PatternJpkVisitor<JpkVat>() {
-                        @Override public JpkVat visit_JPK_V7K_2_v1_0e() {
+                    var source= version.accept( new PatternId.PatternJpkVisitor<Statement_JPK_V7>() {
+                        @Override public Statement_JPK_V7 visit_JPK_V7K_2_v1_0e() {
                             return new Factory_JPK_V7K_2_v1_0e( invoiceLines, metrics).create( period);
                         }
                     } );
@@ -75,8 +79,11 @@ public class StatementApproval {
                                             .due( period.getEnd().plusMonths( 1).withDayOfMonth( 25));
                             }));
 
-                    save( statementDto);
+                    save( statementDto);*/
                     return null;
+
+
+
                 });
     }
 

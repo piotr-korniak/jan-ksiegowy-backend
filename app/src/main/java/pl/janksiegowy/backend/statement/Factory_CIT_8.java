@@ -2,40 +2,30 @@ package pl.janksiegowy.backend.statement;
 
 import pl.janksiegowy.backend.accounting.decree.DecreeLineQueryRepository;
 import pl.janksiegowy.backend.metric.Metric;
-import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.AnnualPeriod;
-import pl.janksiegowy.backend.period.Period;
+import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
-
-public abstract class Factory_CIT_8  {
-    protected Metric metric;
-    protected Period period;
+public abstract class Factory_CIT_8 {
+    protected AnnualPeriod period;
     protected Interpreter data;
 
-    public static Settlement_CIT_8 prepare( AnnualPeriod period, MetricRepository metrics,
-                                            DecreeLineQueryRepository lines) {
+    public static Factory_CIT_8 create( AnnualPeriod period, DecreeLineQueryRepository lines) {
 
-       return metrics.findByDate( period.getEnd())
-           .map( metric-> getPatternId()
-                   .map( version-> version.accept( new PatternId.PatternCitVisitor<Settlement_CIT_8>() {
-                        @Override public Settlement_CIT_8 visit_CIT_8_33_v2_0e() {
-                            return (new Factory_CIT_8_33_v2_0e()).prepare( metric, period, lines);
-                        }
-                   }))
-                   .orElseThrow())
-           .orElseThrow();
+        return getPatternId( Util.min( LocalDate.now(), period.getEnd().plusMonths( 3)))
+                .map( patternId -> patternId.accept( new PatternId.PatternCitVisitor<Factory_CIT_8>() {
+                    @Override public Factory_CIT_8 visit_CIT_8_33_v2_0e() {
+                        return ((Factory_CIT_8) new Factory_CIT_8_33_v2_0e()).prepare( period, lines);
+                    }
+                })).orElseThrow();
     }
 
-    protected abstract Settlement_CIT_8 prepare();
-
-    protected Settlement_CIT_8 prepare( Metric metric, AnnualPeriod period,
-                                      DecreeLineQueryRepository lines) {
-        this.metric= metric;
+    private Factory_CIT_8 prepare( AnnualPeriod period, DecreeLineQueryRepository lines) {
         this.period= period;
         this.data= new Interpreter()
                 .setVariable( "podatek", new BigDecimal( "0.09"))
@@ -53,14 +43,15 @@ public abstract class Factory_CIT_8  {
                 .interpret( "wynik", "[przychody]- [koszty]")
                 .setVariable( "JEDEN", BigDecimal.ONE)
                 .interpret( "podstawa", "[wynik]@ [JEDEN]" )
-                .interpret( "podatek", "[podstawa]* [podatek]")
-                .interpret( "podatek_int", "[podatek]@ [JEDEN]");
-
-        return prepare();
+                .interpret( "podatek", "[podstawa]* [podatek]");
+        return this;
     }
 
-    private static Optional<PatternId> getPatternId() {
+
+    protected abstract Statement_CIT_8 prepare( Metric metric);
+
+
+    private static Optional<PatternId> getPatternId( LocalDate date ) {
         return Optional.of( PatternId.CIT_8_33_v2_0e);
     }
-
 }

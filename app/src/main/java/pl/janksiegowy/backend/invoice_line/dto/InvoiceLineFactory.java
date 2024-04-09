@@ -28,6 +28,8 @@ public class InvoiceLineFactory {
         Optional.ofNullable( invoiceLineDto.getItem())
                 .map( itemDto-> items.findByItemIdAndDate( itemDto.getItemId(), date)
                         .map( item-> item.getTaxMetod().accept( new TaxMetodVisitor<InvoiceLine>() {
+                            // fixme - tax control
+
                             @Override public InvoiceLine visitNL() {
                                 return line.setBase( line.getAmount())
                                         .setCit( line.getAmount())

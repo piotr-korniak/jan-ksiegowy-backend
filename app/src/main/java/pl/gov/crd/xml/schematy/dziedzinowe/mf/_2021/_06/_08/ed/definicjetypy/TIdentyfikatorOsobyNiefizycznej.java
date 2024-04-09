@@ -5,12 +5,11 @@
 //
 
 
-package pl.gov.crd.wzor._2021._12._27._11149;
+package pl.gov.crd.xml.schematy.dziedzinowe.mf._2021._06._08.ed.definicjetypy;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -37,6 +36,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *             </restriction>
  *           </simpleType>
  *         </element>
+ *         <element name="REGON" type="{http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/}TNrREGON" minOccurs="0"/>
  *       </sequence>
  *     </restriction>
  *   </complexContent>
@@ -48,10 +48,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TIdentyfikatorOsobyNiefizycznej", propOrder = {
     "nip",
-    "pelnaNazwa"
-})
-@XmlSeeAlso({
-    TPodmiotDowolnyBezAdresu.OsobaNiefizyczna.class
+    "pelnaNazwa",
+    "regon"
 })
 public class TIdentyfikatorOsobyNiefizycznej {
 
@@ -68,6 +66,12 @@ public class TIdentyfikatorOsobyNiefizycznej {
     @XmlElement(name = "PelnaNazwa", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String pelnaNazwa;
+    /**
+     * Numer REGON
+     * 
+     */
+    @XmlElement(name = "REGON")
+    protected String regon;
 
     /**
      * Identyfikator podatkowy NIP
@@ -117,6 +121,31 @@ public class TIdentyfikatorOsobyNiefizycznej {
      */
     public void setPelnaNazwa(String value) {
         this.pelnaNazwa = value;
+    }
+
+    /**
+     * Numer REGON
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getREGON() {
+        return regon;
+    }
+
+    /**
+     * Sets the value of the regon property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     * @see #getREGON()
+     */
+    public void setREGON(String value) {
+        this.regon = value;
     }
 
 }

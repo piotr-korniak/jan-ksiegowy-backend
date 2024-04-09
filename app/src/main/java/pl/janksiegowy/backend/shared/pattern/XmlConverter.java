@@ -39,11 +39,12 @@ public class XmlConverter<T> {
     public static String marshal( Object pattern ) {
         try {
             var marshaller= JAXBContext.newInstance( pattern.getClass()).createMarshaller();
-            ClassPathResource xsdResource=
+/*            ClassPathResource xsdResource=
                     new ClassPathResource( "pattern/CIT-8(33)_v2_0e.xsd");
             marshaller.setSchema( // Sprawdzenie z szablonem XSD
                     SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI).
-                            newSchema( new StreamSource( xsdResource.getInputStream())));
+                            newSchema( new StreamSource( xsdResource.getInputStream())));*/
+
         /*  marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty( Marshaller.JAXB_ENCODING, "UTF-8");
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);       */
@@ -52,7 +53,7 @@ public class XmlConverter<T> {
             marshaller.marshal( pattern, result);
 
             return transformXml( result.toString()).toString();
-        } catch (JAXBException | IOException | TransformerException | SAXException e ) {
+        } catch (JAXBException | IOException | TransformerException e ) {//| SAXException e ) {
             throw new RuntimeException( e);
         }
     }

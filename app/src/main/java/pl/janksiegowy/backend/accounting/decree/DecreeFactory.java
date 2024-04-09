@@ -25,7 +25,6 @@ import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.salary.Payslip;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
-import pl.janksiegowy.backend.shared.pattern.PatternFactory;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.statement.Statement;
@@ -35,7 +34,6 @@ import pl.janksiegowy.backend.finances.settlement.SettlementKind.SettlementKindV
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -51,7 +49,6 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
     private final DecreeLineFactory line;
     private final PeriodFacade period;
     private final NumeratorFacade numerators;
-    private final PatternFactory patterns;
     private final ClearingRepository clearings;
 
     public Decree from( DecreeDto source) {
@@ -247,7 +244,7 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
 
         var pattern= PatternId.JPK_V7K_2_v1_0e;
 
-        var jpkData= XmlConverter.unmarshal( pattern.accept( patterns).getClass(), statement.getXml());
+//        var jpkData= XmlConverter.unmarshal( pattern.accept( patterns).getClass(), statement.getXml());
 
 
         return templates.findByDocumentTypeAndDate( statement.getType().accept( this), statement.getDate())
@@ -257,11 +254,11 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                             .accept( new StatementFunction.StatementFunctionVisitor<BigDecimal>() {
 
                         @Override public BigDecimal visitPodatekNalezny() {
-                            return new BigDecimal( jpkData.getVatNalezny());
+                            return BigDecimal.ZERO; //new BigDecimal( jpkData.getVatNalezny());
                         }
 
                         @Override public BigDecimal visitPodatekNaliczony() {
-                            return new BigDecimal( jpkData.getVatNaliczony());
+                            return BigDecimal.ZERO; //new BigDecimal( jpkData.getVatNaliczony());
                         }
 
                         @Override public BigDecimal visitKorektaNaleznegoPlus() {
@@ -281,7 +278,7 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                         }
 
                         @Override public BigDecimal visitZobowiazanie() {
-                            return new BigDecimal( jpkData.getP51());
+                            return BigDecimal.ZERO; //new BigDecimal( jpkData.getP51());
                         }
                     } );
                 }

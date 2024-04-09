@@ -37,7 +37,7 @@ import pl.gov.crd.xml.schematy.dziedzinowe.mf._2024._02._05.ed.citpd.ZalacznikCI
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2024._02._05.ed.citpm.ZalacznikCITPM;
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2024._02._05.ed.citww.ZalacznikCITWW;
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2024._02._05.ed.sser.ZalacznikSSER;
-import pl.janksiegowy.backend.statement.Settlement_CIT_8;
+import pl.janksiegowy.backend.statement.Statement_CIT_8;
 
 
 /**
@@ -622,7 +622,7 @@ import pl.janksiegowy.backend.statement.Settlement_CIT_8;
     "zalaczniki"
 })
 @XmlRootElement(name = "Deklaracja")
-public class Deklaracja_CIT_8_33_v2_0e extends Settlement_CIT_8 {
+public class Deklaracja_CIT_8_33_v2_0e extends Statement_CIT_8 {
 
     /**
      * Nagłówek deklaracji

@@ -19,6 +19,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class CitApproval {
@@ -60,8 +61,13 @@ public class CitApproval {
                     .interpret( "zysk_strata", "[wynik]-[podatek]+ [750_2]- [koszty_NUP]" );
 
             if( PeriodType.A== period.getType()) {
-                System.err.println( XmlConverter
-                        .marshal( Factory_CIT_8.prepare( (AnnualPeriod)period, metrics, lines)));
+
+                var source= metrics.findByDate( period.getEnd())
+                        .map( metric -> XmlConverter.marshal(
+                                Factory_CIT_8.create( (AnnualPeriod)period, lines).prepare( metric)))
+                        .orElseThrow();
+
+                System.err.println( source);
 
                 statement.save( StatementDto.create()
                         .type( StatementType.C)

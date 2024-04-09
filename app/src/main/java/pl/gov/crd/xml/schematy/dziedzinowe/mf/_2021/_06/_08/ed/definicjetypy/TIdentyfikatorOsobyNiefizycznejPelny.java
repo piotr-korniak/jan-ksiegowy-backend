@@ -5,30 +5,29 @@
 //
 
 
-package pl.gov.crd.wzor._2021._12._27._11149;
+package pl.gov.crd.xml.schematy.dziedzinowe.mf._2021._06._08.ed.definicjetypy;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
- * Podstawowy zestaw danych identyfikacyjnych o osobie niefizycznej
+ * Pełny zestaw danych identyfikacyjnych o osobie niefizycznej
  * 
- * <p>Java class for TIdentyfikatorOsobyNiefizycznej complex type</p>.
+ * <p>Java class for TIdentyfikatorOsobyNiefizycznejPelny complex type</p>.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.</p>
  * 
  * <pre>{@code
- * <complexType name="TIdentyfikatorOsobyNiefizycznej">
+ * <complexType name="TIdentyfikatorOsobyNiefizycznejPelny">
  *   <complexContent>
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
- *         <element name="NIP" type="{http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/}TNrNIP"/>
+ *         <element name="NIP" type="{http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/}TNrNIP" minOccurs="0"/>
  *         <element name="PelnaNazwa">
  *           <simpleType>
  *             <restriction base="{http://www.w3.org/2001/XMLSchema}token">
@@ -37,6 +36,15 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *             </restriction>
  *           </simpleType>
  *         </element>
+ *         <element name="SkroconaNazwa">
+ *           <simpleType>
+ *             <restriction base="{http://www.w3.org/2001/XMLSchema}token">
+ *               <minLength value="1"/>
+ *               <maxLength value="70"/>
+ *             </restriction>
+ *           </simpleType>
+ *         </element>
+ *         <element name="REGON" type="{http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/}TNrREGON"/>
  *       </sequence>
  *     </restriction>
  *   </complexContent>
@@ -46,20 +54,19 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TIdentyfikatorOsobyNiefizycznej", propOrder = {
+@XmlType(name = "TIdentyfikatorOsobyNiefizycznejPelny", propOrder = {
     "nip",
-    "pelnaNazwa"
+    "pelnaNazwa",
+    "skroconaNazwa",
+    "regon"
 })
-@XmlSeeAlso({
-    TPodmiotDowolnyBezAdresu.OsobaNiefizyczna.class
-})
-public class TIdentyfikatorOsobyNiefizycznej {
+public class TIdentyfikatorOsobyNiefizycznejPelny {
 
     /**
      * Identyfikator podatkowy NIP
      * 
      */
-    @XmlElement(name = "NIP", required = true)
+    @XmlElement(name = "NIP")
     protected String nip;
     /**
      * Pełna nazwa
@@ -68,6 +75,19 @@ public class TIdentyfikatorOsobyNiefizycznej {
     @XmlElement(name = "PelnaNazwa", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String pelnaNazwa;
+    /**
+     * Skrócona nazwa
+     * 
+     */
+    @XmlElement(name = "SkroconaNazwa", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String skroconaNazwa;
+    /**
+     * Numer REGON
+     * 
+     */
+    @XmlElement(name = "REGON", required = true)
+    protected String regon;
 
     /**
      * Identyfikator podatkowy NIP
@@ -117,6 +137,56 @@ public class TIdentyfikatorOsobyNiefizycznej {
      */
     public void setPelnaNazwa(String value) {
         this.pelnaNazwa = value;
+    }
+
+    /**
+     * Skrócona nazwa
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSkroconaNazwa() {
+        return skroconaNazwa;
+    }
+
+    /**
+     * Sets the value of the skroconaNazwa property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     * @see #getSkroconaNazwa()
+     */
+    public void setSkroconaNazwa(String value) {
+        this.skroconaNazwa = value;
+    }
+
+    /**
+     * Numer REGON
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getREGON() {
+        return regon;
+    }
+
+    /**
+     * Sets the value of the regon property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     * @see #getREGON()
+     */
+    public void setREGON(String value) {
+        this.regon = value;
     }
 
 }

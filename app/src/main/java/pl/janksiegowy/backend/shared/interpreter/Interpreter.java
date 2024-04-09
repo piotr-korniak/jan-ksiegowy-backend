@@ -13,6 +13,10 @@ public class Interpreter {
     private final Map<String, BigDecimal> context= new HashMap<>();
     private final Pattern pattern= Pattern.compile( "[a-zA-Z0-9_]+|[+\\-*@]");//("\\d+|[+\\-*/]");
 
+    public boolean isVariable( String key) {
+        return context.containsKey( key);
+    }
+
     public Interpreter setVariable( String key, BigDecimal value) {
         //System.err.println( "SetVariable ("+key+"): "+ value);
         context.put( key, value);
@@ -25,6 +29,21 @@ public class Interpreter {
 
     public Interpreter interpret( String key, String expression) {
         return setVariable( key, interpret( expression));
+    }
+
+    public Interpreter add( String result, BigDecimal addend) {
+        return getVariable( result)== null? setVariable( result, addend):
+                setVariable( "98d4e0798e934f0c946ffdf64cba0bc7", addend)
+                .interpret( result, "["+result+"]+ [98d4e0798e934f0c946ffdf64cba0bc7]");
+    }
+
+    public Interpreter sum( String result, String... addends) {
+        setVariable( result, BigDecimal.ZERO);
+        for( String addend: addends) {
+            if( getVariable( addend )!= null)
+                interpret( result, "["+result+"]+ ["+addend+"]" );
+        }
+        return this;
     }
 
     public BigDecimal interpret( String expression) {
