@@ -8,5 +8,5 @@ public interface TemplateRepository {
     Template save( Template template);
 
     Optional<Template> findTemplateByTemplateIdAndDate( UUID templateId, LocalDate date );
-    Optional<Template> findByDocumentTypeAndDate( DocumentType type, LocalDate date );
+    Optional<Template> findByDocumentTypeAndDate( TemplateType type, LocalDate date );
 }

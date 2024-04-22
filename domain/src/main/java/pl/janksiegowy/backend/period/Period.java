@@ -69,4 +69,5 @@ public class Period {
             begin= min;
         return this;
     }
+
 }

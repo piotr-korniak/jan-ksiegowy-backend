@@ -4,6 +4,6 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue( "V")
-public class VatStatement extends StatementDocument {
+@DiscriminatorValue( "R")
+public class JpkStatement extends Statement{
 }

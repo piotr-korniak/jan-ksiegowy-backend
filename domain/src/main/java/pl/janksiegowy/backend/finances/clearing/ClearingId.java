@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @EqualsAndHashCode
 public class ClearingId implements Serializable {
-    private UUID receivable;
-    private UUID payable;
+    private UUID receivableId;
+    private UUID payableId;
 
 }

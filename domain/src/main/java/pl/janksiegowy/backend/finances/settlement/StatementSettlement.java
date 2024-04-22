@@ -1,7 +1,11 @@
 package pl.janksiegowy.backend.finances.settlement;
 
 import jakarta.persistence.*;
+import pl.janksiegowy.backend.finances.clearing.Clearing;
 import pl.janksiegowy.backend.statement.Statement;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue( "S")
@@ -20,5 +24,20 @@ public class StatementSettlement extends Settlement {
 
     @Override public <T> T accept( SettlementVisitor<T> visitor) {
         return visitor.visit( this );
+    }
+
+    @Override
+    public BigDecimal getAmount() {
+        return null;
+    }
+
+    @Override
+    public Settlement setAmount( BigDecimal amount ) {
+        return null;
+    }
+
+    @Override
+    public Settlement setClearings( List<Clearing> clearings ) {
+        return null;
     }
 }

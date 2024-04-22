@@ -2,21 +2,23 @@ package pl.janksiegowy.backend.finances.payment;
 
 public enum PaymentType {
 
-    R { // Payment Receipt
-        @Override public <T> T accept( PaymentTypeVisitor<T> visitor) {
+    /** Payment Receipt */
+    R { @Override public <T> T accept( PaymentTypeVisitor<T> visitor) {
             return visitor.visitPaymentReceipt();
-        }
-    },
-    S { // Payment Spend
-        @Override public <T> T accept( PaymentTypeVisitor<T> visitor) {
-            return visitor.visitPaymentSpend();
-        }
-    };
+        }},
+
+    /**
+     * Payment Expense
+     */
+    E { @Override public <T> T accept( PaymentTypeVisitor<T> visitor) {
+            return visitor.visitPaymentExpense();
+        }};
+
 
     public abstract <T> T accept( PaymentTypeVisitor<T> visitor);
 
     public interface PaymentTypeVisitor<T> {
         T visitPaymentReceipt();
-        T visitPaymentSpend();
+        T visitPaymentExpense();
     }
 }

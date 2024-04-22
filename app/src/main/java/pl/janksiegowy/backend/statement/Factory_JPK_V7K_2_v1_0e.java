@@ -11,6 +11,7 @@ import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Deklaracja
 import pl.gov.crd.wzor._2021._12._27._11149.TKodFormularza;
 import pl.gov.crd.wzor._2021._12._27._11149.TKodFormularzaVATK;
 import pl.janksiegowy.backend.metric.Metric;
+import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
@@ -18,6 +19,7 @@ import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 import java.util.*;
 
 
@@ -41,6 +43,14 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
                 wersjaSchemy= getWersjaSchemy();
             }});
 
+
+            setDataWytworzeniaJPK( Util.gregorianNow());
+            setCelZlozenia( new CelZlozenia() {{
+                value= reason;
+                setPoz( getPoz());
+            }} );
+
+            setKodUrzedu( metric.getRcCode());
             setRok( Util.toGregorianYear( period.getBegin()));
             setMiesiac( (byte)period.getBegin().getMonthValue());
 
@@ -142,9 +152,10 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
 
         }});
 
-        if( isLastMonthOfQuarter( period.getBegin())) {
+        if( isSettlement()) {
             ewidencja.setDeklaracja( new Deklaracja_VAT_7K_16_1_0e() {{
-               setNaglowek( new Naglowek() {{
+                pouczenia= BigDecimal.ONE;
+                setNaglowek( new Naglowek() {{
                    wariantFormularzaDekl= 16;
                    setKodFormularzaDekl( new KodFormularzaDekl() {{
                        kodSystemowy= getKodSystemowy();
@@ -152,28 +163,33 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
                        rodzajZobowiazania= getRodzajZobowiazania();
                        wersjaSchemy= getWersjaSchemy();
                        value= TKodFormularzaVATK.VAT_7_K;
-                   }} );
+
+                   }});
+
+                   setKwartal( (byte) period.getBegin().get( IsoFields.QUARTER_OF_YEAR));
+                }});
+
+                setPozycjeSzczegolowe( new PozycjeSzczegolowe() {{
+
+                    setP19( Util.toBigIntegerOrNull( account.getVariable( "Sprzedaz_Netto_S1")));
+                    setP20( Util.toBigIntegerOrNull( account.getVariable( "Sprzedaz_Vat_S1")));
+
+                    setP27( Util.toBigIntegerOrNull( account.getVariable( "Import_Uslug_Netto")));
+                    setP28( Util.toBigIntegerOrNull( account.getVariable( "Import_Uslug_Vat")));
+
+                    setP40( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Trwale_Netto")));
+                    setP41( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Trwale_Vat")));
+                    setP42( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Pozostale_Netto")));
+                    setP43( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Pozostale_Vat")));
+
+                    setP37( Util.toBigIntegerOrZero( account.getVariable( "Razem")));
+                    setP38( Util.toBigIntegerOrZero( account.getVariable( "Razem_Nalezny")));
+                    setP48( Util.toBigIntegerOrZero( account.getVariable( "Razem_Naliczony")));
+
+                    setP51( Util.toBigIntegerOrZero( account.getVariable( "Kwota_Zobowiazania")));
+
                }});
-               setPozycjeSzczegolowe( new PozycjeSzczegolowe() {{
 
-                   setP19( Util.toBigIntegerOrNull( account.getVariable( "Sprzedaz_Netto_S1")));
-                   setP20( Util.toBigIntegerOrNull( account.getVariable( "Sprzedaz_Vat_S1")));
-
-                   setP27( Util.toBigIntegerOrNull( account.getVariable( "Import_Uslug_Netto")));
-                   setP28( Util.toBigIntegerOrNull( account.getVariable( "Import_Uslug_Vat")));
-
-                   setP40( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Trwale_Netto")));
-                   setP41( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Trwale_Vat")));
-                   setP42( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Pozostale_Netto")));
-                   setP43( Util.toBigIntegerOrNull( account.getVariable( "Zakupy_Pozostale_Vat")));
-
-                   setP37( Util.toBigIntegerOrZero( account.getVariable( "Razem")));
-                   setP38( Util.toBigIntegerOrZero( account.getVariable( "Razem_Nalezny")));
-                   setP48( Util.toBigIntegerOrZero( account.getVariable( "Razem_Naliczony")));
-
-                   setP51( Util.toBigIntegerOrZero( account.getVariable( "Kwota_Zobowiazania")));
-
-               }});
             }});
 
         }
@@ -182,8 +198,7 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
     }
 
 
-    @Value( "${spring.application.name}")
-    private String applicationName;
+
 /*
     private final Map<TaxRate, TriConsumer<PozycjeSzczegolowe, BigDecimal, BigDecimal>>
             salesDomesticFunctions= Map.ofEntries(
@@ -372,12 +387,20 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
     }
 
 */
+
     /**
-        The last month of the quarter is March (3), June (6), September (9), or December (12)
+     The last month of the quarter is March (3), June (6), September (9), or December (12)
      */
-    private boolean isLastMonthOfQuarter( LocalDate date) {
-        return date.getMonth().getValue() % 3 == 0;
+    @Override protected boolean isSettlement() {
+        return period.getEnd().getMonthValue()% 3 == 0;
     }
 
+    @Override protected String getNumber() {
+        return "VAT-7K "+ period.getEnd().getYear()+ "K"+
+                (( period.getEnd().getMonth().getValue()- 1) / 3 + 1);
+    }
 
+    @Override protected Period getPeriod() {
+        return period.getParent();
+    }
 }

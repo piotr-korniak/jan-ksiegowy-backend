@@ -50,7 +50,9 @@ public class MigrationConfiguration {
             NumeratorDto.create().code( NumeratorCode.AC)   // Accounting Registers
                 .type( NumeratorType.M).typed( true).mask( "%T %N/%M/%2Y").name( "Rejestry Księgowe"),
             NumeratorDto.create().code( NumeratorCode.RE)   // Accounting Registers
-                .type( NumeratorType.E).typed( true).mask( "%2N").name( "Rejestry")
+                .type( NumeratorType.E).typed( true).mask( "%2N").name( "Rejestry"),
+            NumeratorDto.create().code( NumeratorCode.ST)   // Statement
+                .type( NumeratorType.M).typed( true).mask( "%3N").name( "Deklaracje")
         };
     }
 
@@ -123,7 +125,7 @@ public class MigrationConfiguration {
     protected List<TemplateMap> getInitialTemplates() {
         return List.of(
             new TemplateMap( TemplateDto.create().code( "BW/KW")
-                    .documentType( DocumentType.PS)
+                    .documentType( TemplateType.PS)
                     .date( LocalDate.EPOCH)
                     .registerCode( "BK")
                     .name( "Bank/Kasa Wyda"))
@@ -155,7 +157,7 @@ public class MigrationConfiguration {
                             .account( AccountDto.create().number( "755-1"))
                             .description( "zaksięgowanie kosztów")),
             new TemplateMap( TemplateDto.create().code( "BP/KP")
-                    .documentType( DocumentType.PR)
+                    .documentType( TemplateType.PR)
                     .date( LocalDate.EPOCH)
                     .registerCode( "BK")
                     .name( "Bank/Kasa Przyjmie"))
@@ -177,7 +179,7 @@ public class MigrationConfiguration {
                             .account( AccountDto.create().number( "130-[B]"))
                             .description( "wpłata do banku")),
             new TemplateMap( TemplateDto.create().code( "FS")
-                    .documentType( DocumentType.IS)
+                    .documentType( TemplateType.IS)
                     .date( LocalDate.EPOCH)
                     .registerCode( "FS")
                     .name( "Faktura sprzedaży"))
@@ -197,7 +199,7 @@ public class MigrationConfiguration {
                             .account( AccountDto.create().number( "703"))
                             .description( "sprzedaż usług")),
             new TemplateMap( TemplateDto.create().code( "FK")
-                    .documentType( DocumentType.IP)
+                    .documentType( TemplateType.IP)
                     .date( LocalDate.EPOCH)
                     .registerCode( "FK")
                     .name( "Faktura kosztowa"))
@@ -232,7 +234,7 @@ public class MigrationConfiguration {
                             .account( AccountDto.create().number( "403-2"))
                             .description( "koszty usług bez odliczenia")),
             new TemplateMap( TemplateDto.create().code( "DV")
-                        .documentType( DocumentType.SV)
+                        .documentType( TemplateType.SV)
                         .date( LocalDate.EPOCH)
                         .registerCode( "PK")
                         .name( "Deklaracja VAT"))
@@ -292,7 +294,7 @@ public class MigrationConfiguration {
                             .account( AccountDto.create().number( "221-3"))
                             .description( "zobowiązanie z tytułu VAT")),
                 new TemplateMap( TemplateDto.create().code( "EP")
-                        .documentType( DocumentType.EP)
+                        .documentType( TemplateType.EP)
                         .date( LocalDate.EPOCH)
                         .registerCode( "PL")
                         .name( "Odcinek wypłaty"))
@@ -328,7 +330,7 @@ public class MigrationConfiguration {
                             .description( "do wypłaty" )),
                 new TemplateMap( TemplateDto.create().code( "NR")
                         .name( "Nota Odsetkowa Otrzymana")
-                        .documentType( DocumentType.NR)
+                        .documentType( TemplateType.NR)
                         .date( LocalDate.EPOCH)
                         .registerCode( "PK"))
                     .add( TemplateLineDto.create()
@@ -343,7 +345,7 @@ public class MigrationConfiguration {
                             .description( "wartość noty otrzymanej")),
                 new TemplateMap( TemplateDto.create().code( "FE")
                         .name( "Opłata, podatek")
-                        .documentType( DocumentType.FE)
+                        .documentType( TemplateType.FE)
                         .date( LocalDate.EPOCH)
                         .registerCode( "PK"))
                     .add( TemplateLineDto.create()

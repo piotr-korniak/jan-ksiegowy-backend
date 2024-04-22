@@ -1,6 +1,6 @@
 package pl.janksiegowy.backend.accounting.template;
 
-public enum DocumentType {
+public enum TemplateType {
 
     /**
      * Sales Invoice

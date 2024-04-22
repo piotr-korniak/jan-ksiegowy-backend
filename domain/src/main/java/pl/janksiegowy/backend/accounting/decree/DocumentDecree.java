@@ -4,15 +4,15 @@ import jakarta.persistence.*;
 import pl.janksiegowy.backend.finances.settlement.Settlement;
 
 @Entity
-@DiscriminatorValue( "S")
-public class SettlementDecree extends Decree {
+@DiscriminatorValue( "D")
+public class DocumentDecree extends Decree {
 
-    @OneToOne( cascade= CascadeType.ALL, fetch= FetchType.EAGER)
+    @OneToOne( cascade= CascadeType.ALL)
     @JoinColumn( name= "ID")   //, referencedColumnName= "ID")
     @MapsId
     protected Settlement settlement;
 
-    public SettlementDecree setSettlement( Settlement settlement) {
+    public DocumentDecree setSettlement( Settlement settlement) {
         this.settlement= settlement;
         return this;
     }

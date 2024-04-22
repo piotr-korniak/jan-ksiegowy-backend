@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.xml.datatype.XMLGregorianCalendar;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -423,6 +424,30 @@ import pl.janksiegowy.backend.statement.Statement_JPK_V7;
 @XmlRootElement(name = "JPK")
 public class Ewidencja_JPK_V7K_2_v1_0e extends Statement_JPK_V7 {
 
+    @Override public BigDecimal getZobowiazanie() {
+        if( getDeklaracja()== null)
+            return BigDecimal.ZERO;
+
+        return Optional.ofNullable( deklaracja.getPozycjeSzczegolowe().getP51())
+                .map( BigDecimal::new).orElseGet(()-> BigDecimal.ZERO);
+    }
+
+    @Override public BigDecimal getVatNalezny() {
+        if( getDeklaracja()== null)
+            return BigDecimal.ZERO;
+
+        return Optional.ofNullable( deklaracja.getPozycjeSzczegolowe().getP38())
+                .map( BigDecimal::new).orElseGet(()-> BigDecimal.ZERO);
+    }
+
+    @Override public BigDecimal getVatNaliczony() {
+        if( getDeklaracja()== null)
+            return BigDecimal.ZERO;
+
+        return Optional.ofNullable( deklaracja.getPozycjeSzczegolowe().getP48())
+                .map( BigDecimal::new).orElseGet(()-> BigDecimal.ZERO);
+    }
+
     /**
      * Nagłówek JPK_VAT
      * 
@@ -542,7 +567,6 @@ public class Ewidencja_JPK_V7K_2_v1_0e extends Statement_JPK_V7 {
     public void setEwidencja( Ewidencja value) {
         this.ewidencja = value;
     }
-
 
     /**
      * <p>Java class for anonymous complex type</p>.

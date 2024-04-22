@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import pl.gov.crd.wzor._2024._02._08._13272.Deklaracja_CIT_8_33_v2_0e;
 import pl.janksiegowy.backend.accounting.decree.DecreeLineQueryRepository;
 import pl.janksiegowy.backend.metric.MetricRepository;
-import pl.janksiegowy.backend.period.AnnualPeriod;
-import pl.janksiegowy.backend.period.Period;
-import pl.janksiegowy.backend.period.PeriodRepository;
-import pl.janksiegowy.backend.period.PeriodType;
+import pl.janksiegowy.backend.period.*;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.interpreter.DecreeLineFunction;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
@@ -69,7 +66,7 @@ public class CitApproval {
 
                 System.err.println( source);
 
-                statement.save( StatementDto.create()
+                statement.save( (MonthPeriod) period, StatementDto.create()
                         .type( StatementType.C)
                         .date( Util.min( LocalDate.now(), period.getEnd().plusMonths( 3)))
                         .liability( inter.getVariable( "podatek"))

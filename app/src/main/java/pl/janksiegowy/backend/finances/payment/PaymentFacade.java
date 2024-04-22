@@ -18,7 +18,8 @@ import java.util.Optional;
 public class PaymentFacade {
 
     private final PaymentFactory payment;
-    private final PaymentRepository payments;
+    //private final PaymentRepository payments;
+    private final PaymentDocumentRepository payments;
 
     private final ClearingFactory clearing;
     private final ClearingRepository clearings;
@@ -38,7 +39,7 @@ public class PaymentFacade {
 
     public PaymentRegister save( RegisterDto source) {
         return registers.save( Optional.ofNullable( source.getRegisterId())
-                .map( uuid -> register.update( source))
+                .map( uuid-> register.update( source))
                 .orElse( register.from( source)));
     }
 

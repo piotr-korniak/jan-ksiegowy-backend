@@ -14,7 +14,7 @@ public interface SqlPaymentDocumentRepository extends JpaRepository<Document, UU
 class PaymentDocumentRepositoryImpl implements PaymentDocumentRepository {
 
     private final SqlPaymentDocumentRepository repository;
-    @Override public PaymentDocument save( PaymentDocument payment) {
+    @Override public Payment save( Payment payment) {
         return repository.save( payment);
     }
 }

@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineQueryRepository;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
+import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
 @TenantController
@@ -21,8 +22,9 @@ public class StatementController {
                                 final MetricRepository metric,
                                 final StatementRepository statements,
                                 final EntityQueryRepository entities,
-                                final InvoiceLineQueryRepository invoiceLines ) {
-        this.approval= new StatementApproval( periods, statement, metric, statements, entities, invoiceLines);
+                                final InvoiceLineQueryRepository invoiceLines,
+                                final NumeratorFacade numerator) {
+        this.approval= new StatementApproval( periods, statement, metric, statements, entities, invoiceLines, numerator);
     }
 
     @PostMapping

@@ -14,8 +14,8 @@ public interface ClearingDto {
     }
 
     BigDecimal getAmount();
-    UUID getReceivable();
-    UUID getPayable();
+    UUID getReceivableId();
+    UUID getPayableId();
     LocalDate getDate();
 
 
@@ -31,10 +31,10 @@ public interface ClearingDto {
         @Override public BigDecimal getAmount() {
             return amount;
         }
-        @Override public UUID getReceivable() {
+        @Override public UUID getReceivableId() {
             return receivable;
         }
-        @Override public UUID getPayable() {
+        @Override public UUID getPayableId() {
             return payable;
         }
         @Override public LocalDate getDate() {

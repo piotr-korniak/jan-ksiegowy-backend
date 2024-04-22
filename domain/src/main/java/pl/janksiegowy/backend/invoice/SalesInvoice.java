@@ -1,18 +1,23 @@
 package pl.janksiegowy.backend.invoice;
 
 import jakarta.persistence.*;
+import pl.janksiegowy.backend.finances.document.Document;
+import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 import pl.janksiegowy.backend.register.invoice.SalesRegister;
 
 import java.math.BigDecimal;
 
 @Entity
-//@Table( name= "INVOICES")
 @DiscriminatorValue( "S")
-//@DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING)
+@SecondaryTable( name= Invoice.TABLE_NAME, pkJoinColumns= @PrimaryKeyJoinColumn( name="ID"))
 public class SalesInvoice extends Invoice {
 
+    @Enumerated( EnumType.STRING)
+    private SettlementKind kind= SettlementKind.D;
+
     @ManyToOne
+    @JoinColumn( table= TABLE_NAME)
     private SalesRegister register;
 
     public Invoice setRegister( SalesRegister register) {
@@ -30,7 +35,17 @@ public class SalesInvoice extends Invoice {
 
     @Override
     public BigDecimal getAmountDue() {
-        return settlement.getDt();
+        return getDt();
     };
+
+    @Override
+    public Document setAmount( BigDecimal amount ) {
+        return null;
+    }
+
+    @Override
+    public BigDecimal getAmount() {
+        return null;
+    }
 
 }

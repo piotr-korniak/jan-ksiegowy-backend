@@ -1,15 +1,14 @@
 package pl.janksiegowy.backend.finances.clearing;
 
 import pl.janksiegowy.backend.finances.settlement.Settlement;
-import pl.janksiegowy.backend.statement.StatementType;
 
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.UUID;
 
 public interface ClearingRepository {
 
     Clearing save( Clearing clearing);
-    List<Clearing> receivable( Settlement settlement);
-    List<Clearing> payable( Settlement settlement);
+    List<Clearing> receivableId( UUID settlementId);
+    List<Clearing> payableId( UUID settlementId);
 
 }

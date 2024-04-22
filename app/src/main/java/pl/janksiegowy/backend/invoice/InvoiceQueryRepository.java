@@ -7,6 +7,6 @@ public interface InvoiceQueryRepository {
 
     <T> List<T> findBy( Class<T> type);
 
-    <T> Optional<T> findBySettlementNumber( Class<T> type, String number);
+    <T> Optional<T> findByNumber( Class<T> type, String number);
 
 }

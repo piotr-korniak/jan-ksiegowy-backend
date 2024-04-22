@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.accounting.decree.SettlementDecree;
 import pl.janksiegowy.backend.finances.clearing.Clearing;
 import pl.janksiegowy.backend.period.MonthPeriod;
 
@@ -21,7 +20,7 @@ import java.util.UUID;
 @Table( name= "SETTLEMENTS")
 
 @Inheritance( strategy= InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING, length= 1)
+@DiscriminatorColumn( name= "KIND", discriminatorType= DiscriminatorType.STRING, length= 1)
 public abstract class Settlement {
 
     @Id
@@ -29,12 +28,12 @@ public abstract class Settlement {
     protected UUID settlementId;
 
     @Enumerated( EnumType.STRING)
+    @Column( insertable= false, updatable= false)
     private SettlementKind kind;
 
-    @OneToMany( mappedBy = "receivable")
-    private List<Clearing> receivable;
-    @OneToMany( mappedBy = "payable")
-    private List<Clearing> payable;
+    @Enumerated( EnumType.STRING)
+    @Column( insertable= false, updatable= false)
+    private SettlementType type;
 
     private LocalDate date;
     private LocalDate due;
@@ -44,32 +43,17 @@ public abstract class Settlement {
     @ManyToOne( fetch= FetchType.LAZY)
     private MonthPeriod period;
 
-    private BigDecimal dt= BigDecimal.ZERO;
-    private BigDecimal ct= BigDecimal.ZERO;
+    protected BigDecimal dt= BigDecimal.ZERO;
+    protected BigDecimal ct= BigDecimal.ZERO;
 
-    @ManyToOne( fetch= FetchType.EAGER)
+    @ManyToOne
+    @JoinColumn( updatable= false, insertable= false)
     protected pl.janksiegowy.backend.entity.Entity entity;
+    @Column( name= "ENTITY_ID")
+    private long entityId;
 
-    @OneToOne( mappedBy= "settlement", cascade = CascadeType.ALL)
-    protected SettlementDecree decree;
-
-    @Enumerated( EnumType.STRING)
-    @Column( insertable= false, updatable= false)
-    private SettlementType type;
-
-    public SettlementType getType() {
-        return SettlementType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
-    }
-
-    public Settlement setDecree( SettlementDecree decree ) {
-        this.decree= decree;
-        decree.setSettlement( this);
-        return this;
-    }
-
-    public Settlement setEntity( pl.janksiegowy.backend.entity.Entity entity) {
-        this.entity= entity;
-        return this;
+    public SettlementKind getKind() {
+        return SettlementKind.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
     }
 
     public Settlement setDate( LocalDate date) {
@@ -102,15 +86,15 @@ public abstract class Settlement {
         return this;
     }
 
-    public Settlement setKind( SettlementKind kind) {
-        this.kind= kind;
-        return this;
-    }
 
     public abstract <T> T accept( SettlementVisitor<T> visitor);
 
+    public abstract BigDecimal getAmount();
+    public abstract Settlement setAmount( BigDecimal amount);
+
+    public abstract Settlement setClearings( List<Clearing> clearings);
+
     public interface SettlementVisitor<T> {
-        T visit( InvoiceSettlement invoice );
         T visit( StatementSettlement statement);
         T visit( PaymentSettlement payment);
         T visit( PayslipSettlement payslip);

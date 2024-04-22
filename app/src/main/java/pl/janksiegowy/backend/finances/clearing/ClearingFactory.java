@@ -1,7 +1,6 @@
 package pl.janksiegowy.backend.finances.clearing;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.finances.clearing.Clearing;
 import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.settlement.SettlementRepository;
 
@@ -12,12 +11,13 @@ public class ClearingFactory {
 
     public Clearing from( ClearingDto source ) {
 
-        repository.findByDocument( source.getReceivable());
+        repository.findByDocument( source.getReceivableId());
 
         return new Clearing()
                 .setDate( source.getDate())
-                .setSettlement( source.getAmount(),
-                    repository.findByDocument( source.getReceivable()).orElseThrow(),
-                    repository.findByDocument( source.getPayable()).orElseThrow());
+                .setSettlement( source.getAmount(), source.getReceivableId(), source.getPayableId());
+                //.setSettlement( source.getAmount(),
+                //    repository.findByDocument( source.getReceivable()).orElseThrow(),
+                //    repository.findByDocument( source.getPayable()).orElseThrow());
     }
 }

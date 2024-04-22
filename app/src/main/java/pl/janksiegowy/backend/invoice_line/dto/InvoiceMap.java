@@ -22,8 +22,8 @@ public class InvoiceMap implements InvoiceDto {
     }
 
     @Override
-    public UUID getInvoiceId() {
-        return invoice.getInvoiceId();
+    public UUID getDocumentId() {
+        return invoice.getDocumentId();
     }
 
     @Override
@@ -52,13 +52,13 @@ public class InvoiceMap implements InvoiceDto {
     }
 
     @Override
-    public LocalDate getIssueDate() {
-        return invoice.getIssueDate();
+    public LocalDate getDate() {
+        return invoice.getDate();
     }
 
     @Override
-    public LocalDate getDueDate() {
-        return invoice.getInvoiceDate();
+    public LocalDate getDue() {
+        return invoice.getDue();
     }
 
     @Override

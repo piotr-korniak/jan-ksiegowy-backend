@@ -9,10 +9,9 @@ import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.metric.MetricRepository;
+import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
-import pl.janksiegowy.backend.finances.settlement.InvoiceSettlement;
-import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,30 +31,29 @@ public class InvoiceFactory {
     private final InvoiceLineFactory line;
 
     public Invoice from( InvoiceDto source) {
-
+        System.err.println( "Invoice type: "+ source.getType());
         return update( source, source.getType().accept( new InvoiceTypeVisitor<Invoice>() {
 
             @Override public Invoice visitSalesInvoice() {
                 return registers.findSalesRegisterByCode( source.getRegister().getCode())
                         .map( register-> new SalesInvoice()
                                 .setRegister( register)
-                                .setSettlement( (InvoiceSettlement)
-                                        new InvoiceSettlement().setKind( SettlementKind.D)))
-                        .orElseThrow();
+                           //     .setSettlement( (InvoiceSettlement)
+                           //             new InvoiceSettlement().setKind( SettlementKind.D)))
+                        ).orElseThrow();
             }
 
             @Override public Invoice visitPurchaseInvoice() {
                 return registers.findPurchaseRegisterByCode( source.getRegister().getCode())
                         .map( register-> new PurchaseInvoice()
                                 .setRegister( register)
-                                .setSettlement( (InvoiceSettlement)
-                                        new InvoiceSettlement().setKind( SettlementKind.C)))
-                        .orElseThrow();
+                         //       .setSettlement( (InvoiceSettlement)
+                         //               new InvoiceSettlement().setKind( SettlementKind.C)))
+                        ).orElseThrow();
             }
 
 
-        }).setInvoiceId( Optional.ofNullable( source.getInvoiceId())
-                .orElseGet(()-> UUID.randomUUID())));
+        }));
     }
 
     public Invoice update( InvoiceDto source, Invoice invoice) {
@@ -67,14 +65,19 @@ public class InvoiceFactory {
         Optional.ofNullable( source.getLineItems())
                 .ifPresent( invoiceLines->update( invoiceLines, invoice));
 
-        decrees.findById( invoice.getInvoiceId())
-                .ifPresent( invoice::setDecree);
+        //decrees.findById( invoice.getDocumentId())
+        //        .ifPresent( invoice::setDecree);
 
-        return invoice
-                .setNumber( source.getNumber())
-                .setDates( source.getInvoiceDate(), source.getIssueDate(), source.getDueDate())
+        return (Invoice)invoice
                 .setMetric( metrics.findByDate( source.getInvoiceDate()).orElseThrow())
-                .setPeriod( periods.findMonthByDate( source.getInvoiceDate()).orElseThrow());
+                .setInvoiceDate( source.getInvoiceDate())
+                .setDate( source.getDate())
+                .setDue( source.getDue())
+                .setNumber( source.getNumber())
+                .setPeriodId( periods.findMonthByDate( source.getInvoiceDate())
+                        .map( Period::getId).orElseThrow())
+                .setDocumentId( Optional.ofNullable( source.getDocumentId())
+                        .orElseGet( UUID::randomUUID));
     }
 
     public Invoice update( List<InvoiceLineDto> lines, Invoice invoice) {

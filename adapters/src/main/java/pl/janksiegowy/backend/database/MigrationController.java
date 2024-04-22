@@ -15,6 +15,7 @@ import pl.janksiegowy.backend.accounting.template.TemplateQueryRepository;
 import pl.janksiegowy.backend.entity.EntityFacade;
 import pl.janksiegowy.backend.entity.EntityInitializer;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
+import pl.janksiegowy.backend.finances.payment.PaymentQueryRepository;
 import pl.janksiegowy.backend.finances.settlement.SettlementConfiguration;
 import pl.janksiegowy.backend.finances.settlement.SettlementFacade;
 import pl.janksiegowy.backend.finances.settlement.SettlementInitializer;
@@ -88,6 +89,7 @@ public class MigrationController extends MigrationConfiguration {
                                 final MetricRepository metrics,
                                 final InvoiceRegisterQueryRepository invoiceRegisters,
                                 final PaymentRegisterQueryRepository paymentRegisters,
+                                final PaymentQueryRepository payments,
                                 final AccountingRegisterQueryRepository accountingRegisters,
                                 final InvoiceQueryRepository invoices,
                                 final InvoiceFacade invoice,
@@ -120,8 +122,8 @@ public class MigrationController extends MigrationConfiguration {
                                                 periods, entities, period, invoice, loader);
         this.items= new ItemInitializer( items, item, loader);
         this.lines= new InvoiceLineInitializer( invoices, invoice, items, loader);
-        this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payment,
-                periods, period, loader);
+        this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payment, settlement,
+                payments, periods, period, loader);
         this.numerators= new NumeratorInitializer( numerators, numerator);
         this.templates= new TemplateInitializer( templates, template);
         this.accounts= new AccountInitializer( account, accounts);

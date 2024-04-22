@@ -7,6 +7,14 @@ public enum StatementType {
             return visitor.visitVatStatement();
         }
     },
+    /**
+     * Invoice Register - JPK
+     */
+    R {
+        @Override public <T> T accept( StatementTypeVisitor<T> visitor ) {
+            return visitor.visitJpkStatement();
+        }
+    },
     C { // CIT
         @Override public <T> T accept( StatementTypeVisitor<T> visitor ) {
             return visitor.visitCitStatement();
@@ -27,6 +35,7 @@ public enum StatementType {
 
     public interface StatementTypeVisitor<T> {
         T visitVatStatement();
+        T visitJpkStatement();
         T visitCitStatement();
         T visitPitStatement();
         T visitZusStatement();

@@ -10,30 +10,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue( "R")
-public class Receipt extends Payment {
+@DiscriminatorValue( "E")
+public class PaymentExpense extends Payment {
 
     @Enumerated( EnumType.STRING)
-    private SettlementKind kind= SettlementKind.C;
+    private SettlementKind kind= SettlementKind.D;
 
-    @OneToMany( mappedBy = "payableId", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+    @OneToMany( mappedBy = "receivableId", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
     private List<Clearing> clearings= new ArrayList<>();
 
-
     @Override public Document setAmount( BigDecimal amount) {
-        this.ct = amount;
+        this.dt = amount;
         return this;
     }
 
     @Override public BigDecimal getAmount() {
-        return this.ct;
+        return this.dt;
     }
-/*
-    @Override public Document setClearings( List<Clearing> clearings) {
-        this.clearings= clearings;
-        this.dt= clearings.stream()
-                .map( Clearing::getAmount)
-                .reduce( BigDecimal.ZERO, BigDecimal::add);
-        return this;
-    }*/
 }

@@ -8,7 +8,7 @@ public enum NumeratorCode {
     CS, // Cash Spend
     EN, // Entity
     RE, // Accounting Registers
-    SI; // Sales Invoice
+    SI, ST; // Sales Invoice
 
 
 

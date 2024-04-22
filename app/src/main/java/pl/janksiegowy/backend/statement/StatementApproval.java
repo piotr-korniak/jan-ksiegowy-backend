@@ -7,15 +7,15 @@ import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineQueryRepository;
 import pl.janksiegowy.backend.metric.MetricRepository;
 
+import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.PeriodRepository;
+import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
+import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @AllArgsConstructor
 public class StatementApproval {
@@ -27,10 +27,11 @@ public class StatementApproval {
     private final StatementRepository statements;
     private final EntityQueryRepository entities;
     private final InvoiceLineQueryRepository invoiceLines;
+    private final NumeratorFacade numerator;
 
 
-    private void save( StatementDto source) {
-        facade.approve( facade.save( source));
+    private void save( MonthPeriod period, StatementDto source) {
+        facade.approve( facade.save( period, source));
     }
 
 
@@ -40,12 +41,34 @@ public class StatementApproval {
         periods.findMonthById( periodId)
                 .map( period-> {
                     var metric= metrics.findByDate( period.getBegin()).orElseThrow();
+                    var jpk= Factory_JPK_V7.create( period, invoiceLines);
 
-                    var source= XmlConverter.marshal(
-                            Factory_JPK_V7.create( period, invoiceLines).prepare( metric));
-                    System.err.println( source);
+                    save( period, statements.findFirstByPatternIdAndPeriodOrderByNoDesc( version, jpk.getPeriod())
+                            .filter( statement-> StatementStatus.S != statement.getStatus())
+                            .map( statement-> StatementDto.create()
+                                .statementId( statement.getStatementId())
+                                .no( jpk.setReason( statement.getNo())))
+                            .orElseGet(()-> StatementDto.create()
+                                .no( jpk.setReason( Integer.valueOf(  numerator.
+                                        increment( NumeratorCode.ST, "JPK", period.getEnd())))))
+                            .xml( XmlConverter.marshal( jpk.prepare( metric)))
+                            .patternId( version)
+                            .type( jpk.isSettlement()? StatementType.V: StatementType.R)
+                            .date( period.getEnd())
+                            .due( period.getEnd().plusDays( 25 ))
+                            .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode())
+                                    .orElseThrow())
+                            .number( jpk.getNumber())
+                            .created( LocalDateTime.now())
+                            .liability( jpk.getLiability())
+                            .value1( jpk.getOutputCorrection())
+                            .value2( jpk.getInputCorrection())
+                            .periodId( jpk.getPeriod().getId()));
+
 
 /*
+                    // to nie tu analizujemy czy coś jest czy nie!
+
                     var statementDto= statements.findByPatternIdAndPeriod( version, period)
                             .map( statement-> StatementDto.create()
                                     .statementId( statement.getStatementId())

@@ -2,8 +2,6 @@ package pl.janksiegowy.backend.accounting.decree;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.finances.payment.*;
-import pl.janksiegowy.backend.finances.settlement.*;
-import pl.janksiegowy.backend.shared.DataLoader;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,7 +14,7 @@ public class DecreeInitializer {
 
     public void init() {
 
-        payments.save( (PaymentDocument) new Receipt()
+        payments.save( (Payment) new Receipt()
                 .setDocumentId(  UUID.fromString( "e618b66b-69af-4621-b087-0b5b8f2c7c3b" ))
    //             .setType( PaymentType.R)
                 .setDates( LocalDate.now(), LocalDate.now().plusDays( 14))

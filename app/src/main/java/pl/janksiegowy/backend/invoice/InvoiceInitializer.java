@@ -69,9 +69,8 @@ public class InvoiceInitializer {
                                         .register( register)
                                         .number( fields[1])
                                         .invoiceDate( Util.toLocalDate( fields[4])) // Date of sale or receipt
-                                        .issueDate( Util.toLocalDate( fields[5]))   // Date of issue or purchase
-                                        .dueDate( Util.toLocalDate( fields[6]))     // Date of due;
-
+                                        .date( Util.toLocalDate( fields[5]))        // Date of issue or purchase
+                                        .due( Util.toLocalDate( fields[6]))     // Date of due
                             ).orElseThrow( ()-> new NoSuchElementException( "Not found register type: "+ fields[0]))
                     ).orElseThrow( ()-> new NoSuchElementException( "Not found contact with tax number: "+ fields[2]));
 

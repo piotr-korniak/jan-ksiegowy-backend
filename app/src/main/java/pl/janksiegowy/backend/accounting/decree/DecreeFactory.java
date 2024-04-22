@@ -1,6 +1,7 @@
 package pl.janksiegowy.backend.accounting.decree;
 
 import lombok.AllArgsConstructor;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
@@ -12,6 +13,7 @@ import pl.janksiegowy.backend.accounting.template.InvoiceFunction.InvoiceFunctio
 import pl.janksiegowy.backend.accounting.template.FinanceFunction.NoteFunctionVisitor;
 import pl.janksiegowy.backend.finances.clearing.Clearing;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
+import pl.janksiegowy.backend.finances.settlement.SettlementType;
 import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.settlement.*;
 import pl.janksiegowy.backend.finances.settlement.FinancialType.FinancialTypeVisitor;
@@ -27,10 +29,9 @@ import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
-import pl.janksiegowy.backend.statement.Statement;
+import pl.janksiegowy.backend.statement.StatementDocument;
 import pl.janksiegowy.backend.statement.StatementType.StatementTypeVisitor;
 import pl.janksiegowy.backend.finances.payment.PaymentType.PaymentTypeVisitor;
-import pl.janksiegowy.backend.finances.settlement.SettlementKind.SettlementKindVisitor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,10 +40,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
-                                      PaymentTypeVisitor<DocumentType>,
-                                      StatementTypeVisitor<DocumentType>,
-                                      FinancialTypeVisitor<DocumentType> {
+public class DecreeFactory implements SettlementType.SettlementTypeVisitor<TemplateType> {
 
     private final TemplateRepository templates;
     private final AccountingRegisterRepository registers;
@@ -76,33 +74,35 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
 
     private Decree create( DecreeDto source) {
         return source.getType().accept( new DecreeTypeVisitor<Decree>() {
-            @Override public Decree visitBasicDecree() {
+            @Override public Decree visitBookingDecree() {
                 return new BasicDecree();
             }
-            @Override public Decree visitSettlementDecree() {
-                return new SettlementDecree();
+            @Override public Decree visitDocumentDecree() {
+                return new DocumentDecree();
             }
         });
     }
 
     public DecreeDto to( FinancialSettlement settlement) {
         return templates.findByDocumentTypeAndDate( settlement.getFinancialType()
-                .accept( new FinancialTypeVisitor<DocumentType>() {
-            @Override public DocumentType visitChargeSettlement() {
-                return DocumentType.CH;
+                .accept( new FinancialTypeVisitor<TemplateType>() {
+            @Override public TemplateType visitChargeSettlement() {
+                return TemplateType.CH;
             }
-            @Override public DocumentType visitFeeSettlement() {
-                return DocumentType.FE;
+            @Override public TemplateType visitFeeSettlement() {
+                return TemplateType.FE;
             }
-            @Override public DocumentType visitNoteSettlement() {
-                return settlement.getKind().accept( new SettlementKindVisitor<DocumentType>() {
+            @Override public TemplateType visitNoteSettlement() {
+                return null;
+/*
+                        settlement.getKind().accept( new SettlementKindVisitor<DocumentType>() {
                     @Override public DocumentType visitDebit() {
                         return DocumentType.NI;
                     }
                     @Override public DocumentType visitCredit() {
                         return DocumentType.NR;
                     }
-                });
+                });*/
             }
         }), settlement.getDate())
             .map( template -> new Builder() {
@@ -124,7 +124,7 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                         default -> account;
                     };
                 }
-            }.build( template, settlement.getDate(), settlement.getNumber(), settlement.getSettlementId()))
+            }.build( template, settlement.getDate(), settlement.getNumber(), settlement.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( settlement.getDecree())
                         .map( decree-> decreeMap.setNumer( decreeMap.getNumber()))
                         .orElseGet(()-> decreeMap))
@@ -134,7 +134,17 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
 
     public DecreeDto to( Invoice invoice) {
 
-        return templates.findByDocumentTypeAndDate( invoice.getType().accept( this), invoice.getInvoiceDate())
+        return templates.findByDocumentTypeAndDate( invoice.getType().accept( new InvoiceTypeVisitor<TemplateType>() {
+                    @Override
+                    public TemplateType visitSalesInvoice() {
+                        return null;
+                    }
+
+                    @Override
+                    public TemplateType visitPurchaseInvoice() {
+                        return null;
+                    }
+                } ), invoice.getInvoiceDate())
             .map( template-> new Builder() {
                 @Override public BigDecimal getValue( TemplateLine line) {
                     return ((InvoiceTemplateLine)line).getFunction()
@@ -175,21 +185,31 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                 }
                 @Override public AccountDto getAccount( AccountDto.Proxy account) {
                     return switch( account.getNumber().replaceAll("[^A-Z]+", "")){
-                        case "P"-> account.name( invoice.getSettlement().getEntity().getName())
+                        case "P"-> account.name( invoice.getEntity().getName())
                                 .number( account.getNumber().replaceAll( "\\[P\\]",
-                                        invoice.getSettlement().getEntity().getAccountNumber()));
+                                        invoice.getEntity().getAccountNumber()));
                         default -> account;
                     };
                 }
-            }.build( template, invoice.getIssueDate(), invoice.getNumber(), invoice.getInvoiceId()))
-                .map( decreeMap-> Optional.ofNullable( invoice.getSettlement().getDecree())
+            }.build( template, invoice.getDate(), invoice.getNumber(), invoice.getDocumentId()))
+                .map( decreeMap-> Optional.ofNullable( invoice.getDecree())
                             .map( decree-> decreeMap.setNumer( decree.getNumber()))
                             .orElseGet(()-> decreeMap))
                 .orElseThrow();
     }
 
     public DecreeDto to( Payment payment) {
-        return templates.findByDocumentTypeAndDate( payment.getType().accept( this), payment.getDate())
+        return templates.findByDocumentTypeAndDate( payment.getType().accept( new PaymentTypeVisitor<TemplateType>() {
+                    @Override
+                    public TemplateType visitPaymentReceipt() {
+                        return null;
+                    }
+
+                    @Override
+                    public TemplateType visitPaymentExpense() {
+                        return null;
+                    }
+                } ), payment.getDate())
             .map( template-> new Builder() {
                 @Override public BigDecimal getValue( TemplateLine item) {
                     return Optional.of((PaymentTemplateLine) item)
@@ -197,22 +217,22 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                                         || line.getRegisterType()== payment.getRegister().getType())
                             .map(line -> line.getFunction().accept( new PaymentFunctionVisitor<BigDecimal>() {
                                 @Override public BigDecimal visitWplataNaleznosci() {
-                                    return payment.getSettlement().getCt();
+                                    return payment.getCt();
                                 }
                                 @Override public BigDecimal visitSplataZobowiazania() {
-                                    return payment.getSettlement().getDt();
+                                    return payment.getDt();
                                 }
                                 @Override public BigDecimal visitWplataNoty() {
-                                    return clearings.payable( payment.getSettlement()).stream()
-                                            .filter( clearing-> clearing.getReverse( payment.getSettlement())
-                                                    .getType()== SettlementType.N)
+                                    return clearings.payableId( payment.getDocumentId()).stream()
+                                            //.filter( clearing-> clearing.getReverse( payment.getSettlement())
+                                            //        .getType()== SettlementType.N)
                                             .map( Clearing::getAmount )
                                             .reduce( BigDecimal.ZERO, BigDecimal::add);
                                 }
                                 @Override public BigDecimal visitSplataNoty() {
-                                    return clearings.receivable( payment.getSettlement()).stream()
-                                            .filter( clearing-> clearing.getReverse( payment.getSettlement())
-                                                    .getType()== SettlementType.N)
+                                    return clearings.receivableId( payment.getDocumentId()).stream()
+                                            //.filter( clearing-> clearing.getReverse( payment.getSettlement())
+                                            //        .getType()== SettlementType.N)
                                             .map( Clearing::getAmount )
                                             .reduce( BigDecimal.ZERO, BigDecimal::add);
                                 }
@@ -221,9 +241,9 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                 }
                 @Override public AccountDto getAccount( AccountDto.Proxy account) {
                     return switch( account.getNumber().replaceAll("[^A-Z]+", "")){
-                        case "P"-> account.name( payment.getSettlement().getEntity().getName())
+                        case "P"-> account.name( payment.getEntity().getName())
                                             .number( account.getNumber().replaceAll( "\\[P\\]",
-                                                    payment.getSettlement().getEntity().getAccountNumber()));
+                                                    payment.getEntity().getAccountNumber()));
                         case "B"-> account.name( payment.getRegister().getName())
                                             .number( account.getNumber().replaceAll( "\\[B\\]",
                                                     payment.getRegister().getAccountNumber()));
@@ -233,32 +253,57 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                         default -> account;
                     };
                 }
-            }.build( template, payment.getDate(), payment.getNumber(), payment.getPaymentId()))
-                .map( decreeMap-> Optional.ofNullable( payment.getSettlement().getDecree())
+            }.build( template, payment.getDate(), payment.getNumber(), payment.getDocumentId()))
+                .map( decreeMap-> Optional.ofNullable( payment.getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
                         .orElseGet(()-> decreeMap))
                 .orElseThrow();
     }
 
-    public DecreeDto to( Statement statement ) {
+    public DecreeDto to( StatementDocument statement ) {
 
         var pattern= PatternId.JPK_V7K_2_v1_0e;
 
-//        var jpkData= XmlConverter.unmarshal( pattern.accept( patterns).getClass(), statement.getXml());
+        var jpkData= XmlConverter.unmarshal( Ewidencja_JPK_V7K_2_v1_0e.class, statement.getXml());
 
 
-        return templates.findByDocumentTypeAndDate( statement.getType().accept( this), statement.getDate())
+        return templates.findByDocumentTypeAndDate( statement.getType().accept( new StatementTypeVisitor<TemplateType>() {
+                    @Override
+                    public TemplateType visitVatStatement() {
+                        return null;
+                    }
+
+                    @Override
+                    public TemplateType visitJpkStatement() {
+                        return null;
+                    }
+
+                    @Override
+                    public TemplateType visitCitStatement() {
+                        return null;
+                    }
+
+                    @Override
+                    public TemplateType visitPitStatement() {
+                        return null;
+                    }
+
+                    @Override
+                    public TemplateType visitZusStatement() {
+                        return null;
+                    }
+                } ), statement.getDate())
             .map( template-> new Builder() {
                 @Override public BigDecimal getValue( TemplateLine line) {
                     return ((StatementTemplateLine)line).getFunction()
                             .accept( new StatementFunction.StatementFunctionVisitor<BigDecimal>() {
 
                         @Override public BigDecimal visitPodatekNalezny() {
-                            return BigDecimal.ZERO; //new BigDecimal( jpkData.getVatNalezny());
+                            return jpkData.getVatNalezny();
                         }
 
                         @Override public BigDecimal visitPodatekNaliczony() {
-                            return BigDecimal.ZERO; //new BigDecimal( jpkData.getVatNaliczony());
+                            return jpkData.getVatNaliczony();
                         }
 
                         @Override public BigDecimal visitKorektaNaleznegoPlus() {
@@ -278,7 +323,7 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                         }
 
                         @Override public BigDecimal visitZobowiazanie() {
-                            return BigDecimal.ZERO; //new BigDecimal( jpkData.getP51());
+                            return jpkData.getZobowiazanie();
                         }
                     } );
                 }
@@ -287,15 +332,15 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                     return account;
                 }
             }.build( template, statement.getPeriod().getEnd(), statement.getNumber(), statement.getStatementId()))
-/*                .map( decreeMap-> Optional.ofNullable( statement.getSettlement().getDecree())
+                .map( decreeMap-> Optional.ofNullable( statement.getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
-                        .orElseGet(()-> decreeMap))*/
+                        .orElseGet(()-> decreeMap))
             .orElseThrow();
     }
 
     public DecreeDto to( Payslip payslip) {
 
-        return templates.findByDocumentTypeAndDate( DocumentType.EP, payslip.getDate())
+        return templates.findByDocumentTypeAndDate( TemplateType.EP, payslip.getDate())
                 .map( template-> new Builder() {
                     @Override public BigDecimal getValue( TemplateLine line ) {
                         return ((PayslipTemplateLine)line).getFunction()
@@ -317,25 +362,70 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
                                 return payslip.getTaxAdvance();
                             }
                             @Override public BigDecimal visitDoWyplaty() {
-                                return payslip.getSettlement().getCt();
+                                return payslip.getCt();
                             }
                         } );
                     }
 
                     @Override public AccountDto getAccount( AccountDto.Proxy account) {
                         return switch( account.getNumber().replaceAll("[^A-Z]+", "")){
-                            case "P"-> account.name( payslip.getSettlement().getEntity().getName())
+                            case "P"-> account.name( payslip.getEntity().getName())
                                     .number( account.getNumber().replaceAll( "\\[P\\]",
-                                            payslip.getSettlement().getEntity().getAccountNumber()));
+                                            payslip.getEntity().getAccountNumber()));
                             default -> account;
                         };
                     }
-                }.build( template, payslip.getDate(), payslip.getSettlement().getNumber(), payslip.getPayslipId()))
-                .map( decreeMap-> Optional.ofNullable( payslip.getSettlement().getDecree())
+                }.build( template, payslip.getDate(), payslip.getNumber(), payslip.getDocumentId()))
+                .map( decreeMap-> Optional.ofNullable( payslip.getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
                         .orElseGet(()-> decreeMap))
                 .orElseThrow();
 
+    }
+
+    @Override
+    public TemplateType visitReceiptSettlement() {
+        return null;
+    }
+
+    @Override
+    public TemplateType visitInvoicePayable() {
+        return null;
+    }
+
+    @Override
+    public TemplateType visitInvoiceSettlemnt() {
+        return null;
+    }
+
+    @Override
+    public TemplateType visitPaymentSettlement() {
+        return null;
+    }
+
+    @Override
+    public TemplateType visitStatementSettlement() {
+        return null;
+    }
+
+    @Override
+    public TemplateType visitPayslipSettlement() {
+        return null;
+    }
+
+    @Override
+    public TemplateType visitChargeSettlement() {
+        return null;
+    }
+
+    @Override
+    public TemplateType visitFeeSettlement() {
+        return null;
+    }
+
+    @Override
+    public TemplateType visitNoteSettlement() {
+        return null;
     }
 
 
@@ -346,7 +436,7 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
 
         public DecreeMap build( Template template, LocalDate date, String document, UUID decreeId) {
             var decree= new DecreeMap( DecreeDto.create()
-                    .type( DecreeType.S)
+                    .type( DecreeType.D)
                     .degreeId( decreeId)
                     .date( date)
                     .document( document)
@@ -369,39 +459,4 @@ public class DecreeFactory implements InvoiceTypeVisitor<DocumentType>,
         }
     }
 
-    @Override public DocumentType visitSalesInvoice() {
-        return DocumentType.IS;
-    }
-    @Override public DocumentType visitPurchaseInvoice() {
-        return DocumentType.IP;
-    }
-
-    @Override public DocumentType visitPaymentReceipt() {
-        return DocumentType.PR;
-    }
-    @Override public DocumentType visitPaymentSpend() {
-        return DocumentType.PS;
-    }
-
-    @Override public DocumentType visitVatStatement() {
-        return DocumentType.SV;
-    }
-    @Override public DocumentType visitCitStatement() {
-        return DocumentType.SC;
-    }
-    @Override public DocumentType visitPitStatement() {
-        return DocumentType.SP;
-    }
-    @Override public DocumentType visitZusStatement() {
-        return DocumentType.SN;
-    }
-    @Override public DocumentType visitChargeSettlement() {
-        return null;
-    }
-    @Override public DocumentType visitFeeSettlement() {
-        return null;
-    }
-    @Override public DocumentType visitNoteSettlement() {
-        return null;
-    }
 }

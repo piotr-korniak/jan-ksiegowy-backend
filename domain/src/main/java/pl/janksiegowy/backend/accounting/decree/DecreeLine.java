@@ -6,9 +6,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.UuidGenerator;
 import pl.janksiegowy.backend.accounting.account.Account;
-import pl.janksiegowy.backend.finances.payment.Payment;
-import pl.janksiegowy.backend.finances.payment.PaymentReceipt;
-import pl.janksiegowy.backend.finances.payment.PaymentSpend;
 
 import java.math.BigDecimal;
 import java.util.UUID;

@@ -2,9 +2,16 @@ package pl.janksiegowy.backend.finances.settlement;
 
 public enum SettlementType {
 
-    /**
-     * Invoice settlement
-     */
+    /** Payment Receipt */
+    R { @Override public <T> T accept( SettlementTypeVisitor<T> visitor ) {
+            return visitor.visitReceiptSettlement();
+        }},
+    Y {
+        @Override public <T> T accept( SettlementTypeVisitor<T> visitor ) {
+            return visitor.visitInvoicePayable();
+        }
+    },
+    /** Invoice settlement */
     I {
         @Override public <T> T accept( SettlementTypeVisitor<T> visitor) {
             return visitor.visitInvoiceSettlemnt();
@@ -62,6 +69,9 @@ public enum SettlementType {
     public abstract <T> T accept( SettlementTypeVisitor<T> visitor);
 
     public interface SettlementTypeVisitor<T> {
+
+        T visitReceiptSettlement();
+        T visitInvoicePayable();
         T visitInvoiceSettlemnt();
         T visitPaymentSettlement();
         T visitStatementSettlement();

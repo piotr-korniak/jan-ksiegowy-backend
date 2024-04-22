@@ -31,7 +31,7 @@ public class Template {
     private AccountingRegister register;
 
     @Enumerated( EnumType.STRING)
-    private DocumentType documentType;
+    private TemplateType documentType;
 
 
 

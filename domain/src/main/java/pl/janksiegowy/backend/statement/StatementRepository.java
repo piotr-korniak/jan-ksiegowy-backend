@@ -11,4 +11,5 @@ public interface StatementRepository {
     Statement save( Statement statement);
 
     Optional<Statement> findByPatternIdAndPeriod( PatternId patternId, Period period);
+    Optional<Statement> findFirstByPatternIdAndPeriodOrderByNoDesc(  PatternId patternId, Period period);
 }

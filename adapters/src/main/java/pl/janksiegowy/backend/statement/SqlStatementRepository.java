@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public interface SqlStatementRepository extends JpaRepository<Statement, UUID> {
     Optional<Statement> findByPatternIdAndPeriod( PatternId patternId, Period period);
+    Optional<Statement> findFirstByPatternIdAndPeriodOrderByNoDesc( PatternId patternId, Period period);
 }
 
 interface SqlStatementQueryRepository extends StatementQueryRepository, Repository<Statement, UUID> {
@@ -31,5 +32,10 @@ class StatementRepositoryImpl implements StatementRepository {
     @Override
     public Optional<Statement> findByPatternIdAndPeriod( PatternId patternId, Period period) {
         return repository.findByPatternIdAndPeriod( patternId, period);
+    }
+
+    @Override
+    public Optional<Statement> findFirstByPatternIdAndPeriodOrderByNoDesc( PatternId patternId, Period period) {
+        return repository.findFirstByPatternIdAndPeriodOrderByNoDesc( patternId, period);
     }
 }

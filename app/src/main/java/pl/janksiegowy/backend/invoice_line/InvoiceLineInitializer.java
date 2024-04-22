@@ -1,7 +1,6 @@
 package pl.janksiegowy.backend.invoice_line;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.accounting.decree.DecreeRepository;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.invoice.InvoiceQueryRepository;
@@ -11,8 +10,6 @@ import pl.janksiegowy.backend.invoice_line.dto.InvoiceMap;
 import pl.janksiegowy.backend.item.ItemQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
-
-import java.util.Optional;
 
 @AllArgsConstructor
 public class InvoiceLineInitializer {
@@ -31,7 +28,7 @@ public class InvoiceLineInitializer {
             if (fields[0].startsWith( "---"))
                 continue;
 
-            invoices.findBySettlementNumber( InvoiceDto.class, fields[0])
+            invoices.findByNumber( InvoiceDto.class, fields[0])
                     .map( InvoiceMap::new)
                     .map( invoiceMap-> {
                         if( !invoiceMap.getLineItems().stream()

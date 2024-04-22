@@ -20,32 +20,32 @@ import java.util.UUID;
 public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, Repository<InvoiceLine, UUID> {
 
     @Override
-    @Query( value= "SELECT L.invoice.settlement.number AS invoiceNumber, " +
-                    "L.invoice.settlement.entity.name AS contactName, SUM(L.tax) AS tax "+
+    @Query( value= "SELECT L.invoice.number AS invoiceNumber, " +
+                    "L.invoice.entity.name AS contactName, SUM(L.tax) AS tax "+
                     "FROM InvoiceLine L "+
                     "WHERE L.item.taxMetod IN :taxMetod "+
                     "GROUP BY L.invoice, invoiceNumber, contactName ")
     List<InvoiceLineDto> findAll( List<TaxMetod> taxMetod);
 
     @Override
-    @Query( value= "SELECT L.invoice.invoiceId AS invoiceId, " +
+    @Query( value= "SELECT L.invoice.documentId AS invoiceId, " +
                     "TREAT( L.invoice as SalesInvoice).register.kind AS salesKind, " +
                     "TREAT( L.invoice as PurchaseInvoice).register.kind AS purchaseKind, " +
                     "L.taxRate AS rate," +
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
-                    "WHERE L.invoice.invoiceId= :id "+
+                    "WHERE L.invoice.documentId= :id "+
                     "GROUP BY invoiceId, salesKind, purchaseKind, rate")
     List<InvoiceLineSumDto> findByInvoiceId( UUID id);
 
     @Override
-    @Query( value= "SELECT L.invoice.invoiceId AS invoiceId, " +
-                    "L.invoice.settlement.number AS invoiceNumber, "+
-                    "L.invoice.settlement.entity.name AS entityName, "+
-                    "L.invoice.settlement.entity.taxNumber AS taxNumber, "+
-                    "L.invoice.settlement.entity.country AS entityCountry, "+
+    @Query( value= "SELECT L.invoice.documentId AS invoiceId, " +
+                    "L.invoice.number AS invoiceNumber, "+
+                    "L.invoice.entity.name AS entityName, "+
+                    "L.invoice.entity.taxNumber AS taxNumber, "+
+                    "L.invoice.entity.country AS entityCountry, "+
                     "L.invoice.invoiceDate AS invoiceDate, "+
-                    "L.invoice.settlement.date AS issueDate, "+
+                    "L.invoice.date AS issueDate, "+
                     "CASE WHEN TYPE( L.invoice) = SalesInvoice "+
                     "   THEN TREAT( L.invoice AS SalesInvoice).register.kind ELSE NULL " +
                     "END AS salesKind, " +
@@ -56,7 +56,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "L.taxRate AS taxRate, " +
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
-                    "WHERE vat!=0 AND L.invoice.settlement.period.id= :period AND " +
+                    "WHERE vat!=0 AND L.invoice.periodId= :period AND " +
                     "((TYPE( L.invoice) = SalesInvoice AND "+
                     "  TREAT( L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR"+
                     " (TYPE( L.invoice) = PurchaseInvoice AND "+
@@ -75,7 +75,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.settlement.period.parent= :period AND " +
+            "L.invoice.period.parent= :period AND " +
             "(TYPE( L.invoice)= SalesInvoice AND" +
             " TREAT( L.invoice AS SalesInvoice).register.kind= :kind)" +
             "GROUP BY taxRate")
@@ -89,7 +89,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.settlement.period.parent.id= :period AND " +
+            "L.invoice.period.parent.id= :period AND " +
             "(TYPE( L.invoice)= SalesInvoice AND" +
             " TREAT( L.invoice AS SalesInvoice).register.kind IN :kinds)" +
             "GROUP BY invoiceRegisterKind, itemType")
@@ -103,7 +103,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM( L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.settlement.period.parent= :period AND " +
+            "L.invoice.period.parent= :period AND " +
             "(TYPE( L.invoice)= PurchaseInvoice AND" +
             " TREAT( L.invoice AS PurchaseInvoice).register.kind IN :kinds)" +
             "GROUP BY purchaseKind, itemType")
@@ -123,7 +123,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.settlement.period.parent= :period AND " +
+            "L.invoice.period.parent= :period AND " +
             "(( TYPE( L.invoice) = SalesInvoice AND "+
             "  TREAT(L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR" +
             " ( TYPE( L.invoice) = PurchaseInvoice AND "+
@@ -135,17 +135,17 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             @Param( "period") QuarterPeriod period);
 
     @Override
-    @Query( value= "SELECT L.invoice.invoiceId AS invoiceId, " +
-                    "L.invoice.settlement.number AS invoiceNumber, "+
-                    "L.invoice.settlement.entity.name AS entityName, "+
-                    "L.invoice.settlement.entity.taxNumber AS taxNumber, "+
-                    "L.invoice.settlement.entity.country AS entityCountry, "+
+    @Query( value= "SELECT L.invoice.documentId AS invoiceId, " +
+                    "L.invoice.number AS invoiceNumber, "+
+                    "L.invoice.entity.name AS entityName, "+
+                    "L.invoice.entity.taxNumber AS taxNumber, "+
+                    "L.invoice.entity.country AS entityCountry, "+
                     "L.invoice.invoiceDate AS invoiceDate, "+
-                    "L.invoice.settlement.date AS issueDate, "+
+                    "L.invoice.date AS issueDate, "+
                     "L.item.type AS itemType, "+
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
-                    "WHERE vat!=0 AND L.invoice.settlement.period.id= :period AND "+
+                    "WHERE vat!=0 AND L.invoice.period.id= :period AND "+
                     "TYPE( L.invoice)= PurchaseInvoice "+
                     "GROUP BY invoiceId, invoiceNumber, entityName, taxNumber, " +
                             "entityCountry, invoiceDate, issueDate, itemType "+
@@ -159,7 +159,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "END AS purchaseKind, " +
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L "+
-            "WHERE vat!=0 AND L.invoice.settlement.period.parent= :period AND "+
+            "WHERE vat!=0 AND L.invoice.period.parent= :period AND "+
             "(TYPE( L.invoice) = PurchaseInvoice AND "+
             " TREAT( L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds) " +
             "GROUP BY purchaseKind, itemType ")
@@ -171,7 +171,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
     @Query( value= "SELECT L.item.type AS itemType, "+
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L "+
-            "WHERE vat!=0 AND L.invoice.settlement.period.parent= :quarterPeriod AND " +
+            "WHERE vat!=0 AND L.invoice.period.parent= :quarterPeriod AND " +
             "TYPE( L.invoice) = PurchaseInvoice "+
             "GROUP BY itemType ")
     List<JpaInvoiceSumDto> sumPurchaseByTypeAndPeriodGroupByType( QuarterPeriod quarterPeriod);

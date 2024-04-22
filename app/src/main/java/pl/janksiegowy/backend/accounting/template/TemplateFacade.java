@@ -2,10 +2,7 @@ package pl.janksiegowy.backend.accounting.template;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
-import pl.janksiegowy.backend.finances.payment.Payment;
-import pl.janksiegowy.backend.accounting.template.PaymentFunction.PaymentFunctionVisitor;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 @AllArgsConstructor

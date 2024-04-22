@@ -4,6 +4,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
+import pl.janksiegowy.backend.statement.StatementStatus;
 import pl.janksiegowy.backend.statement.StatementType;
 
 import java.math.BigDecimal;
@@ -30,6 +31,8 @@ public interface StatementDto {
     String getPeriodId();
     BigDecimal getValue1();
     BigDecimal getValue2();
+    int getNo();
+    StatementStatus getStatus();
 
 
     @Setter
@@ -49,6 +52,8 @@ public interface StatementDto {
         private String periodId;
         private BigDecimal value1;
         private BigDecimal value2;
+        private int no;
+        private StatementStatus status;
 
         @Override public UUID getStatementId() {
             return statementId;
@@ -88,6 +93,12 @@ public interface StatementDto {
         }
         @Override public BigDecimal getValue2() {
             return value2;
+        }
+        @Override public int getNo() {
+            return no;
+        }
+        @Override public StatementStatus getStatus() {
+            return status;
         }
 
     }

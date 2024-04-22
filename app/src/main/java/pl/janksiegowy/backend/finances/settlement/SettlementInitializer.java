@@ -2,7 +2,6 @@ package pl.janksiegowy.backend.finances.settlement;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
-import pl.janksiegowy.backend.entity.Country;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementDto;
@@ -24,9 +23,9 @@ public class SettlementInitializer {
     private void save( SettlementDto source) {
         var settlement= this.settlement.save( source);
 
-        switch ( settlement.getType()) {  // book only Charge, Fee, Note
-            case C, F, N -> decree.book( (FinancialSettlement) settlement);
-        }
+//        switch ( settlement.getKind()) {  // book only Charge, Fee, Note
+//            case C, F, N -> decree.book( (FinancialSettlement) settlement);
+//        }
     }
 
     public String init() {

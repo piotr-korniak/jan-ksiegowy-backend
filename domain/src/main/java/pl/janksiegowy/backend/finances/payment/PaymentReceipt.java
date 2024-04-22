@@ -11,12 +11,8 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue( "R")
-public class PaymentReceipt extends Payment {
+public class PaymentReceipt extends PaymentOld {
 
-
-    @Override public List<Clearing> getLines() {
-        return settlement.getReceivable();
-    }
 
     @Override public <T> T accept( PaymentVisitor<T> visitor ) {
         return visitor.visit( this);

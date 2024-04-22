@@ -20,10 +20,7 @@ public class SalaryFactory {
                 .map( period-> entities.
                         findByEntityIdAndDate( source.getEntity().getEntityId(), period.getBegin())
                         .map( entity-> update( source, new Payslip()
-                                .setSettlement( (PayslipSettlement) new PayslipSettlement()
-                                        .setEntity( entity)
-                                        .setPeriod( period))
-                                .setInvoiceId( UUID.randomUUID())))
+                                ))
                         .orElseThrow())
                 .orElseThrow();
     }

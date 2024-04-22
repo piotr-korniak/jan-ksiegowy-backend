@@ -12,8 +12,6 @@ public class SettlementFacade {
     private final SettlementRepository settlements;
 
     public Settlement save( SettlementDto source) {
-        return settlements.save( Optional.ofNullable( source.getSettlementId())
-                .map( uuid-> settlement.update( source))
-                .orElseGet(()-> settlement.from( source)));
+        return settlements.save( settlement.from( source));
     }
 }

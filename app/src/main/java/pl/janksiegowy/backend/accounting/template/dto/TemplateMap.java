@@ -1,6 +1,6 @@
 package pl.janksiegowy.backend.accounting.template.dto;
 
-import pl.janksiegowy.backend.accounting.template.DocumentType;
+import pl.janksiegowy.backend.accounting.template.TemplateType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class TemplateMap implements TemplateDto{
     @Override public String getCode() {
         return template.getCode();
     }
-    @Override public DocumentType getDocumentType() {
+    @Override public TemplateType getDocumentType() {
         return template.getDocumentType();
     }
     @Override public String getRegisterCode() {

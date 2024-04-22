@@ -2,7 +2,7 @@ package pl.janksiegowy.backend.accounting.template;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
-import pl.janksiegowy.backend.accounting.template.DocumentType.DocumentTypeVisitor;
+import pl.janksiegowy.backend.accounting.template.TemplateType.DocumentTypeVisitor;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateLineDto;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterType;

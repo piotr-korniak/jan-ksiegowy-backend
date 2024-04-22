@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.finances.document.Document;
+import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.settlement.PayslipSettlement;
 
 import java.math.BigDecimal;
@@ -15,45 +17,49 @@ import java.util.UUID;
 @Accessors( chain= true)
 
 @Entity
-@Table( name= "PAYSLIPS")
-public class Payslip {
+@DiscriminatorValue( "Y")
+@SecondaryTable( name= Payslip.TABLE_NAME, pkJoinColumns= @PrimaryKeyJoinColumn( name="ID"))
+public class Payslip extends Document {
+    static final String TABLE_NAME= "PAYSLIPS";
 
-    @Id
-    @Column( name= "ID")
-    private UUID payslipId;
-
-    @OneToOne( mappedBy= "payslip", cascade = CascadeType.ALL)
-    protected PayslipSettlement settlement;
-
+    @Column( table= TABLE_NAME)
     private BigDecimal gross;
+
+    @Column( table= TABLE_NAME)
     private BigDecimal insuranceEmployee;
+
+    @Column( table= TABLE_NAME)
     private BigDecimal insuranceEmployer;
+
+    @Column( table= TABLE_NAME)
     private BigDecimal insuranceHealth;
+
+    @Column( table= TABLE_NAME)
     private BigDecimal taxAdvance;
 
-    public Payslip setInvoiceId( UUID payslipId) {
-        this.payslipId= payslipId;
-        settlement.setPayslip( this);
-        return this;
-    }
-
     public Payslip setPayable( BigDecimal payable) {
-        settlement.setCt( payable );
+        //settlement.setCt( payable );
         return this;
     }
 
     public Payslip setDate( LocalDate date ) {
-        settlement.setDate( date);
-        settlement.setDue( date);
+        //settlement.setDate( date);
+        //settlement.setDue( date);
         return this;
     }
 
     public Payslip setNumber( String number) {
-        settlement.setNumber( number);
+        //settlement.setNumber( number);
         return this;
     }
 
-    public LocalDate getDate() {
-        return settlement.getDate();
+    @Override
+    public Document setAmount( BigDecimal amount ) {
+        return null;
+    }
+
+    @Override
+    public BigDecimal getAmount() {
+        return null;
     }
 }

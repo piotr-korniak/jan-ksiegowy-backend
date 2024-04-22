@@ -26,16 +26,17 @@ public class PaymentConfiguration {
 
     @Bean
     PaymentFacade paymentFacade( final PaymentRegisterRepository registers,
-                                 final PaymentRepository payments,
+                                 final PaymentDocumentRepository payments,
                                  final SettlementRepository settlements,
                                  final ClearingRepository clearings,
+                                 final ClearingFactory clearing,
                                  final NumeratorFacade numerator,
                                  final PeriodRepository periods,
                                  final EntityRepository entities,
                                  final NumeratorFacade numerators,
                                  final DecreeFacade decrees) {
         return new PaymentFacade(
-                new PaymentFactory( registers, numerator, periods, entities), payments,
+                new PaymentFactory( registers, numerator, periods, entities, clearing), payments,
                 new ClearingFactory( settlements), clearings,
                 new PaymentRegisterFactory( numerators), registers, decrees);
     }

@@ -1,24 +1,22 @@
 package pl.janksiegowy.backend.accounting.decree;
 
-import pl.janksiegowy.backend.accounting.account.AccountType;
-
 public enum DecreeType {
-    B { // Basic decree
+    B { // Booking decree
         @Override public <T> T accept( DecreeTypeVisitor<T> visitor) {
-            return visitor.visitBasicDecree();
+            return visitor.visitBookingDecree();
         }
     },
-    S { // Settlement decree
+    D { // Settlement decree
         @Override public <T> T accept( DecreeTypeVisitor<T> visitor) {
-            return visitor.visitSettlementDecree();
+            return visitor.visitDocumentDecree();
         }
     };
 
     public abstract <T> T accept( DecreeTypeVisitor<T> visitor);
 
     public interface DecreeTypeVisitor<T> {
-        T visitBasicDecree();
-        T visitSettlementDecree();
+        T visitBookingDecree();
+        T visitDocumentDecree();
 
     }
 }

@@ -12,26 +12,30 @@ import pl.janksiegowy.backend.finances.settlement.Settlement;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.UUID;
 
 public interface SqlClearingRepository extends JpaRepository<Clearing, ClearingId> {
-    List<Clearing> findByReceivable( Settlement settlement);
+    List<Clearing> findByReceivableId( UUID settlementId);
 
-    List<Clearing> findByPayable( Settlement settlement);
+    List<Clearing> findByPayableId( UUID settlementId);
 }
 
 interface SqlClearingQueryRepository extends ClearingQueryRepository, Repository<Clearing, ClearingId> {
 
     @Override
     @Query( value= "SELECT COUNT( C) > 0 FROM Clearing C "+
-            "WHERE C.receivable.entity.taxNumber= :taxNumber "+
-            "AND C.receivable.number= :number AND C.date= :date")
+            "LEFT OUTER JOIN Settlement S "+
+            "ON C.receivableId= S.settlementId "+
+            "WHERE S.entity.taxNumber= :taxNumber "+
+            "AND S.number= :number AND C.date= :date")
     boolean existReceivable( String number, String taxNumber, LocalDate date );
 
     @Override
     @Query( value= "SELECT COUNT( C) > 0 FROM Clearing C "+
-            "WHERE C.payable.entity.taxNumber= :taxNumber "+
-            "AND C.payable.number= :number AND C.date= :date")
+            "LEFT OUTER JOIN Settlement S "+
+            "ON C.payableId= S.settlementId "+
+            "WHERE S.entity.taxNumber= :taxNumber "+
+            "AND S.number= :number AND C.date= :date")
     boolean existPayable( String number, String taxNumber, LocalDate date );
 }
 
@@ -45,11 +49,11 @@ class ClearingRepositoryImpl implements ClearingRepository {
         return repository.save( clearing);
     }
 
-    @Override public List<Clearing> receivable( Settlement settlement ) {
-        return repository.findByReceivable( settlement);
+    @Override public List<Clearing> receivableId( UUID settlementId ) {
+        return repository.findByReceivableId( settlementId);
     }
 
-    @Override public List<Clearing> payable( Settlement settlement ) {
-        return repository.findByPayable( settlement);
+    @Override public List<Clearing> payableId( UUID settlementId) {
+        return repository.findByPayableId( settlementId);
     }
 }

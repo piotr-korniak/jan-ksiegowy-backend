@@ -5,8 +5,10 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.GregorianCalendar;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
@@ -14,6 +16,7 @@ public class Util {
 
     private static final DateTimeFormatter dd_MM_yyyy= DateTimeFormatter.ofPattern( "dd.MM.yyyy");
     private static final DateTimeFormatter yyyy_MM_dd= DateTimeFormatter.ofPattern( "yyyy-MM-dd");
+    public static final DecimalFormat N_NNN_NN_0_00= new DecimalFormat( "#,###,##0.00");
     private static final DatatypeFactory datatypeFactory;
 
     static {
@@ -33,6 +36,10 @@ public class Util {
 
     public static XMLGregorianCalendar toGregorian( LocalDate date) {
         return datatypeFactory.newXMLGregorianCalendar( date.toString());
+    }
+
+    public static XMLGregorianCalendar gregorianNow() {
+        return datatypeFactory.newXMLGregorianCalendar( new GregorianCalendar());
     }
 
     public static XMLGregorianCalendar toGregorianYear( LocalDate date) {
@@ -58,6 +65,10 @@ public class Util {
     public static String toString( LocalDate date) {
         return date.format( dd_MM_yyyy );
     }
+    public static String toString( BigDecimal decimal) {
+        return N_NNN_NN_0_00.format( decimal);
+    }
+
 
     public static BigDecimal toBigDecimal( String amount, int precision) {
         return new BigDecimal( amount

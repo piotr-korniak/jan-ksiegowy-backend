@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
-import pl.janksiegowy.backend.item.dto.ItemDto;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -17,7 +16,7 @@ public interface SqlTemplateRepository extends JpaRepository<Template, UUID> {
             "LEFT OUTER JOIN Template P "+
             "ON M.templateId= P.templateId AND (P.date <= :date AND M.date < P.date) "+
             "WHERE M.documentType= :type AND M.date <= :date AND P.date IS NULL")
-    Optional<Template> findByTypeAndKindAndDate( DocumentType type, LocalDate date);
+    Optional<Template> findByTypeAndKindAndDate( TemplateType type, LocalDate date);
 
 
     Optional<Template> findTemplateByTemplateIdAndDate( UUID templateId, LocalDate date );
@@ -47,7 +46,7 @@ class TemplateRepositoryImpl implements TemplateRepository {
         return repository.findTemplateByTemplateIdAndDate( templateId, date);
     }
 
-    @Override public Optional<Template> findByDocumentTypeAndDate( DocumentType type, LocalDate date ) {
+    @Override public Optional<Template> findByDocumentTypeAndDate( TemplateType type, LocalDate date ) {
         return repository.findByTypeAndKindAndDate( type, date);
     }
 }
