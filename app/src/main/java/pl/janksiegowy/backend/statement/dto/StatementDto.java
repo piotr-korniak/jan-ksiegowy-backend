@@ -3,7 +3,9 @@ package pl.janksiegowy.backend.statement.dto;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
+import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
+import pl.janksiegowy.backend.statement.StatementKind;
 import pl.janksiegowy.backend.statement.StatementStatus;
 import pl.janksiegowy.backend.statement.StatementType;
 
@@ -21,6 +23,7 @@ public interface StatementDto {
     UUID getStatementId();
     PatternId getPatternId();
     StatementType getType();
+    StatementKind getKind();
     LocalDateTime getCreated();
     LocalDate getDate();
     LocalDate getDue();
@@ -28,7 +31,9 @@ public interface StatementDto {
     BigDecimal getLiability();
     String getNumber();
     EntityDto getSettlementEntity();
-    String getPeriodId();
+
+    Period getPeriod();
+
     BigDecimal getValue1();
     BigDecimal getValue2();
     int getNo();
@@ -42,6 +47,7 @@ public interface StatementDto {
         private UUID statementId;
         private PatternId patternId;
         private StatementType type;
+        private StatementKind kind;
         private LocalDateTime created;
         private LocalDate date;
         private LocalDate due;
@@ -49,7 +55,7 @@ public interface StatementDto {
         private BigDecimal liability;
         private String number;
         private EntityDto revenue;
-        private String periodId;
+        private Period period;
         private BigDecimal value1;
         private BigDecimal value2;
         private int no;
@@ -64,6 +70,11 @@ public interface StatementDto {
         @Override public StatementType getType() {
             return type;
         }
+
+        @Override public StatementKind getKind() {
+            return kind;
+        }
+
         @Override public LocalDateTime getCreated() {
             return created;
         }
@@ -85,8 +96,8 @@ public interface StatementDto {
         @Override public EntityDto getSettlementEntity() {
             return revenue;
         }
-        @Override public String getPeriodId() {
-            return periodId;
+        @Override public Period getPeriod() {
+            return period;
         }
         @Override public BigDecimal getValue1() {
             return value1;

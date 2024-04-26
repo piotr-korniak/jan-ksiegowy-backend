@@ -6,7 +6,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.DiscriminatorOptions;
 import pl.janksiegowy.backend.accounting.decree.DocumentDecree;
+import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.payment.PaymentType;
+import pl.janksiegowy.backend.finances.settlement.SettlementKind;
+import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.Period;
 
@@ -42,10 +45,11 @@ public abstract class Document {
     protected BigDecimal ct= BigDecimal.ZERO;
 
     @ManyToOne
-    @JoinColumn( updatable= false, insertable= false)
+    @JoinColumn //( updatable= false, insertable= false)
     private MonthPeriod period;
-    @Column( name= "PERIOD_ID")
-    private String periodId;
+
+ //   @Column( name= "PERIOD_ID")
+ //   private String periodId;
 /*
     public DocumentType getType() {
         return DocumentType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
@@ -66,6 +70,13 @@ public abstract class Document {
     public Document setNumber( String number) {
         this.number= number;
         return this;
+    }
+
+    public abstract <T> T accept( DocumentVisitor<T> visitor);
+
+    public interface DocumentVisitor<T> {
+        T visit( Invoice invoice);
+        T visit( Payment payment);
     }
 
 }

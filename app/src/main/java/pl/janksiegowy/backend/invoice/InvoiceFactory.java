@@ -10,6 +10,7 @@ import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.Period;
+import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
 
@@ -25,7 +26,7 @@ public class InvoiceFactory {
 
     private final EntityRepository entities;
     private final MetricRepository metrics;
-    private final PeriodRepository periods;
+    private final PeriodFacade periods;
     private final InvoiceRegisterRepository registers;
     private final DecreeRepository decrees;
     private final InvoiceLineFactory line;
@@ -74,8 +75,7 @@ public class InvoiceFactory {
                 .setDate( source.getDate())
                 .setDue( source.getDue())
                 .setNumber( source.getNumber())
-                .setPeriodId( periods.findMonthByDate( source.getInvoiceDate())
-                        .map( Period::getId).orElseThrow())
+                .setPeriod( periods.findMonthPeriodOrAdd( source.getDate()))
                 .setDocumentId( Optional.ofNullable( source.getDocumentId())
                         .orElseGet( UUID::randomUUID));
     }

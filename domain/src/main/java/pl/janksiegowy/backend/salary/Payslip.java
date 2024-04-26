@@ -54,6 +54,11 @@ public class Payslip extends Document {
     }
 
     @Override
+    public <T> T accept( DocumentVisitor<T> visitor ) {
+        return null;
+    }
+
+    @Override
     public Document setAmount( BigDecimal amount ) {
         return null;
     }

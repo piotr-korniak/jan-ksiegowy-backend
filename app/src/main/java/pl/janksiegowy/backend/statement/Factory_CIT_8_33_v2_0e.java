@@ -23,7 +23,7 @@ public class Factory_CIT_8_33_v2_0e extends Factory_CIT_8 {
             kodUrzedu= metric.getRcCode();
 
             setCelZlozenia( new CelZlozenia(){{
-                value= 1;
+                value= reason;
                 setPoz( getPoz());
             }});
             setKodFormularza( new KodFormularza() {{

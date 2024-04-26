@@ -15,6 +15,8 @@ public abstract class Factory_CIT_8 {
     protected AnnualPeriod period;
     protected Interpreter data;
 
+    protected byte reason= 1;
+
     public static Factory_CIT_8 create( AnnualPeriod period, DecreeLineQueryRepository lines) {
 
         return getPatternId( Util.min( LocalDate.now(), period.getEnd().plusMonths( 3)))
@@ -53,5 +55,10 @@ public abstract class Factory_CIT_8 {
 
     private static Optional<PatternId> getPatternId( LocalDate date ) {
         return Optional.of( PatternId.CIT_8_33_v2_0e);
+    }
+
+    protected int setReason( int reason) {
+        this.reason= (byte) (reason==1? 1: 2);
+        return reason;
     }
 }

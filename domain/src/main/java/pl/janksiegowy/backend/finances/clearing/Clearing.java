@@ -16,20 +16,20 @@ import java.util.UUID;
 public class Clearing {
 
     @Id
+    @Column( name= "RECEIVABLE_ID")
     private UUID receivableId;
-    /*
-    @ManyToOne( cascade= { CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinColumn( name= "RECEIVABLE_ID")
-    private Settlement receivable;*/
+
+    @ManyToOne //( cascade= { CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn( name= "RECEIVABLE_ID", updatable= false, insertable= false)
+    private Settlement receivable;
 
     @Id
+    @Column( name= "PAYABLE_ID")
     private UUID payableId;
 
-    /*
-    @Id
-    @ManyToOne( cascade= { CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinColumn( name= "PAYABLE_ID")
-    private Settlement payable;*/
+    @ManyToOne //( cascade= { CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn( name= "PAYABLE_ID", updatable= false, insertable= false)
+    private Settlement payable;
 
     private LocalDate date;
     @Getter
@@ -39,10 +39,10 @@ public class Clearing {
         this.date= date;
         return this;
     }
-/*
-    public Settlement getReverse( Settlement settlement) {
-        return settlement.getSettlementId().equals( receivable.getSettlementId())? payable: receivable;
-    }*/
+
+    public Settlement getReverse( UUID settlementId) {
+        return settlementId.equals( receivable.getSettlementId())? payable: receivable;
+    }
 
     public Clearing setSettlement(  BigDecimal amount, UUID receivableId, UUID payableId) {
         this.amount= amount;

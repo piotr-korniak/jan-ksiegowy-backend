@@ -10,10 +10,9 @@ import pl.janksiegowy.backend.period.PeriodFacade;
 public class SettlementConfiguration {
 
     @Bean
-    SettlementFacade settlementFacade( final PeriodFacade period,
-                                       final EntityRepository entities,
+    SettlementFacade settlementFacade( final EntityRepository entities,
                                        final SettlementRepository settlements,
                                        final ClearingFactory clearing ) {
-        return new SettlementFacade( new SettlementFactory( period, entities, clearing), settlements);
+        return new SettlementFacade( new SettlementFactory( entities, clearing), settlements);
     }
 }

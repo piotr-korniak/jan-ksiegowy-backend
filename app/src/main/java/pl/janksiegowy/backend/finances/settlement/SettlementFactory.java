@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class SettlementFactory implements SettlementKindVisitor<Settlement> {
 
-    private final PeriodFacade periods;
     private final EntityRepository entities;
     private final ClearingFactory clearing;
 
@@ -25,7 +24,6 @@ public class SettlementFactory implements SettlementKindVisitor<Settlement> {
             .map( entity-> source.getKind().accept( this)
                 .setEntityId( entity.getId())
                 .setSettlementId( Optional.ofNullable( source.getSettlementId()).orElseGet( UUID::randomUUID))
-                .setPeriod( periods.findMonthPeriodOrAdd( source.getDate()))
                 .setClearings( source.getClearings().stream().map( clearing::from).collect( Collectors.toList()))
                 .setDate( source.getDate())
                 .setDue( source.getDue())

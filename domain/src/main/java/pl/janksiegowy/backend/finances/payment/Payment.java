@@ -18,7 +18,7 @@ import java.util.List;
 @Entity
 @SecondaryTable( name= Payment.TABLE_NAME, pkJoinColumns= @PrimaryKeyJoinColumn( name="ID"))
 public abstract class Payment extends Document {
-    static final String TABLE_NAME = "PAYMENTS";
+    static final String TABLE_NAME= "PAYMENTS";
 
     @ManyToOne
     @JoinColumn( table= TABLE_NAME)
@@ -28,6 +28,8 @@ public abstract class Payment extends Document {
         return PaymentType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
     }
 
- //   public abstract Document setClearings( List<Clearing> clearings);
+    @Override public <T> T accept( DocumentVisitor<T> visitor ) {
+        return visitor.visit( this);
+    }
 
 }

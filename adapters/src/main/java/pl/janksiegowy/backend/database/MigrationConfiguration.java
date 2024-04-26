@@ -125,7 +125,7 @@ public class MigrationConfiguration {
     protected List<TemplateMap> getInitialTemplates() {
         return List.of(
             new TemplateMap( TemplateDto.create().code( "BW/KW")
-                    .documentType( TemplateType.PS)
+                    .documentType( TemplateType.PE )
                     .date( LocalDate.EPOCH)
                     .registerCode( "BK")
                     .name( "Bank/Kasa Wyda"))

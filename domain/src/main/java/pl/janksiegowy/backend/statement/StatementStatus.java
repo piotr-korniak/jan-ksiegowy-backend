@@ -1,16 +1,13 @@
 package pl.janksiegowy.backend.statement;
 
 public enum StatementStatus {
-    /**
-     * New
-     */
+
+    /** New */
     N,
-    /**
-     * Approved
-     */
+
+    /** Approved */
     A,
-    /**
-     * Sent
-     */
+
+    /** Sent */
     S;
 }

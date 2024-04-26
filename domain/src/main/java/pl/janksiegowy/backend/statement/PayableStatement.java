@@ -17,23 +17,22 @@ import java.time.LocalDate;
 @Accessors( chain= true)
 
 @Entity
-@SecondaryTable( name= StatementDocument.TABLE_NAME,
+@DiscriminatorValue( "S")
+@SecondaryTable( name= PayableStatement.TABLE_NAME,
         pkJoinColumns= @PrimaryKeyJoinColumn( name="DOCUMENT_ID"))
-
-//@Inheritance( strategy= InheritanceType.SINGLE_TABLE)
-public abstract class StatementDocument extends Statement {
-    static final String TABLE_NAME = "SETTLEMENTS";
+public class PayableStatement extends Statement {
+    static final String TABLE_NAME= "SETTLEMENTS";
 
     @Column( name= "DATE", table= TABLE_NAME)
     private LocalDate settlementDate;
 
     @Column( name="TYPE", table= TABLE_NAME)
     @Enumerated( EnumType.STRING)
-    private SettlementType settlementType;
+    private StatementType type;
 
-    @Column( table= TABLE_NAME)
+    @Column( name="KIND", table= TABLE_NAME)
     @Enumerated( EnumType.STRING)
-    private SettlementKind kind;
+    private SettlementKind settlementKind= SettlementKind.C;
 
     @ManyToOne
     @JoinColumn( name="PERIOD_ID", table = TABLE_NAME)
@@ -49,11 +48,13 @@ public abstract class StatementDocument extends Statement {
     @JoinColumn( table= TABLE_NAME)
     private pl.janksiegowy.backend.entity.Entity entity;
 
+    @Column( table= TABLE_NAME)
+    private BigDecimal dt= BigDecimal.ZERO;
+
     @Column( name= "CT", table= TABLE_NAME)
     private BigDecimal liability;
 
-    @Column( table= TABLE_NAME)
-    private BigDecimal dt= BigDecimal.ZERO;
+
 
     @OneToOne //( mappedBy= "settlement", cascade = CascadeType.ALL)
     @JoinColumn( table= TABLE_NAME, name = "ID", referencedColumnName = "DOCUMENT_ID")

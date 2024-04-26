@@ -4,12 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.UuidGenerator;
-import pl.janksiegowy.backend.finances.payment.PaymentType;
-import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.period.Period;
-import pl.janksiegowy.backend.finances.settlement.StatementSettlement;
-import pl.janksiegowy.backend.shared.pattern.PatternCode;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 
 import java.math.BigDecimal;
@@ -32,9 +27,6 @@ public abstract class Statement {
    // @UuidGenerator
     private UUID statementId;
 
-    @Enumerated( EnumType.STRING)
-    @Column( insertable= false, updatable= false)
-    private StatementType type;
 /*
     @OneToOne( mappedBy= "statement", cascade = CascadeType.ALL)
     protected StatementSettlement settlement;
@@ -59,8 +51,8 @@ public abstract class Statement {
     @Enumerated( EnumType.STRING)
     private StatementStatus status= StatementStatus.N;
 
-    public StatementType getType() {
-        return StatementType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
+    public StatementKind getKind() {
+        return StatementKind.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
     }
 
     public Statement setStatementId( UUID statementId) {

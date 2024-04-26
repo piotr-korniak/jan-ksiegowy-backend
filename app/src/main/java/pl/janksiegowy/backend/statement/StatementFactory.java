@@ -7,6 +7,7 @@ import pl.janksiegowy.backend.finances.settlement.SettlementType;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.statement.StatementType.StatementTypeVisitor;
+import pl.janksiegowy.backend.statement.StatementKind.StatementKindVisitor;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
 
 import java.util.Optional;
@@ -19,11 +20,39 @@ public class StatementFactory {
 
     public Statement from( StatementDto source, MonthPeriod settlementPeriod) {
 
+        return source.getKind().accept( new StatementKindVisitor<Statement>() {
+                    @Override public Statement visitPayableStatement() {
+                        return new PayableStatement()
+                                .setType( source.getType())
+                                .setEntity( entities.findByEntityIdAndDate(
+                                        source.getSettlementEntity().getEntityId(), source.getDate()).orElseThrow())
+                                .setSettlementPeriod( settlementPeriod)
+                                .setSettlementDate( settlementPeriod.getEnd())
+                                .setLiability( source.getLiability())
+                                .setDue( source.getDue())
+                                .setNumber( source.getNumber())
+                                .setValue_1( source.getValue1())
+                                .setValue_2( source.getValue2());
+                    }
+                    @Override public Statement visitRegisterStatement() {
+                        return new RegisterStatement();
+                    }
+                }).setDate( source.getDate())
+                .setStatementId( Optional.ofNullable( source.getStatementId())
+                        .orElseGet( UUID::randomUUID))
+                .setPatternId( source.getPatternId())
+                .setCreated( source.getCreated())
+                //.setMetric( metrics.findByDate( source.getInvoiceDate()).orElseThrow())
+
+                .setPeriod( source.getPeriod())
+                .setNo( source.getNo())
+                .setXML( source.getXml());
+/*
         return periods.findById( source.getPeriodId()).map( period-> source.getType()
             .accept( new StatementTypeVisitor<Statement>() {
                 @Override public Statement visitVatStatement() {
-                    return new VatStatement().setLiability( source.getLiability())
-                            .setSettlementType( SettlementType.S)
+                    return new PayableStatement().setLiability( source.getLiability())
+                            .setSettlementType( SettlementType.V)
                             .setKind( SettlementKind.C)
                             .setDue( source.getDue())
                             .setSettlementDate( source.getDate())
@@ -34,19 +63,7 @@ public class StatementFactory {
                             .setValue_1( source.getValue1())
                             .setValue_2( source.getValue2());
                 }
-                @Override public Statement visitJpkStatement() {
-                    return new JpkStatement();  // without settlement
-                }
-                @Override public Statement visitCitStatement() {
-                    return new CitStatement().setLiability( source.getLiability());
-                }
 
-                @Override public Statement visitPitStatement() {
-                    return null;
-                }
-                @Override public Statement visitZusStatement() {
-                    return null;
-                }
             }).setDate( source.getDate())
                         .setStatementId( Optional.ofNullable( source.getStatementId())
                                 .orElseGet( UUID::randomUUID))
@@ -57,34 +74,6 @@ public class StatementFactory {
                         .setNo( source.getNo())
                         .setXML( source.getXml()))
                 .orElseThrow();
-
-/*
-
-        ).orElseThrow();
-        return Optional.ofNullable( source.getLiability())
-                .map( liability-> source.getType().accept( this)
-                    .setLiability( source.getLiability())
-                    .setNumber( source.getNumber())
-                    .setDue( source.getDue())
-                    .setStatementId( Optional.ofNullable( source.getStatementId()).orElseGet( UUID::randomUUID))
-                    .setValue_1( source.getValue1())
-                    .setValue_2( source.getValue2())
-//                    .setSettlement( (StatementSettlement)new StatementSettlement()
-//                        .setDate( source.getDate())
-//                        .setNumber( source.getSettlementNumber())
-//                        .setEntity( entities.findByEntityIdAndDate(
-//                                source.getSettlementEntity().getEntityId(), source.getDate()).orElseThrow())
-//                        .setDue( source.getSettlementDue())
-//                        .setCt( liability)
-//                        .setKind( SettlementKind.C)
-//                        .setPeriod(  periods.findMonthByDate( period.getEnd()).orElseThrow()))
-                .orElse( source.getType().accept( this)
-                        .setStatementId( Optional.ofNullable( source.getStatementId()).orElseGet( UUID::randomUUID)))
-                    .setPattern( source.getPatternId())
-                    .setDate( source.getDate())
-                    .setCreated( source.getCreated())
-                    .setPeriod( period)
-                    .setXML( source.getXml());
 */
     }
 

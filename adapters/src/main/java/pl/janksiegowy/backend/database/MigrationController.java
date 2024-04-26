@@ -15,8 +15,9 @@ import pl.janksiegowy.backend.accounting.template.TemplateQueryRepository;
 import pl.janksiegowy.backend.entity.EntityFacade;
 import pl.janksiegowy.backend.entity.EntityInitializer;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
+import pl.janksiegowy.backend.finances.note.NoteFacade;
+import pl.janksiegowy.backend.finances.note.NoteInitializer;
 import pl.janksiegowy.backend.finances.payment.PaymentQueryRepository;
-import pl.janksiegowy.backend.finances.settlement.SettlementConfiguration;
 import pl.janksiegowy.backend.finances.settlement.SettlementFacade;
 import pl.janksiegowy.backend.finances.settlement.SettlementInitializer;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
@@ -69,6 +70,8 @@ public class MigrationController extends MigrationConfiguration {
     private final ContractInitializer contracts;
     private final SettlementInitializer settlements;
 
+    private final NoteInitializer notices;
+
     private final PeriodDto[] initialPeriods= {
             PeriodDto.create().type( PeriodType.A)
                 .begin( LocalDate.of( 2017, 1, 1))
@@ -110,6 +113,7 @@ public class MigrationController extends MigrationConfiguration {
                                 final ContractFacade contract,
                                 final ContractQueryRepository contracts,
                                 final SettlementFacade settlement,
+                                final NoteFacade notice,
 
                                 final DataLoader loader) {
 
@@ -129,6 +133,7 @@ public class MigrationController extends MigrationConfiguration {
         this.accounts= new AccountInitializer( account, accounts);
         this.contracts= new ContractInitializer( contracts, entities, contract);
         this.settlements= new SettlementInitializer( settlements, entities, settlement, decree, loader);
+        this.notices= new NoteInitializer( settlements, entities, notice, loader);
     }
 
     @PostMapping
@@ -174,11 +179,14 @@ public class MigrationController extends MigrationConfiguration {
         response.append( contracts.init( getInitialContracts()));
         log.warn( "Contracts migration complete!");
 
+        /*
         response.append( settlements.init());
-        log.warn( "Settlements migration complete!");
+        log.warn( "Settlements migration complete!");*/
 
         payments.init();
         log.warn( "Payments migration complete!");
+
+        response.append( notices.init());
 
         return ResponseEntity.ok( response.toString());
     }

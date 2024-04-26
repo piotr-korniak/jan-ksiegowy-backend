@@ -7,20 +7,18 @@ public enum StatementType {
             return visitor.visitVatStatement();
         }
     },
-    /**
-     * Invoice Register - JPK
-     */
-    R {
-        @Override public <T> T accept( StatementTypeVisitor<T> visitor ) {
+
+    /** Invoice Register - JPK */
+    R { @Override public <T> T accept( StatementTypeVisitor<T> visitor ) {
             return visitor.visitJpkStatement();
-        }
-    },
-    C { // CIT
-        @Override public <T> T accept( StatementTypeVisitor<T> visitor ) {
+    }},
+
+    /** CIT Statement */
+    I { @Override public <T> T accept( StatementTypeVisitor<T> visitor ) {
             return visitor.visitCitStatement();
-        }
-    },
-    P { // PIT
+    }},
+
+    T { // PIT
         @Override public <T> T accept( StatementTypeVisitor<T> visitor ) {
             return visitor.visitPitStatement();
         }

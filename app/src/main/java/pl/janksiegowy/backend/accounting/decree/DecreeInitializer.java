@@ -10,11 +10,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class DecreeInitializer {
 
-    private final PaymentDocumentRepository payments;
+    private final PaymentRepository payments;
 
     public void init() {
 
-        payments.save( (Payment) new Receipt()
+        payments.save( (Payment) new PaymentReceipt()
                 .setDocumentId(  UUID.fromString( "e618b66b-69af-4621-b087-0b5b8f2c7c3b" ))
    //             .setType( PaymentType.R)
                 .setDates( LocalDate.now(), LocalDate.now().plusDays( 14))

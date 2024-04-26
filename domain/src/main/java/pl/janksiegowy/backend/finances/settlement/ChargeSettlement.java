@@ -21,4 +21,9 @@ public class ChargeSettlement extends FinancialSettlement {
     public BigDecimal getAmount() {
         return null;
     }
+
+    @Override
+    public <T> T accept( DocumentVisitor<T> visitor ) {
+        return null;
+    }
 }

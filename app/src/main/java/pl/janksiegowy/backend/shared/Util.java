@@ -1,5 +1,8 @@
 package pl.janksiegowy.backend.shared;
 
+import pl.janksiegowy.backend.entity.Country;
+import pl.janksiegowy.backend.shared.financial.TaxNumber;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -8,7 +11,10 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.GregorianCalendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
@@ -24,6 +30,31 @@ public class Util {
             datatypeFactory= DatatypeFactory.newInstance();
         } catch ( DatatypeConfigurationException e) {
             throw new RuntimeException( e);
+        }
+    }
+    private static Pattern PATTERN= Pattern.compile("^([A-Z]{2})?(\\d+)$");
+
+    public static TaxNumber parseTaxNumber( String taxNumber, String defaultCountry) {
+        Matcher matcher = PATTERN.matcher( taxNumber);
+
+        if( matcher.find()) {
+            return new TaxNumber() {
+                @Override public Country getCountry() {
+                    return Country.valueOf( matcher.group(1)!= null? matcher.group(1): defaultCountry);
+                }
+                @Override public String getTaxNumber() {
+                    return matcher.group(2);
+                }
+            };
+        } else {
+            return new TaxNumber() {
+                @Override public String getTaxNumber() {
+                    return "<no tax number>";
+                }
+                @Override public Country getCountry() {
+                    return Country.valueOf( defaultCountry);
+                }
+            };
         }
     }
 

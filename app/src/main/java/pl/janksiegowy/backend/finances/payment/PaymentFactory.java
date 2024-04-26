@@ -6,6 +6,7 @@ import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.finances.clearing.ClearingFactory;
 import pl.janksiegowy.backend.finances.payment.PaymentType.PaymentTypeVisitor;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
+import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
@@ -13,7 +14,6 @@ import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class PaymentFactory {
 
     private final PaymentRegisterRepository registers;
     private final NumeratorFacade numerators;
-    private final PeriodRepository periods;
+    private final PeriodFacade periods;
     private final EntityRepository entities;
     private final ClearingFactory clearing;
 
@@ -30,7 +30,7 @@ public class PaymentFactory {
         return (Payment) registers.findByCode( source.getRegister().getCode())
                 .map( register-> source.getType().accept( new PaymentTypeVisitor<Payment>() {
                     @Override public Payment visitPaymentReceipt() {
-                        return (Payment) new Receipt()
+                        return (Payment) new PaymentReceipt()
                             .setNumber( Optional.ofNullable( source.getNumber())
                                     .orElseGet( ()-> numerators.increment(
                                             switch ( register.getType()) {
@@ -52,6 +52,7 @@ public class PaymentFactory {
                         .setDocumentId( Optional.ofNullable( source.getDocumentId()).orElseGet( UUID::randomUUID))
                         .setDates( source.getDate(), source.getDate())
                         .setAmount( source.getAmount())
+                        .setPeriod( periods.findMonthPeriodOrAdd( source.getDate()))
                         .setEntity( entities.findByEntityIdAndDate(
                                 source.getEntity().getEntityId(), source.getDate()).orElseThrow()) )
                 .orElseThrow();

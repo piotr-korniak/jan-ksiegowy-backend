@@ -16,7 +16,7 @@ public interface SqlSettlementRepository extends JpaRepository<Settlement, UUID>
 interface SqlSettlementQueryRepository extends SettlementQueryRepository, Repository<Settlement, UUID> {
 
     @Override
-    @Query( "SELECT s.number AS number, s.dt AS dt, s.ct AS ct, s.date AS date, s.due AS due, " +
+    @Query( "SELECT s.type AS type, s.number AS number, s.dt AS dt, s.ct AS ct, s.date AS date, s.due AS due, " +
             "e.accountNumber AS entityAccountNumber, " +
             "e.name AS entityName FROM Settlement s JOIN s.entity e " +
             "WHERE s.dt <> s.ct AND (s.kind='D' OR s.kind='C') " +

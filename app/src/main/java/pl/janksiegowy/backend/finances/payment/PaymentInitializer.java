@@ -35,10 +35,8 @@ public class PaymentInitializer {
     private final PeriodFacade period;
     private final DataLoader loader;
 
-    private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "--- dd.MM.yyyy");
-
     private Payment save( PaymentDto source) {
-        return payment.save( source);
+        return payment.approve( payment.save( source));
     }
 
     private Settlement save( SettlementMap source) {

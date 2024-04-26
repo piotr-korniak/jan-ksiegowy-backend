@@ -39,10 +39,10 @@ public abstract class Settlement {
     private LocalDate due;
 
     private String number;
-
+/*
     @ManyToOne( fetch= FetchType.LAZY)
     private MonthPeriod period;
-
+*/
     protected BigDecimal dt= BigDecimal.ZERO;
     protected BigDecimal ct= BigDecimal.ZERO;
 
@@ -81,12 +81,6 @@ public abstract class Settlement {
         return this;
     }
 
-    public Settlement setPeriod( MonthPeriod period) {
-        this.period= period;
-        return this;
-    }
-
-
     public abstract <T> T accept( SettlementVisitor<T> visitor);
 
     public abstract BigDecimal getAmount();
@@ -95,12 +89,10 @@ public abstract class Settlement {
     public abstract Settlement setClearings( List<Clearing> clearings);
 
     public interface SettlementVisitor<T> {
-        T visit( StatementSettlement statement);
-        T visit( PaymentSettlement payment);
         T visit( PayslipSettlement payslip);
         T visit( ChargeSettlement charge);
         T visit( FeeSettlement fee);
-        T visit( NoteSettlement note);
+
     }
 
 }

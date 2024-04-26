@@ -5,8 +5,6 @@ import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
 
-import java.util.Optional;
-
 @AllArgsConstructor
 public class StatementFacade {
 
@@ -20,7 +18,7 @@ public class StatementFacade {
     }
 
     public void approve( Statement statement) {
-       // if( statement.getClass().isInstance( StatementDocument.class))
-            decrees.book( (StatementDocument) statement);
+        if( statement.getClass().isInstance( PayableStatement.class))
+            decrees.book( (PayableStatement) statement);
     }
 }

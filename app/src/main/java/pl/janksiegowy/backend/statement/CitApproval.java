@@ -3,11 +3,15 @@ package pl.janksiegowy.backend.statement;
 import lombok.AllArgsConstructor;
 import pl.gov.crd.wzor._2024._02._08._13272.Deklaracja_CIT_8_33_v2_0e;
 import pl.janksiegowy.backend.accounting.decree.DecreeLineQueryRepository;
+import pl.janksiegowy.backend.entity.EntityQueryRepository;
+import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.*;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.interpreter.DecreeLineFunction;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
+import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
+import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
@@ -25,10 +29,14 @@ public class CitApproval {
     private final PeriodRepository periods;
     private final MetricRepository metrics;
     private final StatementFacade statement;
+    private final StatementRepository statements;
+    private final EntityQueryRepository entities;
+    private final NumeratorFacade numerator;
 
     public static final DecimalFormat DWA_MIEJSCA= new DecimalFormat( "#,###,##0.00");
 
     public StringBuilder approval( String periodId) {
+        var version= PatternId.CIT_8_33_v2_0e;
 
 
         return periods.findById( periodId).map( period-> {
@@ -59,22 +67,35 @@ public class CitApproval {
 
             if( PeriodType.A== period.getType()) {
 
-                var source= metrics.findByDate( period.getEnd())
-                        .map( metric -> XmlConverter.marshal(
-                                Factory_CIT_8.create( (AnnualPeriod)period, lines).prepare( metric)))
-                        .orElseThrow();
+                var metric= metrics.findByDate( period.getBegin()).orElseThrow();
+                var cit=  Factory_CIT_8.create( (AnnualPeriod)period, lines);
+                //var source= XmlConverter.marshal(
+                //                Factory_CIT_8.create( (AnnualPeriod)period, lines).prepare( metric));
 
-                System.err.println( source);
-
-                statement.save( (MonthPeriod) period, StatementDto.create()
-                        .type( StatementType.C)
-                        .date( Util.min( LocalDate.now(), period.getEnd().plusMonths( 3)))
-                        .liability( inter.getVariable( "podatek"))
-                        .number( "CIT-8 "+ period.getBegin().getYear() +
-                                ((period.getEnd().getYear()- period.getBegin().getYear())==1?
-                                        period.getEnd().getYear()%100: ""))
-                        .due( period.getEnd().plusMonths( 3))
-                        .periodId( periodId));
+                //System.err.println( source);
+                periods.findMonthByDate( period.getEnd())
+                        .ifPresent( month-> statement.save( month,
+                                statements.findFirstByPatternIdAndPeriodOrderByNoDesc( version, period)
+                                .filter( statement-> StatementStatus.S != statement.getStatus())
+                                .map( statement-> StatementDto.create()
+                                        .statementId( statement.getStatementId())
+                                        .no( cit.setReason( statement.getNo())))
+                                .orElseGet(()-> StatementDto.create()
+                                        .no( cit.setReason( Integer.valueOf(  numerator.
+                                                increment( NumeratorCode.ST, "JPK", period.getEnd())))))
+                                .xml( XmlConverter.marshal( cit.prepare( metric)))
+                                .patternId( version)
+                                .type( StatementType.I)
+                                .kind( StatementKind.S)
+                                .date( Util.min( LocalDate.now(), period.getEnd().plusMonths( 3)))
+                                .liability( inter.getVariable( "podatek"))
+                                .number( "CIT-8 "+ period.getBegin().getYear() +
+                                        ((period.getEnd().getYear()- period.getBegin().getYear())==1?
+                                                period.getEnd().getYear()%100: ""))
+                                .due( period.getEnd().plusMonths( 3))
+                                .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode())
+                                        .orElseThrow())
+                                .period( period)) );
             }
 
             return new StringBuilder()

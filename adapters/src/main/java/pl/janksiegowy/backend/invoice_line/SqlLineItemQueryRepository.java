@@ -56,7 +56,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "L.taxRate AS taxRate, " +
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
-                    "WHERE vat!=0 AND L.invoice.periodId= :period AND " +
+                    "WHERE vat!=0 AND L.invoice.period= :period AND " +
                     "((TYPE( L.invoice) = SalesInvoice AND "+
                     "  TREAT( L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR"+
                     " (TYPE( L.invoice) = PurchaseInvoice AND "+
@@ -65,10 +65,10 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                             "entityCountry, invoiceDate, issueDate, salesKind, purchaseKind, "+
                             "taxRate, itemType "+
                     "ORDER BY invoiceDate ASC ")
-    List<JpaInvoiceSumDto> findByKindAndPeriodIdGroupByRate(
+    List<JpaInvoiceSumDto> findByKindAndPeriodGroupByRate(
             @Param( "salesKinds") List<InvoiceRegisterKind> salesKinds,
             @Param( "purchaseKinds") List<InvoiceRegisterKind> purchaseKinds,
-            @Param( "period") String periodId);
+            @Param( "period") MonthPeriod periodId);
 
     @Override
     @Query( value= "SELECT L.taxRate AS taxRate, " +

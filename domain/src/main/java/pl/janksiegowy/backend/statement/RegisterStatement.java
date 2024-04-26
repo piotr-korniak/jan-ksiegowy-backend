@@ -5,5 +5,5 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue( "R")
-public class JpkStatement extends Statement{
+public class RegisterStatement extends Statement{
 }

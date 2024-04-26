@@ -2,16 +2,13 @@ package pl.janksiegowy.backend.accounting.decree;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
-import pl.janksiegowy.backend.finances.payment.Payment;
-import pl.janksiegowy.backend.finances.payment.PaymentOld;
+import pl.janksiegowy.backend.finances.document.Document;
 import pl.janksiegowy.backend.finances.settlement.FinancialSettlement;
-import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.register.accounting.AccountingRegister;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterFactory;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
-import pl.janksiegowy.backend.salary.Payslip;
-import pl.janksiegowy.backend.statement.StatementDocument;
+import pl.janksiegowy.backend.statement.PayableStatement;
 
 import java.util.Optional;
 
@@ -27,20 +24,11 @@ public class DecreeFacade {
         return save( decree.to( note));
     }
 
-    public Decree book( Payment payment) {
-        return save( decree.to( payment));
+    public Decree book( Document document) {
+        return save( decree.to( document));
     }
-
-    public Decree book( Invoice invoice ) {
-        return save( decree.to( invoice));
-    }
-
-    public Decree book( StatementDocument statement ) {
-        return save( decree.to( statement));
-    }
-
-    public Decree book( Payslip payslip) {
-        return save( decree.to( payslip));
+    public void book( PayableStatement statement) {
+        save( decree.to( statement));
     }
 
     public Decree save( DecreeDto source) {
@@ -52,6 +40,7 @@ public class DecreeFacade {
                 .map( uuid -> register.update( source))
                 .orElse( register.from( source)));
     }
+
 
 
 }

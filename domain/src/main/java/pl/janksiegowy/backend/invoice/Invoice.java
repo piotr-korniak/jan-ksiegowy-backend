@@ -20,7 +20,7 @@ import java.util.List;
 @Entity
 @SecondaryTable( name= Invoice.TABLE_NAME, pkJoinColumns= @PrimaryKeyJoinColumn( name="ID"))
 public abstract class Invoice extends Document {
-    static final String TABLE_NAME = "INVOICES";
+    static final String TABLE_NAME= "INVOICES";
 
     @ManyToOne( fetch= FetchType.LAZY)
     @JoinColumn( table= TABLE_NAME)
@@ -66,5 +66,9 @@ public abstract class Invoice extends Document {
     public Invoice setMetric( Metric metric) {
         this.metric= metric;
         return this;
+    }
+
+    @Override public <T> T accept( DocumentVisitor<T> visitor) {
+        return visitor.visit( this);
     }
 }

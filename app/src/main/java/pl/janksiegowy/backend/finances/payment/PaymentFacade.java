@@ -19,7 +19,7 @@ public class PaymentFacade {
 
     private final PaymentFactory payment;
     //private final PaymentRepository payments;
-    private final PaymentDocumentRepository payments;
+    private final PaymentRepository payments;
 
     private final ClearingFactory clearing;
     private final ClearingRepository clearings;
@@ -37,14 +37,16 @@ public class PaymentFacade {
         return payments.save( payment.from( source));
     }
 
+    public Payment approve( Payment payment) {
+        decrees.book( payment);
+        return payment;// payments.save( decrees.book( payment));
+    }
+
     public PaymentRegister save( RegisterDto source) {
         return registers.save( Optional.ofNullable( source.getRegisterId())
                 .map( uuid-> register.update( source))
                 .orElse( register.from( source)));
     }
 
-    public Payment approve( Payment payment) {
-        decrees.book( payment);
-        return payment;// payments.save( decrees.book( payment));
-    }
+
 }

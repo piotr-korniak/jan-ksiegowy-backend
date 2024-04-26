@@ -7,13 +7,10 @@ public enum PaymentType {
             return visitor.visitPaymentReceipt();
         }},
 
-    /**
-     * Payment Expense
-     */
+    /** Payment Expense */
     E { @Override public <T> T accept( PaymentTypeVisitor<T> visitor) {
             return visitor.visitPaymentExpense();
-        }};
-
+    }};
 
     public abstract <T> T accept( PaymentTypeVisitor<T> visitor);
 

@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.janksiegowy.backend.finances.document.DocumentConverter;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementListDto;
 import pl.janksiegowy.backend.invoice_line.dto.JpaInvoiceSumDto;
 import pl.janksiegowy.backend.shared.Util;
@@ -20,12 +21,12 @@ import static pl.janksiegowy.backend.statement.CitApproval.DWA_MIEJSCA;
 
 @TenantController
 @RequestMapping( value= {"/v2/settlement", "/v2/settlement/{account_number}"})
-public class SettlementController {
+public class SettlementController extends DocumentConverter {
 
     private final SettlementQueryRepository settlements;
-    private final String rowFormat= "%1s %-30s %10s %10s %8s %12s %12s %12s\n";
+    private final String rowFormat= "%2s %-30s %10s %10s %8s %12s %12s %12s\n";
     private final String dashes=  String.format( rowFormat,
-            String.join("", Collections.nCopies(1, "-")),
+            String.join("", Collections.nCopies(2, "-")),
             String.join("", Collections.nCopies(30, "-")),
             String.join("", Collections.nCopies(10, "-")),
             String.join("", Collections.nCopies(10, "-")),
@@ -52,7 +53,7 @@ public class SettlementController {
                     .ifPresent( entity-> {
                         bufor.append( entity.getEntityAccountNumber()+ " > "+ entity.getEntityName()+ "\n");
                         bufor.append( String.format( rowFormat,
-                                "T", "Document", "Date   ", "Due    ", "Variance", "Dt   ", "Ct   ", "Saldo   "));
+                                "Tp", "Document", "Date   ", "Due    ", "Variance", "Dt   ", "Ct   ", "Saldo   "));
                         bufor.append( dashes);
                         lines.forEach( settlement->
                                 bufor.append( settlement!=null? toPrint( settlement): "<empty>\n"));
@@ -66,8 +67,9 @@ public class SettlementController {
 
         var saldo= settlement.getDt().subtract( settlement.getCt());
         var variance= saldo.signum()== 0? "-": ChronoUnit.DAYS.between( LocalDate.now(), settlement.getDue());
+
         return String.format( rowFormat,
-                settlement.getType().name(),
+                settlement.getType().accept( this).name(),
                 settlement.getNumber(),
                 Util.toString( settlement.getDate()),
                 Util.toString( settlement.getDue()),

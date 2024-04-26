@@ -30,8 +30,8 @@ public class InvoiceInitializer {
     private final DataLoader loader;
 
     private Invoice save( InvoiceDto invoice) {
-//        return facade.approve( facade.save( invoice));
-        return facade.save( invoice);
+        return facade.approve( facade.save( invoice));
+//        return facade.save( invoice);
     }
 
     public String init() {
@@ -70,7 +70,7 @@ public class InvoiceInitializer {
                                         .number( fields[1])
                                         .invoiceDate( Util.toLocalDate( fields[4])) // Date of sale or receipt
                                         .date( Util.toLocalDate( fields[5]))        // Date of issue or purchase
-                                        .due( Util.toLocalDate( fields[6]))     // Date of due
+                                        .due( Util.toLocalDate( fields[6]))         // Date of due
                             ).orElseThrow( ()-> new NoSuchElementException( "Not found register type: "+ fields[0]))
                     ).orElseThrow( ()-> new NoSuchElementException( "Not found contact with tax number: "+ fields[2]));
 

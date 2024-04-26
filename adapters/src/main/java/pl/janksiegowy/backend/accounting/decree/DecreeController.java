@@ -3,11 +3,7 @@ package pl.janksiegowy.backend.accounting.decree;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.janksiegowy.backend.finances.payment.PaymentDocumentRepository;
-import pl.janksiegowy.backend.finances.payment.PaymentQueryRepository;
-import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
-import pl.janksiegowy.backend.finances.settlement.SettlementRepository;
-import pl.janksiegowy.backend.shared.DataLoader;
+import pl.janksiegowy.backend.finances.payment.PaymentRepository;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
 @TenantController
@@ -16,7 +12,7 @@ public class DecreeController {
 
     private final DecreeInitializer decrees;
 
-    public DecreeController( final PaymentDocumentRepository payments) {
+    public DecreeController( final PaymentRepository payments) {
         this.decrees= new DecreeInitializer( payments);
     }
 

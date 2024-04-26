@@ -33,7 +33,6 @@ public abstract class Factory_JPK_V7 {
                     account.interpret( "Sprzedaz_Vat_S1", "[Sprzedaz_Vat_S1]@ [JEDEN]");
                     account.add( "Korekta_Naleznego",
                             vat.subtract( account.getVariable( "Sprzedaz_Vat_S1")));
-                    System.err.println( "Należny S1: "+ vat);
                 },
                 TaxRate.S2, (account, base, vat)-> {
                     account.add( "Sprzedaz_Netto_S2", base);
@@ -94,10 +93,10 @@ public abstract class Factory_JPK_V7 {
         this.period= period;
 
 
-        this.salesInvoice= lines.findByKindAndPeriodIdGroupByRate(
+        this.salesInvoice= lines.findByKindAndPeriodGroupByRate(
                         List.of( InvoiceRegisterKind.D),
                         List.of( InvoiceRegisterKind.U, InvoiceRegisterKind.W),
-                        period.getId())
+                        period)
                 .stream()
                 .collect( Collectors.groupingBy( JpaInvoiceSumDto::getInvoiceId,
                         LinkedHashMap::new, Collectors.toList()));
@@ -153,7 +152,6 @@ public abstract class Factory_JPK_V7 {
                             account.add( "Zakupy_Pozostale_Vat", sum.getVat());}
                     }});
 
-
         if( account.isVariable( "Zakupy_Pozostale_Vat")) {
             korekta= account.getVariable( "Zakupy_Pozostale_Vat");
             account.interpret( "Zakupy_Pozostale_Vat", "[Zakupy_Pozostale_Vat]@ [JEDEN]" );
@@ -166,9 +164,6 @@ public abstract class Factory_JPK_V7 {
         account.interpret( "Podatek", "[Razem_Nalezny]- [Razem_Naliczony]");
         if( account.getVariable( "Podatek").signum()>0)
             account.setVariable( "Kwota_Zobowiazania", account.getVariable( "Podatek"));
-
-        System.err.println("Korekta Należnego: "+ account.getVariable( "Korekta_Naleznego"));
-        System.err.println("Korekta Naliczonego: "+ account.getVariable( "Korekta_Naliczonego"));
 
         return this;
     }

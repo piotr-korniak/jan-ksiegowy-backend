@@ -59,8 +59,8 @@ public class SettlementInitializer {
                 .number( fields[2])
                 .date( Util.toLocalDate( fields[5]))
                 .due( Util.toLocalDate( fields[6]))
-                .entity( entities.findByTypeAndTaxNumber( EntityType.B, taxNumber)
-                    .orElseGet(()-> entities.findByTypeAndTaxNumber( EntityType.C, taxNumber)
+                .entity( entities.findByTypeAndTaxNumber( EntityType.C, taxNumber)
+                    .orElseGet(()-> entities.findByTypeAndTaxNumber( EntityType.B, taxNumber)
                             .orElseThrow())));
 
         }

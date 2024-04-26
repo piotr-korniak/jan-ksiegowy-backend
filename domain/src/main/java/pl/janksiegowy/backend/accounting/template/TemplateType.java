@@ -27,9 +27,9 @@ public enum TemplateType {
         }
     },
     /**
-     * Payment Spending
+     * Payment Expanse
      */
-    PS {
+    PE {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
             return visitor.visitPaymentSpending();
         }
@@ -43,13 +43,13 @@ public enum TemplateType {
             return visitor.visitEmployeePayslip();
         }
     },
-    /** Note Issued */
+
+    /** Notice Issued */
     NI {@Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
             return visitor.visitNoteIssued();
     }},
-    /**
-     * Note Received
-     */
+
+    /** Notice Received */
     NR { @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
             return visitor.visitNoteReceived();
     }},
@@ -104,11 +104,12 @@ public enum TemplateType {
     public abstract <T> T accept( DocumentTypeVisitor<T> visitor);
 
     public interface DocumentTypeVisitor<T> {
+        T visitPaymentReceipt();
+        T visitPaymentSpending();
+
         T visitSalesInvoice();
         T visitPurchaseInvoice();
 
-        T visitPaymentReceipt();
-        T visitPaymentSpending();
 
         T visitVatStatement();
         T visitCitStatement();

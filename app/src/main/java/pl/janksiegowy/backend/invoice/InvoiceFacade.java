@@ -23,7 +23,6 @@ public class InvoiceFacade {
     private final DecreeFacade decrees;
 
     public Invoice save( InvoiceDto source) {
-        System.err.println( "Invoice Dto: "+ source.getNumber());
         return invoices.save( invoice.from( source));
     }
 
@@ -34,7 +33,7 @@ public class InvoiceFacade {
     }
 
     public Invoice approve( Invoice invoice) {
-        //decrees.book( invoice);
+        decrees.book( invoice);
         return null;// invoices.save( invoice.setDecree( decrees.book( invoice)));
     }
 }
