@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.janksiegowy.backend.invoice.dto.InvoiceViewDto;
+import pl.janksiegowy.backend.invoice_fop.InvoicePdfGenerator;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
 import java.util.List;
@@ -20,5 +21,13 @@ public class InvoiceController {
     @GetMapping
     ResponseEntity<List<InvoiceViewDto>> list() {
         return ResponseEntity.ok( query.findBy( InvoiceViewDto.class));
+    }
+
+    @GetMapping("/pdf")
+    public ResponseEntity generatePdf() {
+
+
+
+        return ResponseEntity.ok(new InvoicePdfGenerator().generate());
     }
 }

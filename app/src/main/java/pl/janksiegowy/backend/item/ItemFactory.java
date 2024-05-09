@@ -43,11 +43,15 @@ public class ItemFactory implements ItemTypeVisitor<Item> {
     }
 
     @Override public Item visitMaterial() {
-        return new Material();
+        return new Other();
     }
 
     @Override public Item visitProduct() {
         return null;
+    }
+
+    @Override public Item visitOther() {
+        return new Other();
     }
 
 }

@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.DiscriminatorOptions;
 import pl.janksiegowy.backend.accounting.decree.DocumentDecree;
+import pl.janksiegowy.backend.finances.note.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.payment.PaymentType;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind;
@@ -77,6 +78,7 @@ public abstract class Document {
     public interface DocumentVisitor<T> {
         T visit( Invoice invoice);
         T visit( Payment payment);
+        T visit( Note note);
     }
 
 }

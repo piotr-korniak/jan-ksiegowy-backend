@@ -19,7 +19,7 @@ public class NoteInitializer {
     private final DataLoader loader;
 
     private void save( NoteDto source) {
-        facade.save( source);
+        facade.approval( facade.save( source));
     }
 
     public String init() {
@@ -51,7 +51,6 @@ public class NoteInitializer {
                             .orElseGet(()-> entities.findByCountryAndTypeAndTaxNumber(
                                     entity.getCountry(), EntityType.R, entity.getTaxNumber())
                             .orElseThrow()))));
-
         }
 
         return String.format( "%-40s %16s\n",

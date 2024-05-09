@@ -26,8 +26,5 @@ public class IssuedNote extends Note {
         return this.dt;
     }
 
-    @Override
-    public <T> T accept( DocumentVisitor<T> visitor ) {
-        return null;
-    }
+
 }

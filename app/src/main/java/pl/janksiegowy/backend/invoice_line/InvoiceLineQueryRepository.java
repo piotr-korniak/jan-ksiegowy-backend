@@ -1,7 +1,7 @@
 package pl.janksiegowy.backend.invoice_line;
 
 import pl.janksiegowy.backend.period.MonthPeriod;
-import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxMethod;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineSumDto;
 import pl.janksiegowy.backend.invoice_line.dto.JpaInvoiceSumDto;
@@ -13,12 +13,12 @@ import java.util.UUID;
 
 public interface InvoiceLineQueryRepository {
 
-    List<InvoiceLineDto> findAll( List<TaxMetod> taxMetod);
+    List<InvoiceLineDto> findAll( List<TaxMethod> taxMetod);
 
     List<InvoiceLineSumDto> findByInvoiceId( UUID id);
 
     List<JpaInvoiceSumDto> findByKindAndPeriodGroupByRate(
-            List<InvoiceRegisterKind> salesKinds, List<InvoiceRegisterKind> purchaseKinds, MonthPeriod period);
+            List<InvoiceRegisterKind> salesKinds, List<InvoiceRegisterKind> purchaseKinds, String period);
 
     List<JpaInvoiceSumDto> findByKindAndPeriodGroupByType( String periodId);
 

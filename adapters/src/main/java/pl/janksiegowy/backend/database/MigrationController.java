@@ -15,11 +15,12 @@ import pl.janksiegowy.backend.accounting.template.TemplateQueryRepository;
 import pl.janksiegowy.backend.entity.EntityFacade;
 import pl.janksiegowy.backend.entity.EntityInitializer;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
+import pl.janksiegowy.backend.entity.EntityRepository;
+import pl.janksiegowy.backend.finances.clearing.ClearingFactory;
 import pl.janksiegowy.backend.finances.note.NoteFacade;
 import pl.janksiegowy.backend.finances.note.NoteInitializer;
 import pl.janksiegowy.backend.finances.payment.PaymentQueryRepository;
-import pl.janksiegowy.backend.finances.settlement.SettlementFacade;
-import pl.janksiegowy.backend.finances.settlement.SettlementInitializer;
+import pl.janksiegowy.backend.finances.settlement.*;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.invoice.InvoiceInitializer;
 import pl.janksiegowy.backend.invoice.InvoiceQueryRepository;
@@ -39,7 +40,6 @@ import pl.janksiegowy.backend.register.accounting.AccountingRegisterQueryReposit
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterQueryRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.register.RegisterInitializer;
-import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.salary.ContractFacade;
 import pl.janksiegowy.backend.salary.ContractInitializer;
 import pl.janksiegowy.backend.salary.ContractQueryRepository;
@@ -77,6 +77,9 @@ public class MigrationController extends MigrationConfiguration {
                 .begin( LocalDate.of( 2017, 1, 1))
                 .end( LocalDate.of( 2017, 12, 31)),
             PeriodDto.create().type( PeriodType.A)
+                    .begin( LocalDate.of( 2021, 1, 1))
+                    .end( LocalDate.of( 2021, 12, 31)),
+            PeriodDto.create().type( PeriodType.A)
                     .begin( LocalDate.of( 2022, 1, 1))
                     .end( LocalDate.of( 2022, 12, 31)),
             PeriodDto.create().type( PeriodType.A)
@@ -113,6 +116,8 @@ public class MigrationController extends MigrationConfiguration {
                                 final ContractFacade contract,
                                 final ContractQueryRepository contracts,
                                 final SettlementFacade settlement,
+                                final SettlementRepository settlementRepository,
+                                final EntityRepository entityRepository,
                                 final NoteFacade notice,
 
                                 final DataLoader loader) {
@@ -127,6 +132,7 @@ public class MigrationController extends MigrationConfiguration {
         this.items= new ItemInitializer( items, item, loader);
         this.lines= new InvoiceLineInitializer( invoices, invoice, items, loader);
         this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payment, settlement,
+                new SettlementFactory( entityRepository, new ClearingFactory( settlementRepository)),
                 payments, periods, period, loader);
         this.numerators= new NumeratorInitializer( numerators, numerator);
         this.templates= new TemplateInitializer( templates, template);

@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.finances.document.Document;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.metric.Metric;
+import pl.janksiegowy.backend.period.MonthPeriod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,6 +29,13 @@ public abstract class Invoice extends Document {
 
     @Column( table= TABLE_NAME, name= "DATE")
     private LocalDate invoiceDate;
+
+    @ManyToOne
+    @JoinColumn( table= TABLE_NAME, name= "PERIOD_ID", updatable= false, insertable= false)
+    private MonthPeriod invoicePeriod;
+
+    @Column( table= TABLE_NAME, name= "PERIOD_ID")
+    private String invoicePeriodId;
 
     public InvoiceType getType() {
         return InvoiceType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());

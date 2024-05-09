@@ -57,6 +57,12 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
                                                         .subtract( line.getVat()).subtract( line.getCit()))
                                                 .reduce( BigDecimal.ZERO, BigDecimal::add);
                                     }
+
+                                    @Override public BigDecimal visitKwotaPozostaleKup() {
+                                        return invoice.getLineItems().stream()
+                                                .filter( line-> ItemType.R== line.getItem().getType())
+                                                .map( InvoiceLine::getCit).reduce( BigDecimal.ZERO, BigDecimal::add);
+                                    }
                                 });
                     }
                     @Override public AccountDto getAccount( AccountDto.Proxy account) {

@@ -1,7 +1,7 @@
 package pl.janksiegowy.backend.invoice_line.dto;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.shared.financial.TaxMetod.TaxMetodVisitor;
+import pl.janksiegowy.backend.shared.financial.TaxMethod.TaxMethodVisitor;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.item.ItemRepository;
 
@@ -27,7 +27,7 @@ public class InvoiceLineFactory {
 
         Optional.ofNullable( invoiceLineDto.getItem())
                 .map( itemDto-> items.findByItemIdAndDate( itemDto.getItemId(), date)
-                        .map( item-> item.getTaxMetod().accept( new TaxMetodVisitor<InvoiceLine>() {
+                        .map( item-> item.getTaxMetod().accept( new TaxMethodVisitor<InvoiceLine>() {
                             // fixme - tax control
 
                             @Override public InvoiceLine visitNL() {
@@ -40,6 +40,13 @@ public class InvoiceLineFactory {
                                         .setCit( BigDecimal.ZERO)
                                         .setVat( line.getTax());
                             }
+
+                            @Override public InvoiceLine visitVC() {
+                                return line.setBase( BigDecimal.ZERO)
+                                        .setCit( line.getAmount().add( line.getTax()))
+                                        .setVat( BigDecimal.ZERO);
+                            }
+
                             @Override public InvoiceLine visitV5() {
                                 var vat= line.getTax()
                                         .multiply( new BigDecimal("0.5"))

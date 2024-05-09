@@ -114,6 +114,8 @@ public class MigrationConfiguration {
             AccountDto.create()
                 .type( AccountType.P).number( "405").name( "Narzuty na płace"),
             AccountDto.create()
+                .type( AccountType.P).number( "409-1").name( "Koszty pozostałe - inne"),
+            AccountDto.create()
                 .type( AccountType.B).number( "227").name( "Rozrachunki z tytułu PIT"),
             AccountDto.create()
                 .type( AccountType.B).number( "225").name( "Rozrachunki z ZUS"),
@@ -232,8 +234,14 @@ public class MigrationConfiguration {
                             .page( AccountPage.D)
                             .function( InvoiceFunction.KwotaUslugNUP )
                             .account( AccountDto.create().number( "403-2"))
-                            .description( "koszty usług bez odliczenia")),
-            new TemplateMap( TemplateDto.create().code( "DV")
+                            .description( "koszty usług bez odliczenia"))
+                    .add( TemplateLineDto.create()
+                            .page( AccountPage.D)
+                            .function( InvoiceFunction.KwotaPozostaleKUP )
+                            .account( AccountDto.create().number( "409-1"))
+                            .description( "koszty pozostałe")),
+
+        new TemplateMap( TemplateDto.create().code( "DV")
                         .documentType( TemplateType.SV)
                         .date( LocalDate.EPOCH)
                         .registerCode( "PK")

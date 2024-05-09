@@ -17,6 +17,8 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.2.1'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.2.1'
 
+    implementation 'org.apache.xmlgraphics:fop:2.9'
+
     implementation 'org.springframework:spring-oxm:6.1.2'
 
     implementation 'com.sun.xml.bind:jaxb-impl:4.0.4'

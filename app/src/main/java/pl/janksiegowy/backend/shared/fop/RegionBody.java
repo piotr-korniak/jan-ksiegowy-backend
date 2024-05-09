@@ -1,0 +1,12 @@
+package pl.janksiegowy.backend.shared.fop;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+
+@XmlAccessorType( XmlAccessType.FIELD)
+@XmlType( name= "")
+@XmlRootElement( name= "region-body")
+public class RegionBody {
+}

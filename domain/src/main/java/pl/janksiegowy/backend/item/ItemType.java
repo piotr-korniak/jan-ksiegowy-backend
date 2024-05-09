@@ -20,7 +20,14 @@ public enum ItemType {
         @Override public <T> T accept( ItemTypeVisitor<T> visitor) {
             return visitor.visitProduct();
         }
-    };
+    },
+    R { // Other
+        @Override public <T> T accept( ItemTypeVisitor<T> visitor ) {
+            return visitor.visitOther();
+        }
+
+    }
+    ;
 
     public abstract <T> T accept( ItemTypeVisitor<T> visitor);
 
@@ -29,6 +36,7 @@ public enum ItemType {
         T visitService();
         T visitMaterial();
         T visitProduct();
+        T visitOther();
 
     }
 }

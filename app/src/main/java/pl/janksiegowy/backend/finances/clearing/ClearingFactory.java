@@ -20,4 +20,12 @@ public class ClearingFactory {
                 //    repository.findByDocument( source.getReceivable()).orElseThrow(),
                 //    repository.findByDocument( source.getPayable()).orElseThrow());
     }
+
+    public ClearingDto to( Clearing clearing) {
+        return ClearingDto.create()
+                .date( clearing.getDate())
+                .amount( clearing.getAmount())
+                .receivable( clearing.getReceivableId())
+                .payable( clearing.getPayableId());
+    }
 }

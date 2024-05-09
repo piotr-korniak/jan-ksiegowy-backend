@@ -33,6 +33,11 @@ public enum InvoiceFunction {
         @Override public <T> T accept( InvoiceFunctionVisitor<T> visitor ) {
             return visitor.visitKwotaMaterialowNUP();
         }
+    },
+    KwotaPozostaleKUP {
+        @Override public <T> T accept( InvoiceFunctionVisitor<T> visitor ) {
+            return visitor.visitKwotaPozostaleKup();
+        }
     };
 
     public abstract <T> T accept( InvoiceFunctionVisitor<T> visitor);
@@ -44,5 +49,6 @@ public enum InvoiceFunction {
         T visitKwotaVAT();
         T visitKwotaMaterialowKUP();
         T visitKwotaMaterialowNUP();
+        T visitKwotaPozostaleKup();
     }
 }

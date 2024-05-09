@@ -28,4 +28,15 @@ public class PaymentExpense extends Payment {
         return this.dt;
     }
 
+    @Override public List<Clearing> getClearings() {
+        return clearings;
+    }
+
+    @Override public Payment setClearings( List<Clearing> clearings) {
+        this.clearings= clearings;
+        this.ct= clearings.stream()
+                .map( Clearing::getAmount)
+                .reduce( BigDecimal.ZERO, BigDecimal::add);
+        return this;
+    }
 }

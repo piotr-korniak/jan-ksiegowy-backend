@@ -14,15 +14,22 @@ public class PaymentMap implements PaymentDto {
 
     private final PaymentDto payment;
     private final List<ClearingDto> clearings;
+    private BigDecimal amount;
 
-    public PaymentMap( PaymentDto payment ) {
+    public PaymentMap( PaymentDto payment) {
         this.payment= payment;
+        this.amount= payment.getAmount();
         this.clearings= new ArrayList<>( payment.getClearings());
     }
 
-    public ClearingDto add( ClearingDto clearing) {
+    public PaymentMap add( ClearingDto clearing) {
         clearings.add( clearing);
-        return clearing;
+        return this;
+    }
+
+    public PaymentMap add( BigDecimal amount) {
+        this.amount= this.amount.add( amount);
+        return this;
     }
 
     @Override public UUID getDocumentId() {
@@ -46,7 +53,7 @@ public class PaymentMap implements PaymentDto {
 
     @Override
     public BigDecimal getAmount() {
-        return payment.getAmount();
+        return amount;
     }
 
     @Override

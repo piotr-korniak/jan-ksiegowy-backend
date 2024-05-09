@@ -2,7 +2,7 @@ package pl.janksiegowy.backend.item.dto;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxMethod;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.item.ItemType;
 
@@ -20,7 +20,7 @@ public interface ItemDto {
     String getCode();
     String getName();
     TaxRate getTaxRate();
-    TaxMetod getTaxMetod();
+    TaxMethod getTaxMetod();
     String getMeasure();
     boolean getSold();
     boolean getPurchased();
@@ -37,7 +37,7 @@ public interface ItemDto {
         private String name;
 
         private TaxRate taxRate;
-        private TaxMetod taxMetod;
+        private TaxMethod taxMetod;
         private String measure;
 
         private boolean sold;
@@ -61,7 +61,7 @@ public interface ItemDto {
         @Override public TaxRate getTaxRate() {
             return taxRate;
         }
-        @Override public TaxMetod getTaxMetod() {
+        @Override public TaxMethod getTaxMetod() {
             return taxMetod;
         }
         @Override public String getMeasure() {

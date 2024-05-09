@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxMethod;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
 
 import java.time.LocalDate;
@@ -31,7 +31,7 @@ public class Item {
     private ItemType type;
 
     @Enumerated( EnumType.STRING)
-    private TaxMetod taxMetod;
+    private TaxMethod taxMetod;
 
     @Enumerated( EnumType.STRING)
     private TaxRate taxRate;
@@ -48,24 +48,24 @@ public class Item {
 @Entity
 @DiscriminatorValue( value= "A")
 class Asset extends Item {
-
 }
 
 @Entity
 @DiscriminatorValue( value= "M")
 class Material extends Item {
-
 }
 
 @Entity
 @DiscriminatorValue( value= "S")
 class Service extends Item {
-
 }
-
 
 @Entity
 @DiscriminatorValue( value= "P")
 class Product extends Item {
+}
 
+@Entity
+@DiscriminatorValue( value= "R")
+class Other extends Item {
 }

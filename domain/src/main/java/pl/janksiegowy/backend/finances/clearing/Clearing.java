@@ -51,5 +51,4 @@ public class Clearing {
         return this;
     }
 
-
 }

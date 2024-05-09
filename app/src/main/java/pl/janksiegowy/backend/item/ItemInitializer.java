@@ -1,7 +1,7 @@
 package pl.janksiegowy.backend.item;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxMethod;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.item.dto.ItemDto;
 import pl.janksiegowy.backend.shared.DataLoader;
@@ -40,7 +40,7 @@ public class ItemInitializer {
                             .date( history.date)
                             .type( ItemType.valueOf( fields[0]))
                             .code( code)
-                            .taxMetod( TaxMetod.valueOf( fields[2]))
+                            .taxMetod( TaxMethod.valueOf( fields[2]))
                             .taxRate( TaxRate.valueOf( fields[3]))
                             .name( fields[4])
                             .measure( fields[5])

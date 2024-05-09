@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
+import pl.janksiegowy.backend.finances.payment.dto.PaymentMap;
 import pl.janksiegowy.backend.finances.settlement.Settlement;
 import pl.janksiegowy.backend.finances.settlement.SettlementFacade;
 import pl.janksiegowy.backend.finances.settlement.SettlementFactory;
@@ -19,7 +20,6 @@ import pl.janksiegowy.backend.shared.Util;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -30,13 +30,19 @@ public class PaymentInitializer {
     private final PaymentRegisterQueryRepository registers;
     private final PaymentFacade payment;
     private final SettlementFacade settlement;
+    private final SettlementFactory settlementFactory;
     private final PaymentQueryRepository payments;
     private final PeriodQueryRepository periods;
     private final PeriodFacade period;
     private final DataLoader loader;
 
     private Payment save( PaymentDto source) {
-        return payment.approve( payment.save( source));
+        //return payment.approve( payment.save( source));
+        return payment.save( source);
+    }
+
+    private void book( Payment doc) {
+        payment.approve( doc);
     }
 
     private Settlement save( SettlementMap source) {
@@ -66,19 +72,24 @@ public class PaymentInitializer {
                                                     settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
                                                     .orElseThrow());
 
-                                            var pay= payments.findByEntityTaxNumberAndDateAndRegisterCode(
-                                                    taxNumber, date, register.getCode())
-                                                            .orElseGet(()-> PaymentDto.create()
-                                                                    .documentId( UUID.randomUUID())
-                                                                    .type( PaymentType.R)
-                                                                    .entity( receivable.getEntity())
-                                                                    .date( date)
-                                                                    .register( register));
+                                            var pay= new PaymentMap(
+                                                    payments.findByEntityTaxNumberAndDateAndRegisterCode(
+                                                            taxNumber, date, register.getCode())
+                                                        .orElseGet(()-> PaymentDto.create()
+                                                            .documentId( UUID.randomUUID())
+                                                            .type( PaymentType.R)
+                                                            .entity( receivable.getEntity())
+                                                            .date( date)
+                                                            .register( register)))
+                                                    .add( amount);;
 
-                                            save( pay);             /** important, a number is assigned here */
-                                            cleared( receivable, new SettlementMap( SettlementFactory.to( pay)
-                                                            .amount( pay.getAmount().add( amount))),
-                                                    date, amount);
+                                            book( save( pay.add( receivable.add( ClearingDto.create()
+                                                    .date( date)
+                                                    .amount( amount)
+                                                    .payable( receivable.getSettlementId())
+                                                    .receivable( pay.getDocumentId())))
+                                            ));
+                                            save( receivable);
                                         });
                                     });
                         }
@@ -93,36 +104,29 @@ public class PaymentInitializer {
                                                 settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
                                                 .orElseThrow());
 
-                                        var pay= payments.findByEntityTaxNumberAndDateAndRegisterCode(
+                                        var pay= new PaymentMap(
+                                                payments.findByEntityTaxNumberAndDateAndRegisterCode(
                                                         taxNumber, date, register.getCode())
-                                                .orElseGet(()-> PaymentDto.create()
+                                                    .orElseGet( ()-> PaymentDto.create()
                                                         .documentId( UUID.randomUUID())
                                                         .type( PaymentType.E)
                                                         .entity( payable.getEntity())
                                                         .date( date)
-                                                        .register( register));
+                                                        .register( register)))
+                                                .add( amount.abs());
 
-                                        save( pay); /** important, a number is assigned here */
-                                        cleared( new SettlementMap( SettlementFactory.to( pay)
-                                                        .amount( pay.getAmount().add( amount.abs()))),
-                                                payable, date, amount.abs());
-                                    } );
-                                });
+                                        book( save( pay.add( payable.add( ClearingDto.create()
+                                                .date( date)
+                                                .amount( amount.abs())
+                                                .payable( payable.getSettlementId())
+                                                .receivable( pay.getDocumentId())))
+                                        ));
+                                        save( payable);
+                                    });
+                            });
                         }
                     }
                 });
-    }
-
-    private void cleared( SettlementMap receivable, SettlementMap payable,
-                          LocalDate date, BigDecimal amount) {
-        receivable.add( payable.add( ClearingDto.create()
-                .date( date)
-                .amount( amount)
-                .payable( payable.getSettlementId())
-                .receivable( receivable.getSettlementId())));
-
-        save( payable);
-        save( receivable);
     }
 
 }

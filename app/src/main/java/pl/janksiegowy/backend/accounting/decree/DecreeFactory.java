@@ -9,6 +9,7 @@ import pl.janksiegowy.backend.accounting.decree.DecreeType.DecreeTypeVisitor;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
 import pl.janksiegowy.backend.finances.document.Document;
+import pl.janksiegowy.backend.finances.note.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.PeriodFacade;
@@ -70,59 +71,6 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
         });
     }
 /*
-    public DecreeDto to( FinancialSettlement settlement) {
-        return templates.findByDocumentTypeAndDate( settlement.getFinancialType()
-                .accept( new FinancialTypeVisitor<TemplateType>() {
-            @Override public TemplateType visitChargeSettlement() {
-                return TemplateType.CH;
-            }
-            @Override public TemplateType visitFeeSettlement() {
-                return TemplateType.FE;
-            }
-            @Override public TemplateType visitNoteSettlement() {
-                return null;
-
-                        settlement.getKind().accept( new SettlementKindVisitor<DocumentType>() {
-                    @Override public DocumentType visitDebit() {
-                        return DocumentType.NI;
-                    }
-                    @Override public DocumentType visitCredit() {
-                        return DocumentType.NR;
-                    }
-                });
-            }
-        }), settlement.getDate())
-            .map( template -> new Builder() {
-                @Override public BigDecimal getValue( TemplateLine line ) {
-                    return ((FinanceTemplateLine)line).getFunction().accept( new NoteFunctionVisitor<BigDecimal>() {
-                        @Override public BigDecimal visitWartoscZobowiazania() {
-                            return settlement.getCt();
-                        }
-                        @Override public BigDecimal visitWartoscNaleznosci() {
-                            return settlement.getDt();
-                        }
-                    });
-                }
-                @Override public AccountDto getAccount( AccountDto.Proxy account) {
-                    return switch( account.getNumber().replaceAll("[^A-Z]+", "")){
-                        case "P"-> account.name( settlement.getEntity().getName())
-                                .number( account.getNumber().replaceAll( "\\[P\\]",
-                                        settlement.getEntity().getAccountNumber()));
-                        default -> account;
-                    };
-                }
-            }.build( template, settlement.getDate(), settlement.getNumber(), settlement.getDocumentId()))
-                .map( decreeMap-> Optional.ofNullable( settlement.getDecree())
-                        .map( decree-> decreeMap.setNumer( decreeMap.getNumber()))
-                        .orElseGet(()-> decreeMap))
-            .orElseThrow();
-    }
-*/
-/*
-    */
-/*
-    */
-/*
     public DecreeDto to( Payslip payslip) {
 
         return templates.findByDocumentTypeAndDate( TemplateType.EP, payslip.getDate())
@@ -183,6 +131,10 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
 
     @Override public DecreeDto visit( Payment payment) {
         return new DecreeFactoryPayment( templates, clearings).to( payment);
+    }
+
+    @Override public DecreeDto visit( Note note) {
+        return new DecreeFactoryNote( templates).to( note);
     }
 
 

@@ -43,7 +43,6 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
                 wersjaSchemy= getWersjaSchemy();
             }});
 
-
             setDataWytworzeniaJPK( Util.gregorianNow());
             setCelZlozenia( new CelZlozenia() {{
                 value= reason;

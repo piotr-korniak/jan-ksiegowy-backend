@@ -3,7 +3,7 @@ package pl.janksiegowy.backend.invoice_line.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxMethod;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.item.dto.ItemDto;
 
@@ -23,7 +23,7 @@ public interface InvoiceLineDto {
     BigDecimal getAmount();
 
     BigDecimal getTax();
-    TaxMetod getTaxMetod();
+    TaxMethod getTaxMetod();
     TaxRate getTaxRate();
 
     @Setter
@@ -34,7 +34,7 @@ public interface InvoiceLineDto {
         private ItemDto item;
         private BigDecimal amount;
         private BigDecimal tax;
-        private TaxMetod taxMetod;
+        private TaxMethod taxMetod;
         private TaxRate taxRate;
 
         @Override public UUID getId() {
@@ -49,7 +49,7 @@ public interface InvoiceLineDto {
         @Override public BigDecimal getTax() {
             return tax;
         }
-        @Override public TaxMetod getTaxMetod() {
+        @Override public TaxMethod getTaxMetod() {
             return taxMetod;
         }
         @Override public TaxRate getTaxRate() {

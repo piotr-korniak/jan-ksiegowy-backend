@@ -28,12 +28,15 @@ public class PaymentReceipt extends Payment {
     @Override public BigDecimal getAmount() {
         return this.ct;
     }
-/*
-    @Override public Document setClearings( List<Clearing> clearings) {
+
+    @Override public List<Clearing> getClearings() {
+        return clearings;
+    }
+    @Override public Payment setClearings( List<Clearing> clearings) {
         this.clearings= clearings;
         this.dt= clearings.stream()
                 .map( Clearing::getAmount)
                 .reduce( BigDecimal.ZERO, BigDecimal::add);
         return this;
-    }*/
+    }
 }

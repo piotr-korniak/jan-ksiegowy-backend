@@ -32,4 +32,7 @@ public abstract class Payment extends Document {
         return visitor.visit( this);
     }
 
+    public abstract List<Clearing> getClearings();
+
+    public abstract Payment setClearings( List<Clearing> clearings);
 }

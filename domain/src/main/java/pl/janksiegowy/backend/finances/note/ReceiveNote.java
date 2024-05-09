@@ -25,7 +25,4 @@ public class ReceiveNote extends Note {
         return this.ct;
     }
 
-    @Override public <T> T accept( DocumentVisitor<T> visitor ) {
-        return null;
-    }
 }

@@ -3,12 +3,11 @@ package pl.janksiegowy.backend.invoice_line;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
-import pl.janksiegowy.backend.shared.financial.TaxMetod;
+import pl.janksiegowy.backend.shared.financial.TaxMethod;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineSumDto;
 import pl.janksiegowy.backend.invoice_line.dto.JpaInvoiceSumDto;
 import pl.janksiegowy.backend.period.MonthPeriod;
-import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.period.QuarterPeriod;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 
@@ -25,7 +24,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "FROM InvoiceLine L "+
                     "WHERE L.item.taxMetod IN :taxMetod "+
                     "GROUP BY L.invoice, invoiceNumber, contactName ")
-    List<InvoiceLineDto> findAll( List<TaxMetod> taxMetod);
+    List<InvoiceLineDto> findAll( List<TaxMethod> taxMetod);
 
     @Override
     @Query( value= "SELECT L.invoice.documentId AS invoiceId, " +
@@ -56,7 +55,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "L.taxRate AS taxRate, " +
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
-                    "WHERE vat!=0 AND L.invoice.period= :period AND " +
+                    "WHERE vat!=0 AND L.invoice.invoicePeriodId= :period AND " +
                     "((TYPE( L.invoice) = SalesInvoice AND "+
                     "  TREAT( L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR"+
                     " (TYPE( L.invoice) = PurchaseInvoice AND "+
@@ -68,14 +67,14 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
     List<JpaInvoiceSumDto> findByKindAndPeriodGroupByRate(
             @Param( "salesKinds") List<InvoiceRegisterKind> salesKinds,
             @Param( "purchaseKinds") List<InvoiceRegisterKind> purchaseKinds,
-            @Param( "period") MonthPeriod periodId);
+            String period);
 
     @Override
     @Query( value= "SELECT L.taxRate AS taxRate, " +
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.period.parent= :period AND " +
+            "L.invoice.invoicePeriod.parent= :period AND " +
             "(TYPE( L.invoice)= SalesInvoice AND" +
             " TREAT( L.invoice AS SalesInvoice).register.kind= :kind)" +
             "GROUP BY taxRate")
@@ -89,7 +88,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.period.parent.id= :period AND " +
+            "L.invoice.invoicePeriodId= :period AND " +
             "(TYPE( L.invoice)= SalesInvoice AND" +
             " TREAT( L.invoice AS SalesInvoice).register.kind IN :kinds)" +
             "GROUP BY invoiceRegisterKind, itemType")
@@ -103,7 +102,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM( L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.period.parent= :period AND " +
+            "L.invoice.invoicePeriod.parent= :period AND " +
             "(TYPE( L.invoice)= PurchaseInvoice AND" +
             " TREAT( L.invoice AS PurchaseInvoice).register.kind IN :kinds)" +
             "GROUP BY purchaseKind, itemType")
@@ -123,7 +122,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.period.parent= :period AND " +
+            "L.invoice.invoicePeriod.parent= :period AND " +
             "(( TYPE( L.invoice) = SalesInvoice AND "+
             "  TREAT(L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR" +
             " ( TYPE( L.invoice) = PurchaseInvoice AND "+
@@ -145,7 +144,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "L.item.type AS itemType, "+
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
-                    "WHERE vat!=0 AND L.invoice.period.id= :period AND "+
+                    "WHERE vat!=0 AND L.invoice.invoicePeriodId= :period AND "+
                     "TYPE( L.invoice)= PurchaseInvoice "+
                     "GROUP BY invoiceId, invoiceNumber, entityName, taxNumber, " +
                             "entityCountry, invoiceDate, issueDate, itemType "+
@@ -159,7 +158,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "END AS purchaseKind, " +
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L "+
-            "WHERE vat!=0 AND L.invoice.period.parent= :period AND "+
+            "WHERE vat!=0 AND L.invoice.invoicePeriod.parent= :period AND "+
             "(TYPE( L.invoice) = PurchaseInvoice AND "+
             " TREAT( L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds) " +
             "GROUP BY purchaseKind, itemType ")
@@ -171,7 +170,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
     @Query( value= "SELECT L.item.type AS itemType, "+
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L "+
-            "WHERE vat!=0 AND L.invoice.period.parent= :quarterPeriod AND " +
+            "WHERE vat!=0 AND L.invoice.invoicePeriod.parent= :quarterPeriod AND " +
             "TYPE( L.invoice) = PurchaseInvoice "+
             "GROUP BY itemType ")
     List<JpaInvoiceSumDto> sumPurchaseByTypeAndPeriodGroupByType( QuarterPeriod quarterPeriod);

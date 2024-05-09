@@ -2,7 +2,9 @@ package pl.janksiegowy.backend.finances.settlement;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.entity.EntityRepository;
+import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.finances.clearing.ClearingFactory;
+import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementDto;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind.SettlementKindVisitor;
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 public class SettlementFactory implements SettlementKindVisitor<Settlement> {
 
     private final EntityRepository entities;
-    private final ClearingFactory clearing;
+    private final ClearingFactory clearings;
 
     public Settlement from( SettlementDto source) {
 
@@ -24,7 +26,7 @@ public class SettlementFactory implements SettlementKindVisitor<Settlement> {
             .map( entity-> source.getKind().accept( this)
                 .setEntityId( entity.getId())
                 .setSettlementId( Optional.ofNullable( source.getSettlementId()).orElseGet( UUID::randomUUID))
-                .setClearings( source.getClearings().stream().map( clearing::from).collect( Collectors.toList()))
+                .setClearings( source.getClearings().stream().map( clearings::from).collect( Collectors.toList()))
                 .setDate( source.getDate())
                 .setDue( source.getDue())
                 .setNumber( source.getNumber())
@@ -32,7 +34,7 @@ public class SettlementFactory implements SettlementKindVisitor<Settlement> {
             .orElseThrow();
     }
 
-    public static SettlementDto.Proxy to( PaymentDto payment) {
+    public SettlementDto.Proxy to( Payment payment) {
         return SettlementDto.create()
                 .settlementId( payment.getDocumentId())
                 .amount( payment.getAmount())
@@ -41,10 +43,13 @@ public class SettlementFactory implements SettlementKindVisitor<Settlement> {
                     case R -> SettlementKind.C;
                     case E -> SettlementKind.D;})
                 .number( payment.getNumber())
-                .entity( payment.getEntity())
+                .entity( EntityDto.create()
+                        .entityId( payment.getEntity().getEntityId()))
                 .date( payment.getDate())
                 .due( payment.getDate())
-                .clearings( payment.getClearings());
+                .clearings( payment.getClearings().stream()
+                        .map( clearings::to )
+                        .collect( Collectors.toList()));
     }
 
     @Override public Settlement visitDebit() {

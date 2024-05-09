@@ -34,8 +34,9 @@ public class Util {
     }
     private static Pattern PATTERN= Pattern.compile("^([A-Z]{2})?(\\d+)$");
 
+
     public static TaxNumber parseTaxNumber( String taxNumber, String defaultCountry) {
-        Matcher matcher = PATTERN.matcher( taxNumber);
+        Matcher matcher= PATTERN.matcher( taxNumber.replaceAll( "[^a-zA-Z0-9]", ""));
 
         if( matcher.find()) {
             return new TaxNumber() {

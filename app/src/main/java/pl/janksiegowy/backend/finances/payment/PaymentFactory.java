@@ -14,6 +14,7 @@ import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class PaymentFactory {
     private final EntityRepository entities;
     private final ClearingFactory clearing;
 
-    public Payment from( PaymentDto source ) {
+    public Payment from( PaymentDto source) {
 
         return (Payment) registers.findByCode( source.getRegister().getCode())
                 .map( register-> source.getType().accept( new PaymentTypeVisitor<Payment>() {
@@ -49,6 +50,7 @@ public class PaymentFactory {
                             .setNumber( number);
                     }
                 }).setRegister( register)
+                        .setClearings( source.getClearings().stream().map( clearing::from).collect( Collectors.toList()))
                         .setDocumentId( Optional.ofNullable( source.getDocumentId()).orElseGet( UUID::randomUUID))
                         .setDates( source.getDate(), source.getDate())
                         .setAmount( source.getAmount())
