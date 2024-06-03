@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class InvoiceLineFactory {
@@ -18,12 +19,11 @@ public class InvoiceLineFactory {
 
     public InvoiceLine from( InvoiceLineDto invoiceLineDto, LocalDate date) {
 
-        var line= Optional.ofNullable( invoiceLineDto.getId())
-                .map( id-> new InvoiceLine().setId( id))
-                .orElse( new InvoiceLine())
-                    .setAmount( invoiceLineDto.getAmount())
-                    .setTax( invoiceLineDto.getTax())
-                    .setTaxRate( invoiceLineDto.getTaxRate());
+        var line= new InvoiceLine()
+                .setId( Optional.ofNullable( invoiceLineDto.getId()).orElseGet( UUID::randomUUID))
+                .setAmount( invoiceLineDto.getAmount())
+                .setTax( invoiceLineDto.getTax())
+                .setTaxRate( invoiceLineDto.getTaxRate());
 
         Optional.ofNullable( invoiceLineDto.getItem())
                 .map( itemDto-> items.findByItemIdAndDate( itemDto.getItemId(), date)

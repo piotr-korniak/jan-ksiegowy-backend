@@ -5,6 +5,7 @@ import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
+import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -69,6 +70,11 @@ public class InvoiceMap implements InvoiceDto {
     @Override
     public List<InvoiceLineDto> getLineItems() {
         return lines;
+    }
+
+    @Override
+    public PaymentMetod getPaymentMetod() {
+        return invoice.getPaymentMetod();
     }
 
     public InvoiceMap add(InvoiceLineDto line) {

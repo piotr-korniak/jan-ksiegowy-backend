@@ -1,5 +1,6 @@
 package pl.janksiegowy.backend.shared.pattern;
 
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -13,9 +14,12 @@ public class XmlTransformer {
 
     public static String transformXmlWithXslt( String xml, String xslt) throws Exception {
         TransformerFactory transformerFactory= TransformerFactory.newInstance();
-        StreamSource xsltStream= new StreamSource(new StringReader(xslt));
+        //transformerFactory.setAttribute( OutputKeys.ENCODING, "UTF-8");
 
-        Transformer transformer = transformerFactory.newTransformer( xsltStream);
+        StreamSource xsltStream= new StreamSource( new StringReader( xslt));
+
+        Transformer transformer= transformerFactory.newTransformer( xsltStream);
+        transformer.setParameter("image-directory", "/images");
 
         StringWriter resultWriter= new StringWriter();
 

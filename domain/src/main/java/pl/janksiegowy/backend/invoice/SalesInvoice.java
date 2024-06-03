@@ -1,6 +1,7 @@
 package pl.janksiegowy.backend.invoice;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import pl.janksiegowy.backend.finances.document.Document;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
@@ -16,6 +17,7 @@ public class SalesInvoice extends Invoice {
     @Enumerated( EnumType.STRING)
     private SettlementKind kind= SettlementKind.D;
 
+    @Getter
     @ManyToOne
     @JoinColumn( table= TABLE_NAME)
     private SalesRegister register;

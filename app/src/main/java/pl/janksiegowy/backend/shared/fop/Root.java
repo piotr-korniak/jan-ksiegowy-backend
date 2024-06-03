@@ -3,6 +3,8 @@ package pl.janksiegowy.backend.shared.fop;
 import jakarta.xml.bind.annotation.*;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.shared.style.CallTemplate;
+import pl.janksiegowy.backend.shared.style.WithParam;
 
 import java.util.List;
 

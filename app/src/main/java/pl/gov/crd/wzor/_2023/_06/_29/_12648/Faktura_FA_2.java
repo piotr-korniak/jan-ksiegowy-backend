@@ -754,7 +754,7 @@ import pl.janksiegowy.backend.statement.Invoice_FA;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType( name = "", propOrder = {
     "naglowek",
     "podmiot1",
     "podmiot2",
@@ -830,8 +830,9 @@ public class Faktura_FA_2 extends Invoice_FA {
      *     
      * @see #getNaglowek()
      */
-    public void setNaglowek(TNaglowek value) {
+    public Faktura_FA_2 setNaglowek(TNaglowek value) {
         this.naglowek = value;
+        return this;
     }
 
     /**
@@ -855,8 +856,9 @@ public class Faktura_FA_2 extends Invoice_FA {
      *     
      * @see #getPodmiot1()
      */
-    public void setPodmiot1(Podmiot1 value) {
+    public Faktura_FA_2 setPodmiot1(Podmiot1 value) {
         this.podmiot1 = value;
+        return this;
     }
 
     /**
@@ -873,15 +875,15 @@ public class Faktura_FA_2 extends Invoice_FA {
 
     /**
      * Sets the value of the podmiot2 property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Podmiot2 }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Podmiot2 }
+     * @return
      * @see #getPodmiot2()
      */
-    public void setPodmiot2(Podmiot2 value) {
+    public Faktura_FA_2 setPodmiot2( Podmiot2 value) {
         this.podmiot2 = value;
+        return this;
     }
 
     /**
@@ -957,15 +959,15 @@ public class Faktura_FA_2 extends Invoice_FA {
 
     /**
      * Sets the value of the fa property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Fa }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Fa }
+     * @return
      * @see #getFa()
      */
-    public void setFa(Fa value) {
-        this.fa = value;
+    public Invoice_FA setFa( Fa value) {
+        this.fa= value;
+        return this;
     }
 
     /**
@@ -991,6 +993,14 @@ public class Faktura_FA_2 extends Invoice_FA {
      */
     public void setStopka(Stopka value) {
         this.stopka = value;
+    }
+
+    @Override
+    public void addBankAccount( String name, String number) {
+        getFa().getPlatnosc().getRachunekBankowy().add( new TRachunekBankowy(){{
+            nazwaBanku= name;
+            nrRB= number;
+        }});
     }
 
 

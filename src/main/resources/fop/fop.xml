@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+ <fop version="1.0">
+   <renderers>
+    <renderer mime="application/pdf">
+    	<fonts>
+           <directory>./src/main/resources/fop/fonts/</directory>
+  
+        </fonts>
+    </renderer>
+  </renderers>
+ </fop>

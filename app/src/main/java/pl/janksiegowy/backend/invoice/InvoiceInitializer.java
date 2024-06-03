@@ -15,6 +15,7 @@ import pl.janksiegowy.backend.register.invoice.InvoiceRegisterType.InvoiceRegist
 import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
+import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
 import java.util.NoSuchElementException;
 
@@ -71,7 +72,14 @@ public class InvoiceInitializer {
                                         .invoiceDate( Util.toLocalDate( fields[4])) // Date of sale or receipt
                                         .date( Util.toLocalDate( fields[5]))        // Date of issue or purchase
                                         .due( Util.toLocalDate( fields[6]))         // Date of due
-                            ).orElseThrow( ()-> new NoSuchElementException( "Not found register type: "+ fields[0]))
+                            ).map( proxy -> {
+                                if( fields.length> 7) {
+                                    try {
+                                        proxy.paymentMetod( PaymentMetod.valueOf( fields[7]));
+                                    } catch (IllegalArgumentException e) {}
+                                }
+                                return proxy;
+                            }).orElseThrow( ()-> new NoSuchElementException( "Not found register type: "+ fields[0]))
                     ).orElseThrow( ()-> new NoSuchElementException( "Not found contact with tax number: "+ fields[2]));
 
             if( periods.findMonthByDate( invoice.getInvoiceDate()).isEmpty())

@@ -2,6 +2,7 @@ package pl.janksiegowy.backend.shared.pattern;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import org.springframework.core.io.ClassPathResource;
 import org.xml.sax.SAXException;
 
@@ -48,6 +49,8 @@ public class XmlConverter<T> {
         /*  marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty( Marshaller.JAXB_ENCODING, "UTF-8");
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);       */
+
+            marshaller.setProperty( Marshaller.JAXB_ENCODING, "UTF-8");
 
             var result= new StringWriter();
             marshaller.marshal( pattern, result);

@@ -9,6 +9,7 @@ import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
+import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,6 +43,8 @@ public interface InvoiceDto {
     @JsonProperty( "line_items")
     List<InvoiceLineDto> getLineItems();
 
+    PaymentMetod getPaymentMetod();
+
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -57,6 +60,7 @@ public interface InvoiceDto {
         private LocalDate due;
         private EntityDto entity;
         private List<InvoiceLineDto> items;
+        private PaymentMetod paymentMetod;
 
         @Override public UUID getDocumentId() {
             return invoiceId;
@@ -98,6 +102,9 @@ public interface InvoiceDto {
             return items;
         }
 
+        @Override public PaymentMetod getPaymentMetod() {
+            return paymentMetod;
+        }
 
     }
 }

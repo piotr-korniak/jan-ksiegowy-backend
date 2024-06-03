@@ -23,6 +23,7 @@ public class Util {
     private static final DateTimeFormatter dd_MM_yyyy= DateTimeFormatter.ofPattern( "dd.MM.yyyy");
     private static final DateTimeFormatter yyyy_MM_dd= DateTimeFormatter.ofPattern( "yyyy-MM-dd");
     public static final DecimalFormat N_NNN_NN_0_00= new DecimalFormat( "#,###,##0.00");
+    private static final Pattern INVALID_FILENAME_CHARS= Pattern.compile("[^a-zA-Z0-9-_.]");
     private static final DatatypeFactory datatypeFactory;
 
     static {
@@ -139,6 +140,14 @@ public class Util {
             result= addend!=null? result.add( addend): result;
         }
         return result;
+    }
+
+    public static String sanitizeFileName( String input) {
+        if( input== null)
+            throw new IllegalArgumentException("Input string cannot be null");
+
+        // Replace all invalid characters with underscores
+        return INVALID_FILENAME_CHARS.matcher(input).replaceAll("_");
     }
 
 }

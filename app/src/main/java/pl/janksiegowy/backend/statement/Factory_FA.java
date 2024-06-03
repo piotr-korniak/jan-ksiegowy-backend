@@ -1,7 +1,7 @@
 package pl.janksiegowy.backend.statement;
 
-import pl.janksiegowy.backend.invoice.Invoice;
-import pl.janksiegowy.backend.metric.Metric;
+import pl.janksiegowy.backend.invoice.SalesInvoice;
+
 
 public abstract class Factory_FA {
 
@@ -9,5 +9,6 @@ public abstract class Factory_FA {
         return new Factory_FA_2_v1_0e();
     }
 
-    public abstract Invoice_FA prepare( Invoice invoice);
+    public abstract Invoice_FA prepare(SalesInvoice invoice);
+
 }

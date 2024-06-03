@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.finances.document.Document;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.metric.Metric;
 import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -51,6 +52,13 @@ public abstract class Invoice extends Document {
 
     @Column( table= TABLE_NAME)
     private BigDecimal taxTotal= BigDecimal.ZERO;
+
+    @Column( table= TABLE_NAME)
+    private String xml;
+
+    @Column( table= TABLE_NAME)
+    @Enumerated( EnumType.ORDINAL )
+    private PaymentMetod paymentMetod;
 
     public Invoice setLineItems( List<InvoiceLine> lineItems) {
         this.lineItems= lineItems;

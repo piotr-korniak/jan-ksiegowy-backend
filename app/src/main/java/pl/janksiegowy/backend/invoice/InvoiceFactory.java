@@ -2,20 +2,22 @@ package pl.janksiegowy.backend.invoice;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import pl.janksiegowy.backend.accounting.decree.DecreeRepository;
 import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.metric.MetricRepository;
-import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.period.PeriodFacade;
-import pl.janksiegowy.backend.period.PeriodRepository;
+import pl.janksiegowy.backend.register.dto.BankAccountDto;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
+import pl.janksiegowy.backend.register.payment.PaymentRegisterQueryRepository;
+import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
+import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
+import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.statement.Factory_FA;
-import pl.janksiegowy.backend.statement.Factory_FA_2_v1_0e;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,7 +33,7 @@ public class InvoiceFactory {
     private final MetricRepository metrics;
     private final PeriodFacade periods;
     private final InvoiceRegisterRepository registers;
-    private final DecreeRepository decrees;
+    private final PaymentRegisterRepository bankAccounts;
     private final InvoiceLineFactory line;
 
     public Invoice from( InvoiceDto source) {
@@ -45,11 +47,14 @@ public class InvoiceFactory {
                            //     .setSettlement( (InvoiceSettlement)
                            //             new InvoiceSettlement().setKind( SettlementKind.D)))
                         ).orElseThrow());
-                var x= Factory_FA.create().prepare( invoice);
-                var xml= XmlConverter.marshal( x);
-                System.err.println( "XML: \n"+ xml.toString());
-                System.exit( 0);
-                return invoice;
+
+                var x= Factory_FA.create().prepare( (SalesInvoice) invoice);
+                if( PaymentMetod.TRANSFER== source.getPaymentMetod()) {
+                    bankAccounts.findBankAccounts().forEach( bankAccount-> {
+                        x.addBankAccount( bankAccount.getName(), bankAccount.getNumber());
+                    });
+                }
+                return invoice.setXml( XmlConverter.marshal( x));
             }
 
             @Override public Invoice visitPurchaseInvoice() {
@@ -73,6 +78,9 @@ public class InvoiceFactory {
 
         Optional.ofNullable( source.getLineItems())
                 .ifPresent( invoiceLines->update( invoiceLines, invoice));
+
+        if( source.getPaymentMetod()!= null)
+            invoice.setPaymentMetod( source.getPaymentMetod());
 
         //decrees.findById( invoice.getDocumentId())
         //        .ifPresent( invoice::setDecree);

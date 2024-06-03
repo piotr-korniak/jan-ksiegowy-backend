@@ -4,6 +4,7 @@ import jakarta.xml.bind.annotation.*;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -15,9 +16,9 @@ import java.util.List;
 public class Flow {
     @XmlElements({
       //      @XmlElement(name = "marker", type = Marker.class),
-      //      @XmlElement(name = "block", type = Block.class),
-            @XmlElement(name = "block-container", type = BlockContainer.class)
-      //      @XmlElement(name = "table", type = ProTable.class),
+            @XmlElement(name = "block", type = Block.class),
+            @XmlElement( name= "block-container", type= BlockContainer.class),
+            @XmlElement( name= "table", type= Table.class)
       //      @XmlElement(name = "list-block", type = ListBlock.class),
       //      @XmlElement(name = "table-and-caption", type = TableAndCaption.class),
       //      @XmlElement(name = "wrapper", type = Wrapper.class),
@@ -29,8 +30,15 @@ public class Flow {
       //      @XmlElement( name= "apply-templates", type= ApplyTemplates.class, namespace= "http://www.w3.org/1999/XSL/Transform")
 
     })
-    protected List<Object> container;
+    protected List<Object> markerOrBlockOrBlockContainer;
+
 
     @XmlAttribute( name= "flow-name", required= true)
     protected String flowName;
+
+    public List<Object> getMarkerOrBlockOrBlockContainer() {
+        if( markerOrBlockOrBlockContainer== null)
+            markerOrBlockOrBlockContainer= new ArrayList<>();
+        return markerOrBlockOrBlockContainer;
+    }
 }

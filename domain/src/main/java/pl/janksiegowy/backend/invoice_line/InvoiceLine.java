@@ -11,6 +11,7 @@ import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.item.Item;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 @Getter
@@ -22,7 +23,7 @@ import java.util.UUID;
 public class InvoiceLine {
 
     @Id
-    @UuidGenerator
+    //@UuidGenerator
     private UUID id;
 
     @ManyToOne
@@ -34,6 +35,8 @@ public class InvoiceLine {
 
     @ManyToOne( fetch= FetchType.EAGER)
     private Item item;
+
+    //private BigInteger no;
 
     private BigDecimal amount;
     private BigDecimal tax;

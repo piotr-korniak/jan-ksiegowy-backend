@@ -8,7 +8,10 @@ import pl.janksiegowy.backend.invoice_fop.InvoiceRoot;
 @XmlSeeAlso( {InvoiceRoot.class})
 public class Template {
 
-    @XmlAttribute( name= "match", required= true)
+    @XmlAttribute( name= "match")
     protected String match;
+
+    @XmlAttribute( name= "name")
+    protected String name;
 
 }

@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.item.dto.ItemDto;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 public interface InvoiceLineDto {
@@ -17,6 +18,7 @@ public interface InvoiceLineDto {
     }
     @JsonProperty( "line_item_id")
     UUID getId();
+    BigInteger getNo();
 
     ItemDto getItem();
 
@@ -32,6 +34,7 @@ public interface InvoiceLineDto {
 
         private UUID id;
         private ItemDto item;
+        private BigInteger no;
         private BigDecimal amount;
         private BigDecimal tax;
         private TaxMethod taxMetod;
@@ -39,6 +42,9 @@ public interface InvoiceLineDto {
 
         @Override public UUID getId() {
             return id;
+        }
+        @Override public BigInteger getNo() {
+            return no;
         }
         @Override public ItemDto getItem() {
             return item;
