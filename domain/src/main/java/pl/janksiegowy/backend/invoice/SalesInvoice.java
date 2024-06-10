@@ -23,31 +23,20 @@ public class SalesInvoice extends Invoice {
     private SalesRegister register;
 
     public Invoice setRegister( SalesRegister register) {
-        this.register = register;
+        this.register= register;
         return this;
     }
 
-    @Override public Invoice setSumTotal( BigDecimal subTotal, BigDecimal taxTotal ) {
-        if( InvoiceRegisterKind.W== register.getKind())
-            setDt( subTotal);
-        else
-            setDt( subTotal.add( taxTotal ));
-        return this;
-    }
-
-    @Override
-    public BigDecimal getAmountDue() {
+    @Override public BigDecimal getAmount() {
         return getDt();
-    };
-
-    @Override
-    public Document setAmount( BigDecimal amount ) {
-        return null;
     }
 
-    @Override
-    public BigDecimal getAmount() {
-        return null;
+    @Override public Document setAmount( BigDecimal amount ) {
+        this.setDt( amount);
+        return this;
     }
 
+    @Override public InvoiceRegisterKind getRegisterKind() {
+        return register.getKind();
+    }
 }

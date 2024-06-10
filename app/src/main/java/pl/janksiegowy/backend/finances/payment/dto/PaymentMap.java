@@ -47,8 +47,8 @@ public class PaymentMap implements PaymentDto {
     }
 
     @Override
-    public LocalDate getDate() {
-        return payment.getDate();
+    public LocalDate getIssueDate() {
+        return payment.getIssueDate();
     }
 
     @Override

@@ -6,7 +6,6 @@ import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.finances.note.Note;
 import pl.janksiegowy.backend.finances.note.NoteType.NoteTypeVisitor;
-import pl.janksiegowy.backend.finances.settlement.FinancialType;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -16,7 +15,7 @@ public class DecreeFactoryNote implements NoteTypeVisitor<TemplateType> {
 
     private final TemplateRepository templates;
     public DecreeDto to( Note note) {
-        return templates.findByDocumentTypeAndDate( note.getType().accept( this), note.getDate())
+        return templates.findByDocumentTypeAndDate( note.getType().accept( this), note.getIssueDate())
                 .map( template -> new DecreeFactory.Builder() {
                     @Override public BigDecimal getValue( TemplateLine line) {
                         return ((FinanceTemplateLine)line).getFunction().accept( new FinanceFunction.NoteFunctionVisitor<BigDecimal>() {
@@ -36,7 +35,7 @@ public class DecreeFactoryNote implements NoteTypeVisitor<TemplateType> {
                             default -> account;
                         };
                     }
-                }.build( template, note.getDate(), note.getNumber(), note.getDocumentId()))
+                }.build( template, note.getIssueDate(), note.getNumber(), note.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( note.getDecree())
                         .map( decree-> decreeMap.setNumer( decreeMap.getNumber()))
                         .orElseGet(()-> decreeMap))

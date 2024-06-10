@@ -18,8 +18,6 @@ import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -73,13 +71,13 @@ public class PaymentInitializer {
                                                     .orElseThrow());
 
                                             var pay= new PaymentMap(
-                                                    payments.findByEntityTaxNumberAndDateAndRegisterCode(
+                                                    payments.findByEntityTaxNumberAndIssueDateAndRegisterCode(
                                                             taxNumber, date, register.getCode())
                                                         .orElseGet(()-> PaymentDto.create()
                                                             .documentId( UUID.randomUUID())
                                                             .type( PaymentType.R)
                                                             .entity( receivable.getEntity())
-                                                            .date( date)
+                                                            .issueDate( date)
                                                             .register( register)))
                                                     .add( amount);;
 
@@ -105,13 +103,13 @@ public class PaymentInitializer {
                                                 .orElseThrow());
 
                                         var pay= new PaymentMap(
-                                                payments.findByEntityTaxNumberAndDateAndRegisterCode(
+                                                payments.findByEntityTaxNumberAndIssueDateAndRegisterCode(
                                                         taxNumber, date, register.getCode())
                                                     .orElseGet( ()-> PaymentDto.create()
                                                         .documentId( UUID.randomUUID())
                                                         .type( PaymentType.E)
                                                         .entity( payable.getEntity())
-                                                        .date( date)
+                                                        .issueDate( date)
                                                         .register( register)))
                                                 .add( amount.abs());
 

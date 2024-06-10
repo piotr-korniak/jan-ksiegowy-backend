@@ -26,7 +26,7 @@ public class ItemInitializer {
                 history.date= LocalDate.parse( fields[0], formatter);
                 continue;
             }
-            var code=fields[1];
+            var code= fields[1];
             var item= items.findByCode( code);
 
             if( item.map( i-> !i.getDate().isBefore( history.date)).orElse( false))

@@ -21,7 +21,7 @@ public interface PaymentDto {
     public UUID getDocumentId();
     public PaymentType getType();
     public String getNumber();
-    public LocalDate getDate();
+    public LocalDate getIssueDate();
     public BigDecimal getAmount();
     public RegisterDto getRegister();
     public EntityDto getEntity();
@@ -38,7 +38,7 @@ public interface PaymentDto {
         private UUID documentId;
         private PaymentType type;
         private String number;
-        private LocalDate date;
+        private LocalDate issueDate;
         private BigDecimal amount= BigDecimal.ZERO;
         private RegisterDto register;
         private EntityDto entity;
@@ -55,8 +55,8 @@ public interface PaymentDto {
         @Override public String getNumber() {
             return number;
         }
-        @Override public LocalDate getDate() {
-            return date;
+        @Override public LocalDate getIssueDate() {
+            return issueDate;
         }
 
         @Override public BigDecimal getAmount() {

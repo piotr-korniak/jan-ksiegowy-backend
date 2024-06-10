@@ -44,7 +44,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "L.invoice.entity.taxNumber AS taxNumber, "+
                     "L.invoice.entity.country AS entityCountry, "+
                     "L.invoice.invoiceDate AS invoiceDate, "+
-                    "L.invoice.date AS issueDate, "+
+                    "L.invoice.issueDate AS issueDate, "+
                     "CASE WHEN TYPE( L.invoice) = SalesInvoice "+
                     "   THEN TREAT( L.invoice AS SalesInvoice).register.kind ELSE NULL " +
                     "END AS salesKind, " +
@@ -63,7 +63,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "GROUP BY invoiceId, invoiceNumber, entityName, taxNumber, "+
                             "entityCountry, invoiceDate, issueDate, salesKind, purchaseKind, "+
                             "taxRate, itemType "+
-                    "ORDER BY invoiceDate ASC ")
+                    "ORDER BY issueDate ASC, invoiceDate ASC")
     List<JpaInvoiceSumDto> findByKindAndPeriodGroupByRate(
             @Param( "salesKinds") List<InvoiceRegisterKind> salesKinds,
             @Param( "purchaseKinds") List<InvoiceRegisterKind> purchaseKinds,
@@ -140,7 +140,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "L.invoice.entity.taxNumber AS taxNumber, "+
                     "L.invoice.entity.country AS entityCountry, "+
                     "L.invoice.invoiceDate AS invoiceDate, "+
-                    "L.invoice.date AS issueDate, "+
+                    "L.invoice.issueDate AS issueDate, "+
                     "L.item.type AS itemType, "+
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
@@ -148,7 +148,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "TYPE( L.invoice)= PurchaseInvoice "+
                     "GROUP BY invoiceId, invoiceNumber, entityName, taxNumber, " +
                             "entityCountry, invoiceDate, issueDate, itemType "+
-                    "ORDER BY invoiceDate ASC ")
+                    "ORDER BY issueDate ASC, invoiceDate ASC ")
     List<JpaInvoiceSumDto> findByKindAndPeriodGroupByType( @Param( "period") String periodId);
 
     @Override

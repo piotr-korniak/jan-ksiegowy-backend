@@ -9,11 +9,8 @@ import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodFacade;
-import pl.janksiegowy.backend.register.dto.BankAccountDto;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
-import pl.janksiegowy.backend.register.payment.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
-import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.statement.Factory_FA;
@@ -85,16 +82,18 @@ public class InvoiceFactory {
         //decrees.findById( invoice.getDocumentId())
         //        .ifPresent( invoice::setDecree);
 
-        return (Invoice)invoice
+        return ((Invoice)invoice
                 .setMetric( metrics.findByDate( source.getInvoiceDate()).orElseThrow())
                 .setInvoiceDate( source.getInvoiceDate())
-                .setInvoicePeriodId( periods.findMonthPeriodOrAdd( source.getInvoiceDate()).getId())
-                .setPeriod( periods.findMonthPeriodOrAdd( source.getDate()))
-                .setDate( source.getDate())
-                .setDue( source.getDue())
+                .setInvoicePeriodId( source.getInvoicePeriod().getId())
+                .setIssueDate( source.getIssueDate())
+                .setPeriod( periods.findMonthPeriodOrAdd( source.getIssueDate()))
+                .setDueDate( source.getDueDate())
                 .setNumber( source.getNumber())
+                .setAmount( source.getAmount())
                 .setDocumentId( Optional.ofNullable( source.getDocumentId())
-                        .orElseGet( UUID::randomUUID));
+                        .orElseGet( UUID::randomUUID))
+        ).setStatus( invoice.isValidated()? InvoiceStatus.V: InvoiceStatus.N);
     }
 
     public Invoice update( List<InvoiceLineDto> lines, Invoice invoice) {

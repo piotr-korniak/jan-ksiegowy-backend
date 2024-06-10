@@ -106,7 +106,6 @@ public abstract class Factory_JPK_V7 {
                 .collect( Collectors.groupingBy( JpaInvoiceSumDto::getInvoiceId,
                         LinkedHashMap::new, Collectors.toList()));
 
-
         // Domestic sales divided by tax rate
         lines.sumSalesByKindAndPeriodGroupByRate( InvoiceRegisterKind.D, period.getParent())
                 .forEach( sum-> salesDomesticFunctions.get( sum.getTaxRate())

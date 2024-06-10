@@ -126,9 +126,11 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
                             setLpZakupu( zakupCtrl.getLiczbaWierszyZakupow());
 
                             setDowodZakupu( invoice.getInvoiceNumber());
-                            setDataZakupu( Util.toGregorian( invoice.getIssueDate()));
-                            if( !invoice.getInvoiceDate().isEqual( invoice.getIssueDate()))
-                                setDataWplywu( Util.toGregorian( invoice.getInvoiceDate()));
+                            setDataZakupu( Util.toGregorian( invoice.getInvoiceDate()));
+
+                            var receiptDate= Util.max( period.getBegin(), invoice.getIssueDate());
+                            if( !invoice.getInvoiceDate().isEqual( receiptDate))
+                                setDataWplywu( Util.toGregorian( receiptDate));
                             setNazwaDostawcy( invoice.getEntityName());
                             setNrDostawcy( invoice.getTaxNumber());
                             if( !"PL".equals( invoice.getEntityCountry()))
@@ -400,6 +402,6 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
     }
 
     @Override protected Period getPeriod() {
-        return period.getParent();
+        return isSettlement()? period.getParent(): period;
     }
 }

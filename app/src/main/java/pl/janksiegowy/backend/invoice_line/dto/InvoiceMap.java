@@ -7,6 +7,7 @@ import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +43,10 @@ public class InvoiceMap implements InvoiceDto {
         return invoice.getPeriod();
     }
 
-    @Override
-    public String getNumber() {
+    @Override public PeriodDto getInvoicePeriod() {
+        return invoice.getInvoicePeriod();
+    }
+    @Override public String getNumber() {
         return invoice.getNumber();
     }
 
@@ -51,30 +54,32 @@ public class InvoiceMap implements InvoiceDto {
     public LocalDate getInvoiceDate() {
         return invoice.getInvoiceDate();
     }
-
-    @Override
-    public LocalDate getDate() {
-        return invoice.getDate();
+    @Override public LocalDate getIssueDate() {
+        return invoice.getIssueDate();
     }
-
-    @Override
-    public LocalDate getDue() {
-        return invoice.getDue();
+    @Override public LocalDate getDueDate() {
+        return invoice.getDueDate();
     }
-
-    @Override
-    public EntityDto getEntity() {
+    @Override public EntityDto getEntity() {
         return invoice.getEntity();
     }
-
-    @Override
-    public List<InvoiceLineDto> getLineItems() {
+    @Override public List<InvoiceLineDto> getLineItems() {
         return lines;
     }
-
-    @Override
-    public PaymentMetod getPaymentMetod() {
+    @Override public PaymentMetod getPaymentMetod() {
         return invoice.getPaymentMetod();
+    }
+
+    @Override public BigDecimal getSubTotal() {
+        return invoice.getSubTotal();
+    }
+
+    @Override public BigDecimal getTaxTotal() {
+        return invoice.getTaxTotal();
+    }
+
+    @Override public BigDecimal getAmount() {
+        return invoice.getAmount();
     }
 
     public InvoiceMap add(InvoiceLineDto line) {

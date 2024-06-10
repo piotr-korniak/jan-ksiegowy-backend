@@ -17,8 +17,8 @@ public class NoteFactory implements NoteTypeVisitor<Note> {
     public Note from( NoteDto source ) {
         return (Note) source.getType().accept( this)
                 .setNumber( source.getNumber())
-                .setDate( source.getDate())
-                .setDue( source.getDue())
+                .setIssueDate( source.getDate())
+                .setDueDate( source.getDue())
                 .setAmount( source.getAmount())
                 .setDocumentId( Optional.ofNullable( source.getNoticeId())
                         .orElseGet( UUID::randomUUID))

@@ -8,11 +8,8 @@ import org.hibernate.annotations.DiscriminatorOptions;
 import pl.janksiegowy.backend.accounting.decree.DocumentDecree;
 import pl.janksiegowy.backend.finances.note.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
-import pl.janksiegowy.backend.finances.payment.PaymentType;
-import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
-import pl.janksiegowy.backend.period.Period;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,8 +33,11 @@ public abstract class Document {
 
     private String number;
 
-    private LocalDate date;
-    private LocalDate due;
+    @Column( name= "DATE")
+    private LocalDate issueDate;
+
+    @Column( name= "DUE")
+    private LocalDate dueDate;
 
     @ManyToOne( fetch= FetchType.EAGER)
     protected pl.janksiegowy.backend.entity.Entity entity;
@@ -60,8 +60,8 @@ public abstract class Document {
     protected DocumentDecree decree;
 
     public Document setDates( LocalDate date, LocalDate due) {
-        this.date= date;
-        this.due= due;
+        this.issueDate = date;
+        this.dueDate = due;
         return this;
     }
 

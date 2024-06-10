@@ -25,7 +25,7 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType> {
     protected final ClearingRepository clearings;
 
     public DecreeDto to( Payment payment) {
-        return templates.findByDocumentTypeAndDate( payment.getType().accept( this ), payment.getDate())
+        return templates.findByDocumentTypeAndDate( payment.getType().accept( this ), payment.getIssueDate())
                 .map( template-> new DecreeFactory.Builder() {
 
                     @Override public BigDecimal getValue( TemplateLine item) {
@@ -70,7 +70,7 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType> {
                             default -> account;
                         };
                     }
-                }.build( template, payment.getDate(), payment.getNumber(), payment.getDocumentId()))
+                }.build( template, payment.getIssueDate(), payment.getNumber(), payment.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( payment.getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
                         .orElseGet(()-> decreeMap))

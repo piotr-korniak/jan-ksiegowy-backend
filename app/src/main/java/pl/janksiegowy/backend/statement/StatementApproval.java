@@ -44,6 +44,19 @@ public class StatementApproval {
                 .map( period-> {
                     var metric= metrics.findByDate( period.getBegin()).orElseThrow();
                     var jpk= Factory_JPK_V7.create( period, invoiceLines);
+/*
+                    statements.findFirstByPatternIdAndPeriodOrderByNoDesc( version, jpk.getPeriod())
+                            .filter( statement-> StatementStatus.S != statement.getStatus())
+                            .map( statement-> {
+                                System.err.println( "Znaleziony: "+ statement.getPeriod().getId());
+                                System.err.println( "Znaleziony: "+ statement.getStatus());
+                                return statement;
+                            }
+                            )
+                            .orElseGet(()-> {
+                                System.err.println( "Nieznaleziony: "+ period.getId());
+                                return null;
+                            });*/
 
                     save( period, statements.findFirstByPatternIdAndPeriodOrderByNoDesc( version, jpk.getPeriod())
                             .filter( statement-> StatementStatus.S != statement.getStatus())

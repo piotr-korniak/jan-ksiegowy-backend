@@ -7,7 +7,6 @@ import pl.janksiegowy.backend.finances.clearing.ClearingFactory;
 import pl.janksiegowy.backend.finances.payment.PaymentType.PaymentTypeVisitor;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
 import pl.janksiegowy.backend.period.PeriodFacade;
-import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
@@ -37,7 +36,7 @@ public class PaymentFactory {
                                             switch ( register.getType()) {
                                                 case B-> NumeratorCode.BR;
                                                 case C-> NumeratorCode.CR;},
-                                            register.getCode(), source.getDate())));
+                                            register.getCode(), source.getIssueDate())));
                     }
                     @Override public Payment visitPaymentExpense() {
                         var number= Optional.ofNullable( source.getNumber())
@@ -45,18 +44,18 @@ public class PaymentFactory {
                                         switch ( register.getType()) {
                                             case B-> NumeratorCode.BS;
                                             case C-> NumeratorCode.CS;},
-                                        register.getCode(), source.getDate()));
+                                        register.getCode(), source.getIssueDate()));
                         return (Payment) new PaymentExpense()
                             .setNumber( number);
                     }
                 }).setRegister( register)
                         .setClearings( source.getClearings().stream().map( clearing::from).collect( Collectors.toList()))
                         .setDocumentId( Optional.ofNullable( source.getDocumentId()).orElseGet( UUID::randomUUID))
-                        .setDates( source.getDate(), source.getDate())
+                        .setDates( source.getIssueDate(), source.getIssueDate())
                         .setAmount( source.getAmount())
-                        .setPeriod( periods.findMonthPeriodOrAdd( source.getDate()))
+                        .setPeriod( periods.findMonthPeriodOrAdd( source.getIssueDate()))
                         .setEntity( entities.findByEntityIdAndDate(
-                                source.getEntity().getEntityId(), source.getDate()).orElseThrow()) )
+                                source.getEntity().getEntityId(), source.getIssueDate()).orElseThrow()) )
                 .orElseThrow();
     }
 }

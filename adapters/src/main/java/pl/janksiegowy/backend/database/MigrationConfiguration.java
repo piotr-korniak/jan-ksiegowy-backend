@@ -36,19 +36,19 @@ public class MigrationConfiguration {
     protected NumeratorDto[] getInitialNumerators() {
         return new NumeratorDto[] {
             NumeratorDto.create().code( NumeratorCode.BR)   // Bank Receipt
-                .type( NumeratorType.Y).typed( true).mask( "BP %N/%T/%4Y").name( "Bank Przyjmie"),
+                .type( NumeratorType.M).typed( true).mask( "BP %T/%2Y/%M/%N").name( "Bank Przyjmie"),
             NumeratorDto.create().code( NumeratorCode.BS)   // Bank Spend
-                .type( NumeratorType.Y).typed( true).mask( "BW %N/%T/%4Y").name( "Bank Wyda"),
+                .type( NumeratorType.Y).typed( true).mask( "BW %T/%2Y/%M/%N").name( "Bank Wyda"),
             NumeratorDto.create().code( NumeratorCode.CR)   // Cash Receipt
-                .type( NumeratorType.Y).typed( false).mask( "KP %N/%4Y").name( "Kasa Przyjmie"),
+                .type( NumeratorType.Y).typed( false).mask( "KP %2Y/%M/%N").name( "Kasa Przyjmie"),
             NumeratorDto.create().code( NumeratorCode.CS)   // Cash Spend
-                .type( NumeratorType.Y).typed( false).mask( "KW %N/%4Y").name( "Kasa Wyda"),
+                .type( NumeratorType.Y).typed( false).mask( "KW %2Y/%M/%N").name( "Kasa Wyda"),
             NumeratorDto.create().code( NumeratorCode.SI)   // Sales Invoice
                 .type( NumeratorType.Y).typed( false).mask( "FS %N/%4Y").name( "Faktura Sprzedaży"),
             NumeratorDto.create().code( NumeratorCode.EN)   // Entity
                 .type( NumeratorType.E).typed( true).mask( "%5N").name( "Podmioty"),
             NumeratorDto.create().code( NumeratorCode.AC)   // Accounting Registers
-                .type( NumeratorType.M).typed( true).mask( "%T %N/%M/%2Y").name( "Rejestry Księgowe"),
+                .type( NumeratorType.M).typed( true).mask( "%T %2Y/%M/%3N").name( "Rejestry Księgowe"),
             NumeratorDto.create().code( NumeratorCode.RE)   // Accounting Registers
                 .type( NumeratorType.E).typed( true).mask( "%2N").name( "Rejestry"),
             NumeratorDto.create().code( NumeratorCode.ST)   // Statement

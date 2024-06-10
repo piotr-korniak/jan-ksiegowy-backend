@@ -33,7 +33,8 @@ public class InvoiceFacade {
     }
 
     public Invoice approve( Invoice invoice) {
-        decrees.book( invoice);
-        return null;// invoices.save( invoice.setDecree( decrees.book( invoice)));
+        if( InvoiceStatus.N!= invoice.getStatus())
+            decrees.book( invoice);
+        return invoice;
     }
 }

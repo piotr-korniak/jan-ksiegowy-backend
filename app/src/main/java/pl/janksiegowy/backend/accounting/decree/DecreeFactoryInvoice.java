@@ -73,7 +73,7 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
                             default -> account;
                         };
                     }
-                }.build( template, invoice.getDate(), invoice.getNumber(), invoice.getDocumentId()))
+                }.build( template, invoice.getInvoiceDate(), invoice.getNumber(), invoice.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( invoice.getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
                         .orElseGet(()-> decreeMap))

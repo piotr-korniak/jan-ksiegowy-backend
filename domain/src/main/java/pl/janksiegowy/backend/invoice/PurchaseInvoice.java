@@ -17,33 +17,23 @@ public class PurchaseInvoice extends Invoice {
     private SettlementKind kind= SettlementKind.C;
 
     @ManyToOne
-    @JoinColumn( table = TABLE_NAME)
+    @JoinColumn( table= TABLE_NAME)
     private PurchaseRegister register;
 
-    @Override public Invoice setSumTotal( BigDecimal subTotal, BigDecimal taxTotal ) {
-        if( InvoiceRegisterKind.W== register.getKind())
-            setCt( subTotal);
-        else
-            setCt( subTotal.add( taxTotal ));
-        return this;
+    @Override public InvoiceRegisterKind getRegisterKind() {
+        return register.getKind();
     }
-
-    @Override public BigDecimal getAmountDue() {
-        return getCt();
-    };
 
     public Invoice setRegister( PurchaseRegister register) {
-        this.register = register;
+        this.register= register;
         return this;
     }
 
-    @Override
-    public Document setAmount( BigDecimal amount ) {
-        return null;
+    @Override public Document setAmount( BigDecimal amount ) {
+        return setCt( amount);
     }
 
-    @Override
-    public BigDecimal getAmount() {
-        return null;
+    @Override public BigDecimal getAmount() {
+        return getCt();
     }
 }

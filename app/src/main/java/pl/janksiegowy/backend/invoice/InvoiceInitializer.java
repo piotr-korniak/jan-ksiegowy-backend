@@ -5,6 +5,7 @@ import pl.janksiegowy.backend.entity.Country;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
+import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.period.PeriodQueryRepository;
 import pl.janksiegowy.backend.period.PeriodType;
@@ -17,7 +18,11 @@ import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class InvoiceInitializer {
@@ -26,22 +31,30 @@ public class InvoiceInitializer {
     private final InvoiceRegisterQueryRepository registers;
     private final PeriodQueryRepository periods;
     private final EntityQueryRepository entities;
-    private final PeriodFacade period;
+    private final PeriodFacade periodFacade;
     private final InvoiceFacade facade;
     private final DataLoader loader;
 
+    private final DateTimeFormatter formatter= DateTimeFormatter.ofPattern( "--- MM.yyyy.d");
+
     private Invoice save( InvoiceDto invoice) {
-        return facade.approve( facade.save( invoice));
-//        return facade.save( invoice);
+        //return facade.approve( facade.save( invoice));
+        return facade.save( invoice);
     }
 
     public String init() {
         var total= 0;
         var added= 0;
+        final PeriodDto.Proxy period= PeriodDto.create();
 
         for( String[] fields: loader.readData( "invoices.txt")){
-            if( fields[0].startsWith( "---"))
+
+            if( fields[0].startsWith( "---")) {
+
+                Optional.of( periodFacade.findMonthPeriodOrAdd( LocalDate.parse(fields[0] + ".1", formatter)))
+                        .ifPresent( monthPeriod-> period.id( monthPeriod.getId()));
                 continue;
+            }
             total++;
 
             var taxNumber= fields[2].replaceAll( "[^a-zA-Z0-9]", "");
@@ -68,10 +81,12 @@ public class InvoiceInitializer {
 
                                     }).entity( entity)
                                         .register( register)
+                                        .invoicePeriod( period)
                                         .number( fields[1])
-                                        .invoiceDate( Util.toLocalDate( fields[4])) // Date of sale or receipt
-                                        .date( Util.toLocalDate( fields[5]))        // Date of issue or purchase
-                                        .due( Util.toLocalDate( fields[6]))         // Date of due
+                                        .amount( new BigDecimal( fields[3]))
+                                        .issueDate( Util.toLocalDate( fields[4])) // Date of issue           |Date of sale or receipt
+                                        .invoiceDate( Util.toLocalDate( fields[5]))        // Date of sale (purchase) |Date of issue or purchase
+                                        .dueDate( Util.toLocalDate( fields[6]))         // Date of due
                             ).map( proxy -> {
                                 if( fields.length> 7) {
                                     try {
@@ -81,12 +96,11 @@ public class InvoiceInitializer {
                                 return proxy;
                             }).orElseThrow( ()-> new NoSuchElementException( "Not found register type: "+ fields[0]))
                     ).orElseThrow( ()-> new NoSuchElementException( "Not found contact with tax number: "+ fields[2]));
-
+/*
             if( periods.findMonthByDate( invoice.getInvoiceDate()).isEmpty())
-                period.save( PeriodDto.create()
+                periodFacade.save( PeriodDto.create()
                         .type( PeriodType.M)
-                        .begin( invoice.getInvoiceDate()));
-
+                        .begin( invoice.getInvoiceDate()));*/
             save( invoice);
 
 

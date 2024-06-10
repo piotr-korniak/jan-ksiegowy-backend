@@ -6,7 +6,6 @@ import pl.gov.crd.wzor._2023._06._29._12648.Faktura_FA_2.Podmiot2;
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2022._01._05.ed.definicjetypy.TKodKraju;
 import pl.janksiegowy.backend.invoice.SalesInvoice;
 import pl.janksiegowy.backend.shared.Util;
-import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -50,11 +49,11 @@ public class Factory_FA_2_v1_0e extends Factory_FA {
                 p1= Util.toGregorian( invoice.getInvoiceDate());
                 p1M= invoice.getRegister().getName();
                 p2= invoice.getNumber();
-                p6= Util.toGregorian( invoice.getDate());
+                p6= Util.toGregorian( invoice.getIssueDate());
                 p15= invoice.getSubTotal().add( invoice.getTaxTotal());
 
                 setPlatnosc( new Platnosc() {{
-                    this.dataZaplaty= Util.toGregorian( invoice.getDue());
+                    this.dataZaplaty= Util.toGregorian( invoice.getDueDate());
                     if( invoice.getPaymentMetod()!= null)
                         setFormaPlatnosci( BigInteger.valueOf( invoice.getPaymentMetod().ordinal()+ 1));
 

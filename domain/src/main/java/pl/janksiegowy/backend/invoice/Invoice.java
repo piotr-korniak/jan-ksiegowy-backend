@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.finances.document.Document;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.metric.Metric;
 import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
 import java.math.BigDecimal;
@@ -60,6 +61,10 @@ public abstract class Invoice extends Document {
     @Enumerated( EnumType.ORDINAL )
     private PaymentMetod paymentMetod;
 
+    @Column( table= TABLE_NAME)
+    @Enumerated( EnumType.STRING)
+    private InvoiceStatus status;
+
     public Invoice setLineItems( List<InvoiceLine> lineItems) {
         this.lineItems= lineItems;
 
@@ -71,13 +76,10 @@ public abstract class Invoice extends Document {
                 .map( InvoiceLine::getTax)
                 .reduce( BigDecimal.ZERO, BigDecimal::add);
 
-        setSumTotal( subTotal, taxTotal);
         return this;
     }
 
-    public abstract BigDecimal getAmountDue();
-
-    public abstract Invoice setSumTotal( BigDecimal sumTotal, BigDecimal taxTotal );
+    public abstract InvoiceRegisterKind getRegisterKind();
 
     public Invoice setMetric( Metric metric) {
         this.metric= metric;
@@ -86,5 +88,18 @@ public abstract class Invoice extends Document {
 
     @Override public <T> T accept( DocumentVisitor<T> visitor) {
         return visitor.visit( this);
+    }
+
+    public boolean isValidated() {
+        return getAmount().compareTo( getTotal())== 0;
+    }
+
+    private BigDecimal getTotal() {
+        return InvoiceRegisterKind.D == getRegisterKind()? subTotal.add( taxTotal): subTotal;
+    }
+
+    public Invoice setStatus( InvoiceStatus status) {
+        this.status= status;
+        return this;
     }
 }

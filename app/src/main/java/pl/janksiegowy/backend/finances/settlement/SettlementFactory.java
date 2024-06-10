@@ -5,10 +5,8 @@ import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.finances.clearing.ClearingFactory;
 import pl.janksiegowy.backend.finances.payment.Payment;
-import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementDto;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind.SettlementKindVisitor;
-import pl.janksiegowy.backend.period.PeriodFacade;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -45,8 +43,8 @@ public class SettlementFactory implements SettlementKindVisitor<Settlement> {
                 .number( payment.getNumber())
                 .entity( EntityDto.create()
                         .entityId( payment.getEntity().getEntityId()))
-                .date( payment.getDate())
-                .due( payment.getDate())
+                .date( payment.getIssueDate())
+                .due( payment.getIssueDate())
                 .clearings( payment.getClearings().stream()
                         .map( clearings::to )
                         .collect( Collectors.toList()));
