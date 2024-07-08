@@ -19,8 +19,6 @@ public class DocumentConverter implements SettlementType.SettlementTypeVisitor<T
         return TemplateType.PE;
     }
 
-
-
     @Override public TemplateType visitVatStatement() {
         return TemplateType.SV;
     }
@@ -33,7 +31,7 @@ public class DocumentConverter implements SettlementType.SettlementTypeVisitor<T
     }
     @Override
     public TemplateType visitDraStatement() {
-        return TemplateType.SN;
+        return TemplateType.HD;
     }
 
     @Override
@@ -43,11 +41,11 @@ public class DocumentConverter implements SettlementType.SettlementTypeVisitor<T
 
     @Override
     public TemplateType visitLevyCharge() {
-        return TemplateType.CH;
+        return TemplateType.CL;
     }
     @Override
     public TemplateType visitFeeCharge() {
-        return TemplateType.FE;
+        return TemplateType.CF;
     }
 
     @Override public TemplateType visitReceiveNote() {

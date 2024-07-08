@@ -16,11 +16,15 @@ import pl.janksiegowy.backend.entity.EntityFacade;
 import pl.janksiegowy.backend.entity.EntityInitializer;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.entity.EntityRepository;
+import pl.janksiegowy.backend.finances.charge.ChargeFacade;
+import pl.janksiegowy.backend.finances.charge.ChargeInitializer;
 import pl.janksiegowy.backend.finances.clearing.ClearingFactory;
 import pl.janksiegowy.backend.finances.note.NoteFacade;
 import pl.janksiegowy.backend.finances.note.NoteInitializer;
 import pl.janksiegowy.backend.finances.payment.PaymentQueryRepository;
 import pl.janksiegowy.backend.finances.settlement.*;
+import pl.janksiegowy.backend.finances.share.ShareFacade;
+import pl.janksiegowy.backend.finances.share.ShareInitializer;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.invoice.InvoiceInitializer;
 import pl.janksiegowy.backend.invoice.InvoiceQueryRepository;
@@ -71,6 +75,8 @@ public class MigrationController extends MigrationConfiguration {
     private final SettlementInitializer settlements;
 
     private final NoteInitializer notices;
+    private final ChargeInitializer charges;
+    private final ShareInitializer shares;
 
     private final PeriodDto[] initialPeriods= {
             PeriodDto.create().type( PeriodType.A)
@@ -90,35 +96,37 @@ public class MigrationController extends MigrationConfiguration {
                 .end( LocalDate.of( 2024, 12, 31))
     };
 
-    public MigrationController( final EntityQueryRepository entities,
-                                final EntityFacade entity,
-                                final MetricRepository metrics,
-                                final InvoiceRegisterQueryRepository invoiceRegisters,
-                                final PaymentRegisterQueryRepository paymentRegisters,
-                                final PaymentQueryRepository payments,
-                                final AccountingRegisterQueryRepository accountingRegisters,
-                                final InvoiceQueryRepository invoices,
-                                final InvoiceFacade invoice,
-                                final PeriodFacade period,
-                                final PeriodQueryRepository periods,
-                                final SettlementQueryRepository settlements,
-                                final ItemQueryRepository items,
-                                final ItemFacade item,
-                                final ClearingQueryRepository clearing,
-                                final PaymentFacade payment,
-                                final NumeratorQueryRepository numerators,
-                                final NumeratorFacade numerator,
-                                final TemplateQueryRepository templates,
-                                final TemplateFacade template,
-                                final DecreeFacade decree,
-                                final AccountFacade account,
-                                final AccountQueryRepository accounts,
-                                final ContractFacade contract,
-                                final ContractQueryRepository contracts,
-                                final SettlementFacade settlement,
-                                final SettlementRepository settlementRepository,
-                                final EntityRepository entityRepository,
-                                final NoteFacade notice,
+    public MigrationController(final EntityQueryRepository entities,
+                               final EntityFacade entity,
+                               final MetricRepository metrics,
+                               final InvoiceRegisterQueryRepository invoiceRegisters,
+                               final PaymentRegisterQueryRepository paymentRegisters,
+                               final PaymentQueryRepository payments,
+                               final AccountingRegisterQueryRepository accountingRegisters,
+                               final InvoiceQueryRepository invoices,
+                               final InvoiceFacade invoice,
+                               final PeriodFacade period,
+                               final PeriodQueryRepository periods,
+                               final SettlementQueryRepository settlements,
+                               final ItemQueryRepository items,
+                               final ItemFacade item,
+                               final ClearingQueryRepository clearing,
+                               final PaymentFacade payment,
+                               final NumeratorQueryRepository numerators,
+                               final NumeratorFacade numerator,
+                               final TemplateQueryRepository templates,
+                               final TemplateFacade template,
+                               final DecreeFacade decree,
+                               final AccountFacade account,
+                               final AccountQueryRepository accounts,
+                               final ContractFacade contract,
+                               final ContractQueryRepository contracts,
+                               final SettlementFacade settlement,
+                               final SettlementRepository settlementRepository,
+                               final EntityRepository entityRepository,
+                               final NoteFacade notice,
+                               final ChargeFacade charge,
+                               final ShareFacade share,
 
                                 final DataLoader loader) {
 
@@ -133,13 +141,15 @@ public class MigrationController extends MigrationConfiguration {
         this.lines= new InvoiceLineInitializer( invoices, invoice, items, loader);
         this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payment, settlement,
                 new SettlementFactory( entityRepository, new ClearingFactory( settlementRepository)),
-                payments, periods, period, loader);
+                payments, period, loader);
         this.numerators= new NumeratorInitializer( numerators, numerator);
         this.templates= new TemplateInitializer( templates, template);
         this.accounts= new AccountInitializer( account, accounts);
         this.contracts= new ContractInitializer( contracts, entities, contract);
         this.settlements= new SettlementInitializer( settlements, entities, settlement, decree, loader);
         this.notices= new NoteInitializer( settlements, entities, notice, loader);
+        this.charges = new ChargeInitializer( settlements, entities, charge, loader);
+        this.shares= new ShareInitializer( settlements, entities, share, loader);
     }
 
     @PostMapping
@@ -184,15 +194,19 @@ public class MigrationController extends MigrationConfiguration {
 
         response.append( contracts.init( getInitialContracts()));
         log.warn( "Contracts migration complete!");
-
-        /*
+/*
         response.append( settlements.init());
-        log.warn( "Settlements migration complete!");*/
+        log.warn( "Settlements migration complete!");
+*/
+
+        response.append( notices.init());
+
+        response.append( charges.init());
+
+        response.append( shares.init());
 
         payments.init();
         log.warn( "Payments migration complete!");
-
-        response.append( notices.init());
 
         return ResponseEntity.ok( response.toString());
     }

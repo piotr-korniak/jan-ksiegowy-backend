@@ -11,6 +11,7 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue( "R")
+@SecondaryTable( name= Payment.TABLE_NAME, pkJoinColumns= @PrimaryKeyJoinColumn( name="ID"))
 public class PaymentReceipt extends Payment {
 
     @Enumerated( EnumType.STRING)

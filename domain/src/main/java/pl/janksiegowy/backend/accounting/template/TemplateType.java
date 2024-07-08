@@ -2,25 +2,20 @@ package pl.janksiegowy.backend.accounting.template;
 
 public enum TemplateType {
 
-    /**
-     * Sales Invoice
-     */
+    /** Sales Invoice */
     IS {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
             return visitor.visitSalesInvoice();
         }
     },
-    /**
-     * Purchase Invoice
-     */
+    /** Purchase Invoice */
     IP {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
             return visitor.visitPurchaseInvoice();
         }
     },
-    /**
-     * Payment Receipt
-     */
+
+    /** Payment Receipt */
     PR {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
             return visitor.visitPaymentReceipt();
@@ -56,26 +51,27 @@ public enum TemplateType {
     /**
      * Charge Settlement
      */
-    CH { @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
-            return visitor.visitChargeSettlement();
+    CL { @Override public <T> T accept(DocumentTypeVisitor<T> visitor) {
+            return visitor.visitChargeLevy();
     }},
     /**
      * Fee Settlement
      */
-    FE { @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
-            return visitor.visitFeeSettlement();
+    CF { @Override public <T> T accept( DocumentTypeVisitor<T> visitor) {
+            return visitor.visitChargeFee();
     }},
-    /*
-    A { // assets
-        @Override public <T> T accept( TemplateTypeVisitor<T> visitor ) {
-            return visitor.visitAsset();
+
+    /** Acquisition of Shares */
+    HA { @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
+            return visitor.visitAcquiredShare();
         }
     },
-    H { // shareholdings
-        @Override public <T> T accept( TemplateTypeVisitor<T> visitor ) {
-            return visitor.visitShareholding();
+    /** Disposal of Shares */
+    HD { @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
+            return visitor.visitDisposedShare();
         }
-    },*/
+    },
+
     SV { // VAT statement
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
             return visitor.visitVatStatement();
@@ -110,7 +106,6 @@ public enum TemplateType {
         T visitSalesInvoice();
         T visitPurchaseInvoice();
 
-
         T visitVatStatement();
         T visitCitStatement();
         T visitPitStatement();
@@ -119,8 +114,10 @@ public enum TemplateType {
 
         T visitNoteIssued();
         T visitNoteReceived();
-        T visitChargeSettlement();
-        T visitFeeSettlement();
+        T visitChargeLevy();
+        T visitChargeFee();
 
+        T visitAcquiredShare();
+        T visitDisposedShare();
     }
 }

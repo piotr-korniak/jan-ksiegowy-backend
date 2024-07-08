@@ -44,20 +44,12 @@ public class StatementApproval {
                 .map( period-> {
                     var metric= metrics.findByDate( period.getBegin()).orElseThrow();
                     var jpk= Factory_JPK_V7.create( period, invoiceLines);
-/*
-                    statements.findFirstByPatternIdAndPeriodOrderByNoDesc( version, jpk.getPeriod())
-                            .filter( statement-> StatementStatus.S != statement.getStatus())
-                            .map( statement-> {
-                                System.err.println( "Znaleziony: "+ statement.getPeriod().getId());
-                                System.err.println( "Znaleziony: "+ statement.getStatus());
-                                return statement;
-                            }
-                            )
-                            .orElseGet(()-> {
-                                System.err.println( "Nieznaleziony: "+ period.getId());
-                                return null;
-                            });*/
 
+                    System.err.println( "Czy VAT miesięczny: "+ metric.isVatMonthly());
+                    System.err.println( "Czy VAT kwartalny: "+ metric.isVatQuarterly());
+
+
+                    /*
                     save( period, statements.findFirstByPatternIdAndPeriodOrderByNoDesc( version, jpk.getPeriod())
                             .filter( statement-> StatementStatus.S != statement.getStatus())
                             .map( statement-> StatementDto.create()
@@ -80,50 +72,12 @@ public class StatementApproval {
                             .value1( jpk.getOutputCorrection())
                             .value2( jpk.getInputCorrection())
                             .period( jpk.getPeriod()));
-
-
-/*
-                    // to nie tu analizujemy czy coś jest czy nie!
-
-                    var statementDto= statements.findByPatternIdAndPeriod( version, period)
-                            .map( statement-> StatementDto.create()
-                                    .statementId( statement.getStatementId())
-                                    .date( statement.getDate())
-                                    .created( statement.getCreated()))
-                            .orElse( StatementDto.create()
-                                    .date( LocalDate.now())
-                                    .created( LocalDateTime.now()))
-                        .patternId( version)
-                        .type( StatementType.V)
-                        .periodId( periodId);
-
-
-                    var source= version.accept( new PatternId.PatternJpkVisitor<Statement_JPK_V7>() {
-                        @Override public Statement_JPK_V7 visit_JPK_V7K_2_v1_0e() {
-                            return new Factory_JPK_V7K_2_v1_0e( invoiceLines, metrics).create( period);
-                        }
-                    } );
-                    statementDto.xml( XmlConverter.marshal( source));
-                    statementDto.value1( source.korektaNaleznego());
-                    statementDto.value2( source.korektaNaliczonego());
-
-                    Optional.ofNullable( source.getP51())
-                            .ifPresent( bigInteger-> entities
-                                    .findByTypeAndTaxNumber( EntityType.R, metric.getRcCode())
-                                    .ifPresent( revenue-> { statementDto
-                                            .revenue( revenue)
-                                            .liability( new BigDecimal( bigInteger))
-                                            .number( "VAT-7K "+ period.getEnd().getYear()+ "K"+
-                                                    (( period.getEnd().getMonth().getValue()- 1) / 3 + 1))
-                                            .due( period.getEnd().plusMonths( 1).withDayOfMonth( 25));
-                            }));
-
-                    save( statementDto);*/
+                */
                     return null;
 
 
-
                 });
+
     }
 
 

@@ -25,6 +25,11 @@ public class MigrationConfiguration {
 
     protected List<ContractDto> getInitialContracts() {
         return List.of(
+            ContractDto.create().type( ContractType.S)
+                    .entity( EntityDto.create().taxNumber( "70103104660"))
+                    .begin( LocalDate.of( 2017, 9, 1 ) )
+                    .number( "Umowa 1/2017")
+                    .salary( new BigDecimal( "10000.00")),
             ContractDto.create().type( ContractType.E)
                     .entity( EntityDto.create().taxNumber( "70010402493"))
                     .begin( LocalDate.of( 2020, 1, 1 ) )
@@ -36,13 +41,13 @@ public class MigrationConfiguration {
     protected NumeratorDto[] getInitialNumerators() {
         return new NumeratorDto[] {
             NumeratorDto.create().code( NumeratorCode.BR)   // Bank Receipt
-                .type( NumeratorType.M).typed( true).mask( "BP %T/%2Y/%M/%N").name( "Bank Przyjmie"),
+                .type( NumeratorType.M).typed( true).mask( "BP %T/%2Y/%M/%3N").name( "Bank Przyjmie"),
             NumeratorDto.create().code( NumeratorCode.BS)   // Bank Spend
-                .type( NumeratorType.Y).typed( true).mask( "BW %T/%2Y/%M/%N").name( "Bank Wyda"),
+                .type( NumeratorType.M).typed( true).mask( "BW %T/%2Y/%M/%3N").name( "Bank Wyda"),
             NumeratorDto.create().code( NumeratorCode.CR)   // Cash Receipt
-                .type( NumeratorType.Y).typed( false).mask( "KP %2Y/%M/%N").name( "Kasa Przyjmie"),
+                .type( NumeratorType.M).typed( false).mask( "KP %2Y/%M/%3N").name( "Kasa Przyjmie"),
             NumeratorDto.create().code( NumeratorCode.CS)   // Cash Spend
-                .type( NumeratorType.Y).typed( false).mask( "KW %2Y/%M/%N").name( "Kasa Wyda"),
+                .type( NumeratorType.M).typed( false).mask( "KW %2Y/%M/%3N").name( "Kasa Wyda"),
             NumeratorDto.create().code( NumeratorCode.SI)   // Sales Invoice
                 .type( NumeratorType.Y).typed( false).mask( "FS %N/%4Y").name( "Faktura Sprzedaży"),
             NumeratorDto.create().code( NumeratorCode.EN)   // Entity
@@ -110,17 +115,29 @@ public class MigrationConfiguration {
             AccountDto.create()
                 .type( AccountType.P).number( "765").name( "Pozostałe koszty operacyjne"),
             AccountDto.create()
-                .type( AccountType.P).number( "404").name( "Wynagrodzenia"),
+                .type( AccountType.P).number( "404").name( "Opłaty i podatki"),
             AccountDto.create()
-                .type( AccountType.P).number( "405").name( "Narzuty na płace"),
+                .type( AccountType.P).number( "405").name( "Wynagrodzenia"),
             AccountDto.create()
-                .type( AccountType.P).number( "409-1").name( "Koszty pozostałe - inne"),
+                .type( AccountType.P).number( "406").name( "Ubezpieczenia społeczne i świadczenia"),
+            AccountDto.create()
+                .type( AccountType.P).number( "409-1").name( "Pozostałe "),
+            AccountDto.create()
+                .type( AccountType.P).number( "409").name( "Pozostałe koszty"),
+            AccountDto.create()
+                .type( AccountType.P).number( "410").name( "Niestanowiące kosztów uzyskania przychodów"),
             AccountDto.create()
                 .type( AccountType.B).number( "227").name( "Rozrachunki z tytułu PIT"),
             AccountDto.create()
                 .type( AccountType.B).number( "225").name( "Rozrachunki z ZUS"),
             AccountDto.create()
-                .type( AccountType.B).number( "234-[P]").name( "Rozrachunki z Pracownikami")
+                .type( AccountType.B).number( "234-[P]").name( "Rozrachunki z Pracownikami"),
+            AccountDto.create()
+                .type( AccountType.B).number( "248-[W]").name( "Pozostałe rozrachunki z Udziałowcami"),
+            AccountDto.create()
+                .type( AccountType.B).number( "801").name( "Kapitał zakładowy"),
+            AccountDto.create()
+                .type( AccountType.B).number( "241-[W]").name( "Należne wpłaty na poczet kapitału")
         );
     }
 
@@ -137,15 +154,20 @@ public class MigrationConfiguration {
                             .account( AccountDto.create().number( "202-[P]"))
                             .description( "zapłata zobowiązania"))
                     .add( TemplateLineDto.create()
+                            .page( AccountPage.D)
+                            .function( PaymentFunction.SplataZobowiazania )
+                            .account( AccountDto.create().number( "248-[W]"))
+                            .description( "zapłata zobowiązania"))
+                    .add( TemplateLineDto.create()
                             .page( AccountPage.C)
                             .function( PaymentFunction.SplataZobowiazania )
-                            .registerType( PaymentRegisterType.C)
+//                            .registerType( PaymentRegisterType.C)
                             .account( AccountDto.create().number( "100-[K]"))
                             .description( "wypłata z kasy"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
                             .function( PaymentFunction.SplataZobowiazania )
-                            .registerType( PaymentRegisterType.B)
+//                            .registerType( PaymentRegisterType.B)
                             .account( AccountDto.create().number( "130-[B]"))
                             .description( "wypłata z banku"))
                     .add( TemplateLineDto.create()
@@ -164,18 +186,23 @@ public class MigrationConfiguration {
                     .registerCode( "BK")
                     .name( "Bank/Kasa Przyjmie"))
                     .add( TemplateLineDto.create()
-                            .page( AccountPage.D)
+                            .page( AccountPage.C)
                             .function( PaymentFunction.WplataNaleznosci)
                             .account( AccountDto.create().number( "201-[P]"))
                             .description( "wpłata należności"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
+                            .function( PaymentFunction.OplacenieUdzialow )
+                            .account( AccountDto.create().number( "241-[W]"))
+                            .description( "opłacenie udziałów"))
+                    .add( TemplateLineDto.create()
+                            .page( AccountPage.D)
                             .function( PaymentFunction.WplataNaleznosci)
                             .registerType( PaymentRegisterType.C)
                             .account( AccountDto.create().number( "100-[K]"))
                             .description( "wpłata do kasy"))
                     .add( TemplateLineDto.create()
-                            .page( AccountPage.C)
+                            .page( AccountPage.D)
                             .function( PaymentFunction.WplataNaleznosci)
                             .registerType( PaymentRegisterType.B)
                             .account( AccountDto.create().number( "130-[B]"))
@@ -343,29 +370,49 @@ public class MigrationConfiguration {
                         .registerCode( "PK"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.D)
-                            .function( FinanceFunction.WartoscZobowiazania )
+                            .function( SettlementFunction.WartoscZobowiazania )
                             .account( AccountDto.create().number( "755-2"))
                             .description( "wartość noty otrzymanej"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
-                            .function( FinanceFunction.WartoscZobowiazania )
+                            .function( SettlementFunction.WartoscZobowiazania )
                             .account( AccountDto.create().number( "202-[P]"))
                             .description( "wartość noty otrzymanej")),
-                new TemplateMap( TemplateDto.create().code( "FE")
+                new TemplateMap( TemplateDto.create().code( "CF")
                         .name( "Opłata, podatek")
-                        .documentType( TemplateType.FE)
+                        .documentType( TemplateType.CF)
                         .date( LocalDate.EPOCH)
                         .registerCode( "PK"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.D)
-                            .function( FinanceFunction.WartoscZobowiazania )
-                            .account( AccountDto.create().number( "402-1"))
-                            .description( "opłata, usługi obce"))
+                            .function( SettlementFunction.WartoscZobowiazania )
+                            .account( AccountDto.create().number( "404"))
+                            .description( "opłata, podatek"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
-                            .function( FinanceFunction.WartoscZobowiazania )
+                            .function( SettlementFunction.WartoscZobowiazania )
                             .account( AccountDto.create().number( "202-[P]"))
-                            .description( "opłata, usługi obce"))
+                            .description( "opłata, podatek"))
+                    .add( TemplateLineDto.create()
+                            .page( AccountPage.C)
+                            .function( SettlementFunction.WartoscZobowiazania )
+                            .account( AccountDto.create().number( "248-[W]"))
+                            .description( "opłata, podatek")),
+                new TemplateMap( TemplateDto.create().code( "HD")
+                        .name( "Objęcie udziałów")
+                        .documentType( TemplateType.HD)
+                        .date( LocalDate.EPOCH)
+                        .registerCode( "PK"))
+                    .add( TemplateLineDto.create()
+                            .page( AccountPage.D)
+                            .function( SettlementFunction.WartoscNaleznosci)
+                            .account( AccountDto.create().number( "241-[W]"))
+                            .description( "objęcie udziałów"))
+                    .add( TemplateLineDto.create()
+                            .page( AccountPage.C)
+                            .function( SettlementFunction.WartoscNaleznosci)
+                            .account( AccountDto.create().number( "801"))
+                            .description( "objęcie udziałów"))
 
         );
     }

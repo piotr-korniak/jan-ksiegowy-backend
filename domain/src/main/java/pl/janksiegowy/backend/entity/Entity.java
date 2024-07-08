@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.UuidGenerator;
+import pl.janksiegowy.backend.finances.note.NoteType;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -28,6 +29,10 @@ public abstract class Entity {
     @Column( insertable= false, updatable= false)
     @Enumerated( EnumType.STRING)
     private EntityType type;
+
+    public EntityType getType() {
+        return EntityType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
+    }
 
     private LocalDate date;
     private String taxNumber;

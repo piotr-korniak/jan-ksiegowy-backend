@@ -37,7 +37,7 @@ public class EntityFactory implements EntityTypeVisitor<Entity> {
     public Entity update( EntityDto source, Entity entity) {
         return entity                           // Update Entity history
                 .setName( source.getName())
-                .setType( source.getType())
+                //.setType( source.getType())
                 .setTaxNumber( source.getTaxNumber())
                 .setCountry( source.getCountry())
                 .setAddress( source.getAddress())

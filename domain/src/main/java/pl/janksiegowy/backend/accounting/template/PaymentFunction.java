@@ -21,6 +21,11 @@ public enum PaymentFunction {
         @Override public <T> T accept( PaymentFunctionVisitor<T> visitor ) {
             return visitor.visitSplataNoty();
         }
+    },
+    OplacenieUdzialow {
+        @Override public <T> T accept( PaymentFunctionVisitor<T> visitor) {
+            return visitor.visitOplacenieUdzialow();
+        }
     };
 
     public abstract <T> T accept( PaymentFunctionVisitor<T> visitor);
@@ -30,5 +35,6 @@ public enum PaymentFunction {
         T visitSplataZobowiazania();
         T visitWplataNoty();
         T visitSplataNoty();
+        T visitOplacenieUdzialow();
     }
 }

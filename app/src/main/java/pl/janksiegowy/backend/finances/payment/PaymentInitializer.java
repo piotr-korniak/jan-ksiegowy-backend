@@ -10,9 +10,6 @@ import pl.janksiegowy.backend.finances.settlement.SettlementFacade;
 import pl.janksiegowy.backend.finances.settlement.SettlementFactory;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementMap;
 import pl.janksiegowy.backend.period.PeriodFacade;
-import pl.janksiegowy.backend.period.PeriodQueryRepository;
-import pl.janksiegowy.backend.period.PeriodType;
-import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
@@ -30,7 +27,6 @@ public class PaymentInitializer {
     private final SettlementFacade settlement;
     private final SettlementFactory settlementFactory;
     private final PaymentQueryRepository payments;
-    private final PeriodQueryRepository periods;
     private final PeriodFacade period;
     private final DataLoader loader;
 
@@ -49,82 +45,78 @@ public class PaymentInitializer {
 
     public void init() {
 
-        loader.readData( "clearings.txt")
-                .forEach( clearing-> {
-                    var amount= Util.toBigDecimal( clearing[4], 2);
-                    var taxNumber= Util.toTaxNumber( clearing[1]);
-                    var date= Util.toLocalDate( clearing[3]);
+        for( String[] clearing: loader.readData( "clearings.txt")) {
+            if (clearing[0].startsWith("---"))
+                continue;
 
-                    if( periods.findMonthByDate( date).isEmpty())
-                        period.save( PeriodDto.create()
-                                .type( PeriodType.M)
-                                .begin( date));
+            var amount= Util.toBigDecimal( clearing[4], 2);
+            var taxNumber= Util.toTaxNumber( clearing[1]);
+            var date= Util.toLocalDate( clearing[3]);
 
-                    if( amount.signum()> 0) {
-                        if( !clearings.existReceivable( clearing[2], taxNumber, Util.toLocalDate( clearing[3]))) {
-                            settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
-                                    .ifPresent( settlementDto-> {
-                                        registers.findByCode( clearing[0]).ifPresent( register-> {
+            period.findMonthPeriodOrAdd( date);
 
-                                            var receivable= new SettlementMap(
-                                                    settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
-                                                    .orElseThrow());
+            if( amount.signum() > 0) {
+                if (!clearings.existReceivable( clearing[2], taxNumber, Util.toLocalDate( clearing[3]))) {
+                    System.err.println( "Znaleziony 1: "+ clearing[2]);
+                    settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
+                            .ifPresent( settlementDto -> {
+                                System.err.println( "Znaleziony 2: "+ settlementDto.getNumber());
+                                registers.findByCode( clearing[0]).ifPresent( register -> {
 
-                                            var pay= new PaymentMap(
-                                                    payments.findByEntityTaxNumberAndIssueDateAndRegisterCode(
-                                                            taxNumber, date, register.getCode())
-                                                        .orElseGet(()-> PaymentDto.create()
+                                    var receivable= new SettlementMap( settlementDto);
+                                    var pay= new PaymentMap(
+                                            payments.findByEntityTaxNumberAndIssueDateAndRegisterCodeAndType(
+                                                            taxNumber, date, register.getCode(), PaymentType.R)
+                                                    .orElseGet(() -> PaymentDto.create()
                                                             .documentId( UUID.randomUUID())
                                                             .type( PaymentType.R)
                                                             .entity( receivable.getEntity())
                                                             .issueDate( date)
                                                             .register( register)))
-                                                    .add( amount);;
+                                            .add( amount);
 
-                                            book( save( pay.add( receivable.add( ClearingDto.create()
-                                                    .date( date)
-                                                    .amount( amount)
-                                                    .payable( receivable.getSettlementId())
-                                                    .receivable( pay.getDocumentId())))
-                                            ));
-                                            save( receivable);
-                                        });
-                                    });
-                        }
-
-                    } else {
-                        if( !clearings.existPayable( clearing[2], taxNumber, Util.toLocalDate( clearing[3]))) {
-                            settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
-                                .ifPresent( settlementDto-> {
-                                    registers.findByCode( clearing[0]).ifPresent( register-> {
-
-                                        var payable= new SettlementMap(
-                                                settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
-                                                .orElseThrow());
-
-                                        var pay= new PaymentMap(
-                                                payments.findByEntityTaxNumberAndIssueDateAndRegisterCode(
-                                                        taxNumber, date, register.getCode())
-                                                    .orElseGet( ()-> PaymentDto.create()
-                                                        .documentId( UUID.randomUUID())
-                                                        .type( PaymentType.E)
-                                                        .entity( payable.getEntity())
-                                                        .issueDate( date)
-                                                        .register( register)))
-                                                .add( amount.abs());
-
-                                        book( save( pay.add( payable.add( ClearingDto.create()
-                                                .date( date)
-                                                .amount( amount.abs())
-                                                .payable( payable.getSettlementId())
-                                                .receivable( pay.getDocumentId())))
-                                        ));
-                                        save( payable);
-                                    });
+                                    book( save( pay.add( receivable.add( ClearingDto.create()
+                                            .date( date)
+                                            .amount( amount)
+                                            .payable( pay.getDocumentId())
+                                            .receivable( receivable.getSettlementId())))
+                                    ));
+                                    save( receivable);
+                                });
                             });
-                        }
-                    }
-                });
+                }
+
+            } else {
+                if (!clearings.existPayable( clearing[2], taxNumber, Util.toLocalDate( clearing[3]))) {
+                    settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
+                            .ifPresent( settlementDto -> {
+                                registers.findByCode(clearing[0]).ifPresent(register -> {
+
+                                    var payable= new SettlementMap( settlementDto);
+                                    var pay= new PaymentMap(
+                                            payments.findByEntityTaxNumberAndIssueDateAndRegisterCodeAndType(
+                                                            taxNumber, date, register.getCode(), PaymentType.E)
+                                                    .orElseGet(() -> PaymentDto.create()
+                                                            .documentId(UUID.randomUUID())
+                                                            .type(PaymentType.E)
+                                                            .entity(payable.getEntity())
+                                                            .issueDate(date)
+                                                            .register(register)))
+                                            .add(amount.abs());
+
+                                    book(save(pay.add(payable.add(ClearingDto.create()
+                                            .date(date)
+                                            .amount(amount.abs())
+                                            .payable(payable.getSettlementId())
+                                            .receivable(pay.getDocumentId())))
+                                    ));
+                                    save(payable);
+                                });
+                            });
+                }
+            }
+        }
+
     }
 
 }

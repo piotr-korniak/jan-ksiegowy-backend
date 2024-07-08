@@ -20,13 +20,17 @@ public abstract class Account {
 
     @Id
     @Column( name= "ID")
-    private UUID accountId;
+    private UUID id;
 
     @ManyToOne( fetch= FetchType.EAGER)
     private Account parent;
 
     private String number;
     private String name;
+
+    @Enumerated( EnumType.STRING)
+    @Column( insertable= false, updatable= false)
+    private AccountType type;
 
     public Account setParent( Account parent ) {
         this.parent= parent;

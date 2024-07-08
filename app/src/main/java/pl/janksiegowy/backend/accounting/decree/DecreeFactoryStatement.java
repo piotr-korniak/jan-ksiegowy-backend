@@ -60,9 +60,14 @@ public class DecreeFactoryStatement implements StatementTypeVisitor<TemplateType
                                     }
                                 });
                     }
-
+/*
                     @Override public AccountDto getAccount( AccountDto.Proxy account) {
                         return account;
+                    }
+*/
+                    @Override
+                    public Optional<AccountDto> getAccount(TemplateLine line) {
+                        return Optional.empty();
                     }
                 }.build( template, statement.getPeriod().getEnd(), statement.getNumber(), statement.getStatementId()))
                 .map( decreeMap-> Optional.ofNullable( statement.getDecree())

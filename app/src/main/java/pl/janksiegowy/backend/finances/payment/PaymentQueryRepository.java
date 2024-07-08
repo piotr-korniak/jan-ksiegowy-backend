@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface PaymentQueryRepository {
 
-    Optional<PaymentDto> findByEntityTaxNumberAndIssueDateAndRegisterCode(
-            String taxNumber, LocalDate issueDate, String registerCode);
+    Optional<PaymentDto> findByEntityTaxNumberAndIssueDateAndRegisterCodeAndType(
+            String taxNumber, LocalDate issueDate, String registerCode, PaymentType paymentType);
 }

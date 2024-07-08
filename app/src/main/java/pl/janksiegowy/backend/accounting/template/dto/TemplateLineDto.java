@@ -49,7 +49,7 @@ public interface TemplateLineDto {
             this.function= function.name();
             return this;
         }
-        public Proxy function( FinanceFunction function) {
+        public Proxy function( SettlementFunction function) {
             this.function= function.name();
             return this;
         }

@@ -6,8 +6,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.DiscriminatorOptions;
 import pl.janksiegowy.backend.accounting.decree.DocumentDecree;
+import pl.janksiegowy.backend.finances.charge.Charge;
 import pl.janksiegowy.backend.finances.note.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
+import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
 
@@ -79,6 +81,8 @@ public abstract class Document {
         T visit( Invoice invoice);
         T visit( Payment payment);
         T visit( Note note);
+        T visit( Charge charge);
+        T visit( Share share);
     }
 
 }

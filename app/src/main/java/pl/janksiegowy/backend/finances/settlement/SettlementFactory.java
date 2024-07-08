@@ -19,10 +19,10 @@ public class SettlementFactory implements SettlementKindVisitor<Settlement> {
     private final ClearingFactory clearings;
 
     public Settlement from( SettlementDto source) {
-
         return entities.findByEntityIdAndDate( source.getEntity().getEntityId(), source.getDate())
             .map( entity-> source.getKind().accept( this)
                 .setEntityId( entity.getId())
+                .setType( source.getType())
                 .setSettlementId( Optional.ofNullable( source.getSettlementId()).orElseGet( UUID::randomUUID))
                 .setClearings( source.getClearings().stream().map( clearings::from).collect( Collectors.toList()))
                 .setDate( source.getDate())

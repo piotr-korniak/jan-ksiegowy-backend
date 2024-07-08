@@ -65,13 +65,19 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
                                     }
                                 });
                     }
-                    @Override public AccountDto getAccount( AccountDto.Proxy account) {
-                        return switch( account.getNumber().replaceAll("[^A-Z]+", "")){
-                            case "P"-> account.name( invoice.getEntity().getName())
-                                    .number( account.getNumber().replaceAll( "\\[P\\]",
-                                            invoice.getEntity().getAccountNumber()));
-                            default -> account;
-                        };
+
+                    @Override public Optional<AccountDto> getAccount( TemplateLine line) {
+                        return Optional.of(
+                                switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
+                                    case "P"-> AccountDto.create()
+                                            .name( invoice.getEntity().getName())
+                                            .parent( line.getAccount().getNumber())
+                                            .number( line.getAccount().getNumber().replaceAll( "\\[P\\]",
+                                                    invoice.getEntity().getAccountNumber()));
+                            default -> AccountDto.create()
+                                    .name( line.getAccount().getName())
+                                    .number( line.getAccount().getNumber());
+                        });
                     }
                 }.build( template, invoice.getInvoiceDate(), invoice.getNumber(), invoice.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( invoice.getDecree())

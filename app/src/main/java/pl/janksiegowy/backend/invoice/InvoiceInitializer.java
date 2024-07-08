@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @AllArgsConstructor
-public class InvoiceInitializer {
+public class InvoiceInitializer implements InvoiceRegisterTypeVisitor<InvoiceDto.Proxy> {
 
     private final SettlementQueryRepository settlements;
     private final InvoiceRegisterQueryRepository registers;
@@ -70,32 +70,19 @@ public class InvoiceInitializer {
 
             var invoice= entities.findByCountryAndTypeAndTaxNumber( country, EntityType.C, taxNumber)
                     .map( entity-> registers.findByCode( fields[0])
-                            .map( register-> InvoiceRegisterType.valueOf( register.getType()).accept(
-                                    new InvoiceRegisterTypeVisitor<InvoiceDto.Proxy>() {
-                                        @Override public InvoiceDto.Proxy visitPurchaseRegister() {
-                                            return InvoiceDto.create().type( InvoiceType.P);
-                                        }
-                                        @Override public InvoiceDto.Proxy visitSalesRegister() {
-                                            return InvoiceDto.create().type( InvoiceType.S);
-                                        }
-
-                                    }).entity( entity)
-                                        .register( register)
-                                        .invoicePeriod( period)
-                                        .number( fields[1])
-                                        .amount( new BigDecimal( fields[3]))
-                                        .issueDate( Util.toLocalDate( fields[4])) // Date of issue           |Date of sale or receipt
-                                        .invoiceDate( Util.toLocalDate( fields[5]))        // Date of sale (purchase) |Date of issue or purchase
-                                        .dueDate( Util.toLocalDate( fields[6]))         // Date of due
-                            ).map( proxy -> {
-                                if( fields.length> 7) {
-                                    try {
-                                        proxy.paymentMetod( PaymentMetod.valueOf( fields[7]));
-                                    } catch (IllegalArgumentException e) {}
-                                }
-                                return proxy;
-                            }).orElseThrow( ()-> new NoSuchElementException( "Not found register type: "+ fields[0]))
-                    ).orElseThrow( ()-> new NoSuchElementException( "Not found contact with tax number: "+ fields[2]));
+                            .map( register-> InvoiceRegisterType.valueOf( register.getType())
+                                .accept(this)
+                                    .entity( entity)
+                                    .register( register)
+                                    .invoicePeriod( period)
+                                    .number( fields[1])
+                                    .amount( new BigDecimal( fields[3]))
+                                    .issueDate( Util.toLocalDate( fields[4])) // Date of issue           |Date of sale or receipt
+                                    .invoiceDate( Util.toLocalDate( fields[5]))        // Date of sale (purchase) |Date of issue or purchase
+                                    .dueDate( Util.toLocalDate( fields[6])))         // Date of due
+                            .map( proxy-> setPaymentMethod( proxy, fields))
+                            .orElseThrow( ()-> new NoSuchElementException( "Not found register type: "+ fields[0])))
+                    .orElseThrow( ()-> new NoSuchElementException( "Not found contact with tax number: "+ fields[2]));
 /*
             if( periods.findMonthByDate( invoice.getInvoiceDate()).isEmpty())
                 periodFacade.save( PeriodDto.create()
@@ -109,4 +96,16 @@ public class InvoiceInitializer {
                 added+ "/"+ total);
     }
 
+    private InvoiceDto.Proxy setPaymentMethod( InvoiceDto.Proxy proxy, String[] fields) {
+        return fields.length> 7? proxy.paymentMetod( PaymentMetod.valueOf( fields[7])): proxy;
+    }
+
+
+
+    @Override public InvoiceDto.Proxy visitPurchaseRegister() {
+        return InvoiceDto.create().type( InvoiceType.P);
+    }
+    @Override public InvoiceDto.Proxy visitSalesRegister() {
+        return InvoiceDto.create().type( InvoiceType.S);
+    }
 }

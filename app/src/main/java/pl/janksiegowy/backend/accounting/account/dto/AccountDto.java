@@ -12,7 +12,7 @@ public interface AccountDto {
         return new Proxy();
     }
 
-    UUID getAccountId();
+    UUID getId();
     String getParent();
     String getNumber();
     AccountType getType();
@@ -22,14 +22,14 @@ public interface AccountDto {
     @Accessors( fluent= true, chain= true)
     class Proxy implements AccountDto {
 
-        private UUID accountId;
+        private UUID id;
         private String parent;
         private String number;
         private AccountType type;
         private String name;
 
-        @Override public UUID getAccountId() {
-            return accountId;
+        @Override public UUID getId() {
+            return id;
         }
 
         @Override public String getParent() {

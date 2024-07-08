@@ -3,7 +3,7 @@ package pl.janksiegowy.backend.accounting.decree;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.finances.document.Document;
-import pl.janksiegowy.backend.finances.settlement.FinancialSettlement;
+import pl.janksiegowy.backend.finances.charge.Charge;
 import pl.janksiegowy.backend.register.accounting.AccountingRegister;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterFactory;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
@@ -19,10 +19,6 @@ public class DecreeFacade {
     private final AccountingRegisterRepository registers;
     private final DecreeFactory decree;
     private final DecreeRepository decrees;
-
-    public Decree book( FinancialSettlement note) {
-        return save( decree.to( note));
-    }
 
     public Decree book( Document document) {
         return save( decree.to( document));

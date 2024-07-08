@@ -15,7 +15,7 @@ public class AccountFactory implements AccountTypeVisitor<Account> {
     public Account from( AccountDto source) {
 
         return update( source, source.getType().accept( this)
-                .setAccountId( UUID.randomUUID()));
+                .setId( UUID.randomUUID()));
     }
 
     private Account update( AccountDto source, Account account) {

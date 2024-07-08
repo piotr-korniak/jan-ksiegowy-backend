@@ -34,19 +34,21 @@ public class TemplateFactory {
                 .map( templateLineDto-> line.from( templateLineDto, source.getDocumentType().accept(
                     new DocumentTypeVisitor<TemplateLine>() {
                         @Override public TemplateLine visitSalesInvoice() {
-                            return new InvoiceTemplateLine().setFunction(
-                                    InvoiceFunction.valueOf( templateLineDto.getFunction()));
+                            return new InvoiceTemplateLine()
+                                    .setFunction( InvoiceFunction.valueOf( templateLineDto.getFunction()));
                         }
                         @Override public TemplateLine visitPurchaseInvoice() {
-                            return new InvoiceTemplateLine().setFunction(
-                                    InvoiceFunction.valueOf( templateLineDto.getFunction()));
+                            return new InvoiceTemplateLine()
+                                    .setFunction( InvoiceFunction.valueOf( templateLineDto.getFunction()));
                         }
 
                         @Override public TemplateLine visitPaymentReceipt() {
-                            return paymentTemplateLine( templateLineDto);
+                            return new PaymentTemplateLine()
+                                    .setFunction( PaymentFunction.valueOf( templateLineDto.getFunction()));
                         }
                         @Override public TemplateLine visitPaymentSpending() {
-                            return paymentTemplateLine( templateLineDto);
+                            return new PaymentTemplateLine()
+                                    .setFunction( PaymentFunction.valueOf( templateLineDto.getFunction()));
                         }
 
                         @Override public TemplateLine visitVatStatement() {
@@ -67,19 +69,29 @@ public class TemplateFactory {
 
                         @Override public TemplateLine visitNoteIssued() {
                             return new FinanceTemplateLine().setFunction(
-                                    FinanceFunction.valueOf( templateLineDto.getFunction()));
+                                    SettlementFunction.valueOf( templateLineDto.getFunction()));
                         }
                         @Override public TemplateLine visitNoteReceived() {
                             return new FinanceTemplateLine().setFunction(
-                                    FinanceFunction.valueOf( templateLineDto.getFunction()));
+                                    SettlementFunction.valueOf( templateLineDto.getFunction()));
                         }
-                        @Override public TemplateLine visitChargeSettlement() {
+                        @Override public TemplateLine visitChargeLevy() {
                             return new FinanceTemplateLine().setFunction(
-                                    FinanceFunction.valueOf( templateLineDto.getFunction()));
+                                    SettlementFunction.valueOf( templateLineDto.getFunction()));
                         }
-                        @Override public TemplateLine visitFeeSettlement() {
+                        @Override public TemplateLine visitChargeFee() {
                             return new FinanceTemplateLine().setFunction(
-                                    FinanceFunction.valueOf( templateLineDto.getFunction()));
+                                    SettlementFunction.valueOf( templateLineDto.getFunction()));
+                        }
+
+                        @Override public TemplateLine visitAcquiredShare() {
+                            return new FinanceTemplateLine().setFunction(
+                                    SettlementFunction.valueOf( templateLineDto.getFunction()));
+                        }
+
+                        @Override public TemplateLine visitDisposedShare() {
+                            return new FinanceTemplateLine().setFunction(
+                                    SettlementFunction.valueOf( templateLineDto.getFunction()));
                         }
                     })).setTemplate( template))
                 .collect( Collectors.toList())));
@@ -92,12 +104,5 @@ public class TemplateFactory {
                 .setName( source.getName());
     }
 
-    private PaymentTemplateLine paymentTemplateLine( TemplateLineDto templateLineDto) {
-        return Optional.of( new PaymentTemplateLine()
-                        .setFunction( PaymentFunction.valueOf( templateLineDto.getFunction())))
-                .map( line-> templateLineDto.getRegisterType()==null? line:
-                        line.setRegisterType( PaymentRegisterType.valueOf( templateLineDto.getRegisterType())))
-                .get();
-    }
 
 }

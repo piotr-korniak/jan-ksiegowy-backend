@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.finances.charge.FeeCharge;
+import pl.janksiegowy.backend.finances.charge.LevyCharge;
 import pl.janksiegowy.backend.finances.clearing.Clearing;
-import pl.janksiegowy.backend.period.MonthPeriod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -90,8 +91,8 @@ public abstract class Settlement {
 
     public interface SettlementVisitor<T> {
         T visit( PayslipSettlement payslip);
-        T visit( ChargeSettlement charge);
-        T visit( FeeSettlement fee);
+        T visit( LevyCharge charge);
+        T visit( FeeCharge fee);
 
     }
 

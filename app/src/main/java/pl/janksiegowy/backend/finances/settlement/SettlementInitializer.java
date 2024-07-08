@@ -47,15 +47,18 @@ public class SettlementInitializer {
                     .accept( new SettlementKindVisitor<SettlementDto.Proxy>() {
                 @Override public SettlementDto.Proxy visitDebit() {
                     return SettlementDto.create()
-                            .kind( SettlementKind.D)
-                            .dt( new BigDecimal( fields[4]));
+                            .kind( SettlementKind.D);
+
+                            //.dt( new BigDecimal( fields[4]));
                 }
                 @Override public SettlementDto.Proxy visitCredit() {
+                    System.err.println( "Settlement Ct: "+ fields[4]);
                     return SettlementDto.create()
-                            .kind( SettlementKind.C )
-                            .ct( new BigDecimal( fields[4]));
+                            .kind( SettlementKind.C );
+                            //.ct( new BigDecimal( fields[4]));
                 }
             }).type( SettlementType.valueOf( fields[0]))
+                .amount( new BigDecimal( fields[4]))
                 .number( fields[2])
                 .date( Util.toLocalDate( fields[5]))
                 .due( Util.toLocalDate( fields[6]))

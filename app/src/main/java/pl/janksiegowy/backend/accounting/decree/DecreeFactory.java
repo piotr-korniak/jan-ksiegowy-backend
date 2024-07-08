@@ -7,10 +7,12 @@ import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeMap;
 import pl.janksiegowy.backend.accounting.decree.DecreeType.DecreeTypeVisitor;
 import pl.janksiegowy.backend.accounting.template.*;
+import pl.janksiegowy.backend.finances.charge.Charge;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
 import pl.janksiegowy.backend.finances.document.Document;
 import pl.janksiegowy.backend.finances.note.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
+import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
@@ -137,11 +139,23 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
         return new DecreeFactoryNote( templates).to( note);
     }
 
+    @Override public DecreeDto visit( Charge charge) {
+        return new DecreeFactoryCharge( templates).to( charge);
+    }
+
+    @Override
+    public DecreeDto visit( Share share) {
+        return DecreeFactoryShare.create( templates).to( share);
+    }
+
 
     protected abstract static class Builder {
 
-        public abstract BigDecimal getValue( TemplateLine line);
-        abstract public AccountDto getAccount( AccountDto.Proxy accountNumber);
+        abstract BigDecimal getValue( TemplateLine line);
+        abstract Optional<AccountDto> getAccount( TemplateLine line);
+        boolean isPresent( DecreeLineDto line) {
+            return line.getValue().signum()!=0;
+        }
 
         public DecreeMap build( Template template, LocalDate date, String document, UUID decreeId) {
             var decree= new DecreeMap( DecreeDto.create()
@@ -153,16 +167,15 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
                             .registerId( template.getRegister().getRegisterId())));
 
             template.getItems().forEach( templateItem-> {
-                var value= getValue( templateItem);
-                if( value.signum()!=0) {
-                    decree.add( DecreeLineDto.create()
-                            .account( getAccount( AccountDto.create()
-                                    .number( templateItem.getAccount().getNumber())
-                                    .parent( templateItem.getAccount().getNumber())))
-                            .description( templateItem.getDescription())
-                            .page( templateItem.getPage())
-                            .value( value));
-                }
+
+                getAccount( templateItem)
+                        .map( accountDto-> DecreeLineDto.create()
+                                .account( accountDto)
+                                .value( getValue( templateItem))
+                                .page( templateItem.getPage())
+                                .description( templateItem.getDescription()))
+                        .filter( this::isPresent)
+                        .ifPresent( decree::add);
             });
             return decree;
         }

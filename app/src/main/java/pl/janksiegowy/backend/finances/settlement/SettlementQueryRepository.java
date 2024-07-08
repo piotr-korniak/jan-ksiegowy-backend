@@ -1,8 +1,10 @@
 package pl.janksiegowy.backend.finances.settlement;
 
+import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementDto;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementListDto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +15,12 @@ public interface SettlementQueryRepository {
     boolean existsByNumberAndEntityTaxNumber( String number, String taxNumber);
     Optional<SettlementDto> findByNumberAndEntityTaxNumber( String number, String taxNumber);
 
-    List<SettlementListDto> findByEntityAccountNumberOrderByDateDesc( String accountNumber);
-    List<SettlementListDto> findByDtNotEqualCtOrderByDateDesc();
+    List<SettlementListDto> findByEntityTypeAndEntityAccountNumberOrderByEntityAccountNumberDesc(
+            EntityType entityType, String accountNumber, boolean zeroBalance);
+    List<SettlementListDto> findByDtNotEqualCtOrderByDateDesc( boolean zeroBalance);
+
+    List<SettlementListDto> findByEntityTypeAndEntityAccountNumerAsAtDate(
+            EntityType entityType, String accountNumber, LocalDate date, boolean zeroBalance);
+
+    List<SettlementListDto> findByAllAsAtDate( LocalDate date, boolean zeroBalance);
 }

@@ -6,6 +6,7 @@ import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.finances.note.Note;
 import pl.janksiegowy.backend.finances.note.NoteType.NoteTypeVisitor;
+import pl.janksiegowy.backend.accounting.template.SettlementFunction.SettlementFunctionVisitor;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -18,7 +19,8 @@ public class DecreeFactoryNote implements NoteTypeVisitor<TemplateType> {
         return templates.findByDocumentTypeAndDate( note.getType().accept( this), note.getIssueDate())
                 .map( template -> new DecreeFactory.Builder() {
                     @Override public BigDecimal getValue( TemplateLine line) {
-                        return ((FinanceTemplateLine)line).getFunction().accept( new FinanceFunction.NoteFunctionVisitor<BigDecimal>() {
+                        return ((FinanceTemplateLine)line).getFunction()
+                                .accept( new SettlementFunctionVisitor<BigDecimal>() {
                             @Override public BigDecimal visitWartoscZobowiazania() {
                                 return note.getCt();
                             }
@@ -27,13 +29,18 @@ public class DecreeFactoryNote implements NoteTypeVisitor<TemplateType> {
                             }
                         });
                     }
-                    @Override public AccountDto getAccount( AccountDto.Proxy account) {
+ /*                   @Override public AccountDto getAccount( AccountDto.Proxy account) {
                         return switch( account.getNumber().replaceAll("[^A-Z]+", "")){
                             case "P"-> account.name( note.getEntity().getName())
                                     .number( account.getNumber().replaceAll( "\\[P\\]",
                                             note.getEntity().getAccountNumber()));
                             default -> account;
                         };
+                    }
+*/
+                    @Override
+                    public Optional<AccountDto> getAccount(TemplateLine line) {
+                        return Optional.empty();
                     }
                 }.build( template, note.getIssueDate(), note.getNumber(), note.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( note.getDecree())

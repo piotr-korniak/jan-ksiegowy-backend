@@ -21,7 +21,5 @@ public class PaymentTemplateLine extends TemplateLine {
     @Enumerated( EnumType.STRING)
     private PaymentFunction function;
 
-    @Enumerated( EnumType.STRING)
-    private PaymentRegisterType registerType;
 
 }

@@ -24,6 +24,10 @@ public abstract class Payment extends Document {
     @JoinColumn( table= TABLE_NAME)
     private PaymentRegister register;
 
+    @Enumerated(EnumType.STRING)
+    @Column( insertable= false, updatable= false)
+    private PaymentType type;
+
     public PaymentType getType() {
         return PaymentType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
     }

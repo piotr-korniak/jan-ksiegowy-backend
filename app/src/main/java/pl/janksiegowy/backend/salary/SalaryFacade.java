@@ -30,6 +30,18 @@ public class SalaryFacade {
 
     Payslip calculate( ContractDto contractDto, LocalDate date) {
 
+        contractDto.getType().accept(new ContractType.ContractTypeVisitor<PayslipDto>() {
+            @Override
+            public PayslipDto visitEmploymentContract() {
+                return null;
+            }
+
+            @Override
+            public PayslipDto visitServicesContract() {
+                return null;
+            }
+        });
+
         var inter= config();
         inter.setVariable( "brutto", contractDto.getSalary());
         System.err.println( "Wynagrodzenie brutto:     "+ inter.getVariable( "brutto"));

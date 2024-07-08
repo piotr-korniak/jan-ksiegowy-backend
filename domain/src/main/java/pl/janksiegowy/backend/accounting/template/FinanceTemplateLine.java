@@ -17,6 +17,6 @@ import lombok.experimental.Accessors;
 public class FinanceTemplateLine extends TemplateLine {
 
     @Enumerated( EnumType.STRING)
-    private FinanceFunction function;
+    private SettlementFunction function;
 
 }
