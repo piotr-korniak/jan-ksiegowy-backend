@@ -20,4 +20,9 @@ public class MonthPeriod extends Period {
         this.parent= period;
         return this;
     }
+
+    @Override
+    public <T> T accept( PeriodVisitor<T> visitor) {
+        return visitor.visit( this);
+    }
 }

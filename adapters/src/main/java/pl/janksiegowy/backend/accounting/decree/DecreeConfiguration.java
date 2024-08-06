@@ -22,10 +22,10 @@ public class DecreeConfiguration {
                                final AccountFacade account,
                                final PeriodFacade period,
                                final NumeratorFacade numerators,
-                               final ClearingRepository clerings ) {
+                               final ClearingRepository clearings ) {
         return new DecreeFacade( new AccountingRegisterFactory(), registers,
                 new DecreeFactory( templates, registers,
-                        new DecreeLineFactory( accounts, account), period, numerators, clerings),
+                        new DecreeLineFactory( accounts, account), period, numerators, clearings),
                 decrees);
     }
 }

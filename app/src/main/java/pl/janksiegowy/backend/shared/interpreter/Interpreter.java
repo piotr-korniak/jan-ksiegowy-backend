@@ -18,13 +18,16 @@ public class Interpreter {
     }
 
     public Interpreter setVariable( String key, BigDecimal value) {
-        //System.err.println( "SetVariable ("+key+"): "+ value);
         context.put( key, value);
         return this;
     }
 
     public BigDecimal getVariable( String key) {
         return context.get( key);
+    }
+
+    public BigDecimal getVariable( String key, BigDecimal defaultValue) {
+        return context.getOrDefault( key, defaultValue);
     }
 
     public Interpreter interpret( String key, String expression) {
@@ -38,7 +41,7 @@ public class Interpreter {
     }
 
     public Interpreter sum( String result, String... addends) {
-        setVariable( result, BigDecimal.ZERO);
+        setVariable( result, context.getOrDefault( result, BigDecimal.ZERO));
         for( String addend: addends) {
             if( getVariable( addend )!= null)
                 interpret( result, "["+result+"]+ ["+addend+"]" );

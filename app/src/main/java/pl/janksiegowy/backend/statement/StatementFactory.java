@@ -12,15 +12,17 @@ import pl.janksiegowy.backend.statement.dto.StatementDto;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class StatementFactory {
     private final EntityRepository entities;
+    private final StatementLineFactory line;
     private final PeriodRepository periods;
 
     public Statement from( StatementDto source, MonthPeriod settlementPeriod) {
 
-        return source.getKind().accept( new StatementKindVisitor<Statement>() {
+        return Optional.of( source.getKind().accept( new StatementKindVisitor<Statement>() {
                     @Override public Statement visitPayableStatement() {
                         return new PayableStatement()
                                 .setType( source.getType())
@@ -46,7 +48,14 @@ public class StatementFactory {
 
                 .setPeriod( source.getPeriod())
                 .setNo( source.getNo())
-                .setXML( source.getXml());
+                .setXML( source.getXml()))
+                .map( statement->
+                    Optional.ofNullable( source.getStatementLines())
+                        .map( lines-> statement.setLines( lines.stream()
+                                .map( statementLineDto -> line.from( statementLineDto).setStatement( statement))
+                                .collect( Collectors.toList())))
+                            .orElseGet( ()-> statement))
+                .get();
 /*
         return periods.findById( source.getPeriodId()).map( period-> source.getType()
             .accept( new StatementTypeVisitor<Statement>() {

@@ -2,10 +2,16 @@ package pl.janksiegowy.backend.period;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import pl.janksiegowy.backend.finances.charge.Charge;
+import pl.janksiegowy.backend.finances.note.Note;
+import pl.janksiegowy.backend.finances.payment.Payment;
+import pl.janksiegowy.backend.finances.share.Share;
+import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.tax.CIT;
 import pl.janksiegowy.backend.period.tax.JPK;
 import pl.janksiegowy.backend.period.tax.PIT;
 import pl.janksiegowy.backend.period.tax.VAT;
+import pl.janksiegowy.backend.salary.Payslip;
 
 import java.time.LocalDate;
 @Getter
@@ -14,7 +20,7 @@ import java.time.LocalDate;
 @Table( name= "PERIODS")
 @Inheritance( strategy= InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn( name= "TYPE", discriminatorType= DiscriminatorType.STRING, length= 1)
-public class Period {
+public abstract class Period {
 
     @Id
     private String id;
@@ -69,5 +75,15 @@ public class Period {
             begin= min;
         return this;
     }
+
+    public abstract <T> T accept( PeriodVisitor<T> visitor);
+
+    public interface PeriodVisitor<T> {
+        T visit( AnnualPeriod annualPeriod);
+        T visit( QuarterPeriod quarterPeriod);
+        T visit( MonthPeriod monthPeriod);
+
+    }
+
 
 }

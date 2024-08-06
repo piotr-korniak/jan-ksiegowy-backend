@@ -96,7 +96,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "miesiac"
 })
 @XmlSeeAlso({
-    Ewidencja_JPK_V7K_2_v1_0e.Naglowek.class
+    Ewidencja_JPK_V7K_2_1_0e.Naglowek.class
 })
 public class TNaglowek {
 

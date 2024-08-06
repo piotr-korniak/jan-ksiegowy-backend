@@ -1,0 +1,13 @@
+--liquibase formatted sql
+--changeset piotrkorniak:41
+
+CREATE TABLE STATEMENTS_LINES (
+    ID UUID,
+    STATEMENT_ID UUID,
+
+    ITEM_CODE CHAR(1),
+    AMOUNT DECIMAL(12,2) NOT NULL,
+
+    FOREIGN KEY (STATEMENT_ID) REFERENCES STATEMENTS( ID),
+    PRIMARY KEY (ID)
+);

@@ -33,12 +33,13 @@ public class StatementApproval {
 
 
     private void save( MonthPeriod period, StatementDto source) {
+        System.err.println( "JPK VAt 7\n"+ source.getXml());
         facade.approve( facade.save( period, source));
     }
 
 
     public void approval( String periodId) {
-        var version= PatternId.JPK_V7K_2_v1_0e;
+        var version= PatternId.JPK_V7K_2_1_0e;
 
         periods.findMonthById( periodId)
                 .map( period-> {
@@ -49,8 +50,8 @@ public class StatementApproval {
                     System.err.println( "Czy VAT kwartalny: "+ metric.isVatQuarterly());
 
 
-                    /*
-                    save( period, statements.findFirstByPatternIdAndPeriodOrderByNoDesc( version, jpk.getPeriod())
+
+                    save( period, statements.findFirstByPatternLikeAndPeriodOrderByNoDesc( version.toString(), jpk.getPeriod())
                             .filter( statement-> StatementStatus.S != statement.getStatus())
                             .map( statement-> StatementDto.create()
                                 .statementId( statement.getStatementId())
@@ -72,7 +73,7 @@ public class StatementApproval {
                             .value1( jpk.getOutputCorrection())
                             .value2( jpk.getInputCorrection())
                             .period( jpk.getPeriod()));
-                */
+
                     return null;
 
 

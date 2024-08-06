@@ -80,7 +80,7 @@ import pl.gov.crd.xml.schematy.dziedzinowe.mf._2021._06._08.ed.definicjetypy.TId
     "osobaNiefizyczna"
 })
 @XmlSeeAlso({
-    Ewidencja_JPK_V7K_2_v1_0e.Podmiot1 .class
+    Ewidencja_JPK_V7K_2_1_0e.Podmiot1 .class
 })
 public class TPodmiotDowolnyBezAdresu {
 

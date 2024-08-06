@@ -17,6 +17,7 @@ import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
+import pl.janksiegowy.backend.salary.Payslip;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.finances.document.Document.DocumentVisitor;
@@ -146,6 +147,11 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
     @Override
     public DecreeDto visit( Share share) {
         return DecreeFactoryShare.create( templates).to( share);
+    }
+
+    @Override
+    public DecreeDto visit( Payslip payslip) {
+        return new DecreeFactoryPayslip( templates).to( payslip);
     }
 
 

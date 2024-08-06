@@ -13,7 +13,7 @@ import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 @AllArgsConstructor
-public class PeriodFactory {
+public class PeriodFactory implements PeriodTypeVisitor<Period>{
 
     private final MetricRepository metrics;
 
@@ -65,4 +65,23 @@ public class PeriodFactory {
     }
 
 
+    public Period from( PeriodDto source) {
+        return source.getType().accept( this)
+                .setId( source.getId());
+    }
+
+    @Override
+    public Period visitAnnualPeriod() {
+        return new AnnualPeriod();
+    }
+
+    @Override
+    public Period visitQuarterPeriod() {
+        return new QuarterPeriod();
+    }
+
+    @Override
+    public Period visitMonthPeriod() {
+        return new MonthPeriod() ;
+    }
 }

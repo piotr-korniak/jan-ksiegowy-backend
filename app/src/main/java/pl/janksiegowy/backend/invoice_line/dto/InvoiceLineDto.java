@@ -17,6 +17,7 @@ public interface InvoiceLineDto {
         return new Proxy();
     }
     @JsonProperty( "line_item_id")
+
     UUID getId();
     BigInteger getNo();
 

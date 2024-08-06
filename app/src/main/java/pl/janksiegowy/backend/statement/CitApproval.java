@@ -1,14 +1,12 @@
 package pl.janksiegowy.backend.statement;
 
 import lombok.AllArgsConstructor;
-import pl.gov.crd.wzor._2024._02._08._13272.Deklaracja_CIT_8_33_v2_0e;
 import pl.janksiegowy.backend.accounting.decree.DecreeLineQueryRepository;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.*;
 import pl.janksiegowy.backend.shared.Util;
-import pl.janksiegowy.backend.shared.interpreter.DecreeLineFunction;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
@@ -16,11 +14,9 @@ import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.Optional;
 
 @AllArgsConstructor
 public class CitApproval {
@@ -76,7 +72,7 @@ public class CitApproval {
                 //System.err.println( source);
                 periods.findMonthByDate( period.getEnd())
                         .ifPresent( month-> statement.save( month,
-                                statements.findFirstByPatternIdAndPeriodOrderByNoDesc( version, period)
+                                statements.findFirstByPatternLikeAndPeriodOrderByNoDesc( version.toString(), period)
                                 .filter( statement-> StatementStatus.S != statement.getStatus())
                                 .map( statement-> StatementDto.create()
                                         .statementId( statement.getStatementId())
@@ -109,7 +105,7 @@ public class CitApproval {
                     .append( toPrint( "   - zużycie materiałów", inter.getVariable( "402_1")))
                     .append( toPrint( "   - usługi obce", inter.getVariable( "403_1")))
                     .append( toPrint( "   - opłaty, podatki", inter.getVariable( "404")))
-                    .append( toPrint( "   - wynagrodzenia", inter.getVariable( "405")))
+                    .append( toPrint( "   - wynagrodzenia", inter.getVariable( "404")))
                     .append( toPrint( "   - koszty pozostałe", inter.getVariable( "409_1")))
                     .append( toPrint( "   - pozostałe", inter.getVariable( "765")))
                     .append( toPrint( "   - finansowe", inter.getVariable( "755_1")))

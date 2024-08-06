@@ -36,13 +36,13 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e createJPK() {
-        return new Ewidencja_JPK_V7K_2_v1_0e();
+    public Ewidencja_JPK_V7K_2_1_0e createJPK() {
+        return new Ewidencja_JPK_V7K_2_1_0e();
     }
 
     /**
@@ -66,53 +66,53 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Ewidencja createJPKEwidencja() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Ewidencja();
+    public Ewidencja_JPK_V7K_2_1_0e.Ewidencja createJPKEwidencja() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Ewidencja();
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e createJPKDeklaracja() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e();
+    public Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e createJPKDeklaracja() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e();
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek createJPKDeklaracjaNaglowek() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek();
+    public Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek createJPKDeklaracjaNaglowek() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek();
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Naglowek }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Naglowek }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Naglowek }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Naglowek }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Naglowek createJPKNaglowek() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Naglowek();
+    public Ewidencja_JPK_V7K_2_1_0e.Naglowek createJPKNaglowek() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Naglowek();
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Podmiot1 }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Podmiot1 }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Podmiot1 }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Podmiot1 }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Podmiot1 createJPKPodmiot1() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Podmiot1();
+    public Ewidencja_JPK_V7K_2_1_0e.Podmiot1 createJPKPodmiot1() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Podmiot1();
     }
 
     /**
@@ -166,63 +166,63 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazWiersz }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja.SprzedazWiersz }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazWiersz }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja.SprzedazWiersz }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazWiersz createJPKEwidencjaSprzedazWiersz() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazWiersz();
+    public Ewidencja_JPK_V7K_2_1_0e.Ewidencja.SprzedazWiersz createJPKEwidencjaSprzedazWiersz() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Ewidencja.SprzedazWiersz();
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazCtrl }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja.SprzedazCtrl }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazCtrl }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja.SprzedazCtrl }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazCtrl createJPKEwidencjaSprzedazCtrl() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.SprzedazCtrl();
+    public Ewidencja_JPK_V7K_2_1_0e.Ewidencja.SprzedazCtrl createJPKEwidencjaSprzedazCtrl() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Ewidencja.SprzedazCtrl();
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupWiersz }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja.ZakupWiersz }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupWiersz }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja.ZakupWiersz }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupWiersz createJPKEwidencjaZakupWiersz() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupWiersz();
+    public Ewidencja_JPK_V7K_2_1_0e.Ewidencja.ZakupWiersz createJPKEwidencjaZakupWiersz() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Ewidencja.ZakupWiersz();
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupCtrl }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja.ZakupCtrl }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupCtrl }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Ewidencja.ZakupCtrl }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupCtrl createJPKEwidencjaZakupCtrl() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Ewidencja.ZakupCtrl();
+    public Ewidencja_JPK_V7K_2_1_0e.Ewidencja.ZakupCtrl createJPKEwidencjaZakupCtrl() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Ewidencja.ZakupCtrl();
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe createJPKDeklaracjaPozycjeSzczegolowe() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe();
+    public Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe createJPKDeklaracjaPozycjeSzczegolowe() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.PozycjeSzczegolowe();
     }
 
     /**
-     * Create an instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek.KodFormularzaDekl }
+     * Create an instance of {@link Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek.KodFormularzaDekl }
      * 
      * @return
-     *     the new instance of {@link Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek.KodFormularzaDekl }
+     *     the new instance of {@link Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek.KodFormularzaDekl }
      */
-    public Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek.KodFormularzaDekl createJPKDeklaracjaNaglowekKodFormularzaDekl() {
-        return new Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek.KodFormularzaDekl();
+    public Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek.KodFormularzaDekl createJPKDeklaracjaNaglowekKodFormularzaDekl() {
+        return new Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e.Naglowek.KodFormularzaDekl();
     }
 
 }

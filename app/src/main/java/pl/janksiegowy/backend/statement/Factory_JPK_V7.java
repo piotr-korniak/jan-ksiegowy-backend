@@ -11,6 +11,7 @@ import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
+import pl.janksiegowy.backend.statement.dto.StatementMap;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -133,7 +134,7 @@ public abstract class Factory_JPK_V7 {
         if( account.isVariable( "Import_Uslug_Netto"))
             account.interpret( "Import_Uslug_Netto", "[Import_Uslug_Netto]@ [JEDEN]");
 
-        account.sum( "Razem", "Sprzedaz_Netto_S1", "Import_Netto_Vat");
+        account.sum( "Razem", "Sprzedaz_Netto_S1", "Import_Uslug_Netto");
         account.sum( "Razem_Nalezny", "Sprzedaz_Vat_S1", "Import_Uslug_Vat");
 
         lines.sumPurchaseByTypeAndPeriodGroupByType( period.getParent())
@@ -168,7 +169,8 @@ public abstract class Factory_JPK_V7 {
     }
 
     private static Optional<PatternId> getPatternId( LocalDate date) {
-        return Optional.of( PatternId.JPK_V7K_2_v1_0e);
+        return Optional.of( PatternId.JPK_V7K_2_1_0e);
     }
 
+    public abstract void prepare( StatementMap statementMap);
 }

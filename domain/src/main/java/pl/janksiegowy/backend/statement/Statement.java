@@ -4,12 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.accounting.decree.Decree;
+import pl.janksiegowy.backend.accounting.decree.DecreeLine;
 import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -34,6 +37,10 @@ public abstract class Statement {
     @ManyToOne( fetch= FetchType.EAGER)
     private Period period;
 
+    @Column( name= "PATTERN_ID", insertable = false, updatable = false)
+    private String pattern;
+
+    @Column( name= "PATTERN_ID")
     @Enumerated( EnumType.STRING)
     private PatternId patternId;
 
@@ -50,6 +57,16 @@ public abstract class Statement {
 
     @Enumerated( EnumType.STRING)
     private StatementStatus status= StatementStatus.N;
+
+    @OneToMany( fetch= FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval= true)
+    @JoinColumn( name= "STATEMENT_ID")
+    private List<StatementLine> lines;
+
+    public Statement setLines( List<StatementLine> lines) {
+
+        this.lines= lines;
+        return this;
+    }
 
     public StatementKind getKind() {
         return StatementKind.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());

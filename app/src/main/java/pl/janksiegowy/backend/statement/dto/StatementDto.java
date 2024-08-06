@@ -12,6 +12,7 @@ import pl.janksiegowy.backend.statement.StatementType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public interface StatementDto {
@@ -39,6 +40,7 @@ public interface StatementDto {
     int getNo();
     StatementStatus getStatus();
 
+    List<StatementLineDto> getStatementLines();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -60,6 +62,7 @@ public interface StatementDto {
         private BigDecimal value2;
         private int no;
         private StatementStatus status;
+        private List<StatementLineDto> statementLines;
 
         @Override public UUID getStatementId() {
             return statementId;
@@ -110,6 +113,9 @@ public interface StatementDto {
         }
         @Override public StatementStatus getStatus() {
             return status;
+        }
+        @Override public List<StatementLineDto> getStatementLines() {
+            return statementLines;
         }
 
     }

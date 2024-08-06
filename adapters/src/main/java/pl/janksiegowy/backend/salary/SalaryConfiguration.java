@@ -6,6 +6,8 @@ import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
 import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
 
+import java.util.List;
+
 @Configuration
 public class SalaryConfiguration {
 
@@ -13,7 +15,10 @@ public class SalaryConfiguration {
     SalaryFacade salaryFacade( final PayslipRepository payslips,
                                final PeriodRepository periods,
                                final EntityRepository entities,
-                               final DecreeFacade decree) {
-        return new SalaryFacade( payslips, new SalaryFactory( periods, entities ), decree);
+                               final DecreeFacade decree,
+                               final List<SalaryStrategy> strategies) {
+        return new SalaryFacade( payslips,
+                new SalaryFactory( periods, entities, new PayslipLineFactory()),
+                decree, strategies);
     }
 }

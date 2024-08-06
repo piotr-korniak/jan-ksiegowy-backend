@@ -422,7 +422,7 @@ import pl.janksiegowy.backend.statement.Statement_JPK_V7;
     "ewidencja"
 })
 @XmlRootElement(name = "JPK")
-public class Ewidencja_JPK_V7K_2_v1_0e extends Statement_JPK_V7 {
+public class Ewidencja_JPK_V7K_2_1_0e extends Statement_JPK_V7 {
 
     @Override public BigDecimal getZobowiazanie() {
         if( getDeklaracja()== null)

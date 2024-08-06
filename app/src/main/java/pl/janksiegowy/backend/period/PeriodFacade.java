@@ -27,7 +27,7 @@ public class PeriodFacade {
     public Period save( PeriodDto source) {
 
         return periods.save( Optional.ofNullable( source.getId())
-                .map( s -> new Period())    // fixme
+                .map( s -> factory.from( source))    // fixme
                 .orElse( factory.from( source, new PeriodDecorator() {
 
                     @Override public Period visitAnnualPeriod() {
@@ -47,7 +47,7 @@ public class PeriodFacade {
                                                 .setMax( parent.getEnd())
                                                 .setTax( PIT.No, JPK.No,
                                                          metric.isCitQuarterly(),
-                                                         metric.isVatQuarterly()))
+                                                         VAT.Yes)) // fixme //metric.isVatQuarterly()))
                                         .orElseThrow())
                                 .orElseThrow();
                     }

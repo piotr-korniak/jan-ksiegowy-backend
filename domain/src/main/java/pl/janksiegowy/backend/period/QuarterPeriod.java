@@ -17,4 +17,9 @@ public class QuarterPeriod extends Period {
         this.parent= parent;
         return this;
     }
+
+    @Override
+    public <T> T accept( PeriodVisitor<T> visitor) {
+        return visitor.visit( this);
+    }
 }

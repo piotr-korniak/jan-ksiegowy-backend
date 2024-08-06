@@ -8,6 +8,8 @@ import pl.janksiegowy.backend.period.dto.PeriodDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.chrono.Chronology;
+import java.util.List;
+import java.util.UUID;
 
 public interface PayslipDto {
 
@@ -15,28 +17,34 @@ public interface PayslipDto {
         return new Proxy();
     }
 
+    UUID getDocumentId();
     String getNumber();
     LocalDate getDate();
     EntityDto getEntity();
-    BigDecimal getGross();
-    BigDecimal getInsuranceEmployee();
-    BigDecimal getInsuranceEmployer();
-    BigDecimal getInsuranceHealth();
-    BigDecimal getTaxAdvance();
+    ContractDto getContract();
+
+    List<PayslipLineDto> getPayslipLines();
+
+    LocalDate getDueDate();
+    BigDecimal getAmount();
 
     @Setter
     @Accessors( fluent= true, chain= true)
     class Proxy implements PayslipDto {
 
+        private UUID documentId;
         private String number;
         private LocalDate date;
+        private LocalDate dueDate;
         private EntityDto entity;
-        private BigDecimal gross;
-        private BigDecimal insuranceEmployee;
-        private BigDecimal insuranceEmployer;
-        private BigDecimal insuranceHealth;
-        private BigDecimal taxAdvance;
+        private BigDecimal amount;
+        private ContractDto contract;
 
+        private List<PayslipLineDto> payslipLines;
+
+        @Override public UUID getDocumentId() {
+            return documentId;
+        }
         @Override public String getNumber() {
             return number;
         }
@@ -48,21 +56,25 @@ public interface PayslipDto {
             return entity;
         }
 
-        @Override public BigDecimal getGross() {
-            return gross;
+        @Override
+        public ContractDto getContract() {
+            return contract;
         }
-        @Override public BigDecimal getInsuranceEmployee() {
-            return insuranceEmployee;
+
+        @Override public List<PayslipLineDto> getPayslipLines() {
+            return payslipLines;
         }
-        @Override public BigDecimal getInsuranceEmployer() {
-            return insuranceEmployer;
+
+        @Override
+        public LocalDate getDueDate() {
+            return dueDate;
         }
-        @Override public BigDecimal getInsuranceHealth() {
-            return insuranceHealth;
+
+        @Override
+        public BigDecimal getAmount() {
+            return amount;
         }
-        @Override public BigDecimal getTaxAdvance() {
-            return taxAdvance;
-        }
+
 
     }
 }

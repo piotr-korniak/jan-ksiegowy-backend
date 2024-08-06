@@ -51,8 +51,8 @@ public class Metric {
     public VAT isVatMonthly() {
         return vatPl&&!vatQuarterly? VAT.Yes: VAT.No;
     }
-    public VAT isVatQuarterly() {
-        return vatPl&&vatQuarterly? VAT.Yes: VAT.No;
+    public boolean isVatQuarterly() {
+        return vatPl&&vatQuarterly;
     }
 
     public boolean isTaxQuarterly() {

@@ -15,10 +15,6 @@ public class DecreeLineFactory implements AccountPageVisitor<DecreeLine>{
     private final AccountFacade accountFacade;
 
     public DecreeLine from( DecreeLineDto source ) {
-        return create( source);
-    }
-
-    private DecreeLine create( DecreeLineDto source) {
 
         Account account= accounts.findByNumber( source.getAccount().getNumber())
             .orElseGet( ()-> accounts.findByNumber( source.getAccount().getParent())

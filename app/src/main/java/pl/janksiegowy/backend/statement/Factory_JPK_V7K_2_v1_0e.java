@@ -1,12 +1,13 @@
 package pl.janksiegowy.backend.statement;
 
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.util.TriConsumer;
-import org.springframework.beans.factory.annotation.Value;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Naglowek;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Podmiot1;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Ewidencja;
-import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_v1_0e.Deklaracja_VAT_7K_16_1_0e;
+import org.springframework.stereotype.Component;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_1_0e;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_1_0e.Naglowek;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_1_0e.Podmiot1;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_1_0e.Ewidencja;
+import pl.gov.crd.wzor._2021._12._27._11149.Ewidencja_JPK_V7K_2_1_0e.Deklaracja_VAT_7K_16_1_0e;
 
 import pl.gov.crd.wzor._2021._12._27._11149.TKodFormularza;
 import pl.gov.crd.wzor._2021._12._27._11149.TKodFormularzaVATK;
@@ -15,15 +16,18 @@ import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
+import pl.janksiegowy.backend.statement.dto.StatementMap;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
 import java.time.temporal.IsoFields;
 import java.util.*;
 
-
+@Component
+@AllArgsConstructor
 public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
+
+    //private final VatSpecificItems vatItems;
 
     private final Map<TaxRate, TriConsumer<Ewidencja.SprzedazWiersz, BigDecimal, BigDecimal>>
             salesDomesticRowFunctions= Map.of(
@@ -32,9 +36,16 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
                     sprzedazWiersz.setK20( Util.sum( sprzedazWiersz.getK20(), vat));
     });
 
+    @Override
+    public void prepare( StatementMap statementMap) {
+
+    }
+
     @Override protected Statement_JPK_V7 prepare( Metric metric) {
 
-        var ewidencja= new Ewidencja_JPK_V7K_2_v1_0e();
+        //vatItems.calculate()
+
+        var ewidencja= new Ewidencja_JPK_V7K_2_1_0e();
         ewidencja.setNaglowek( new Naglowek() {{
             wariantFormularza= 2;
             setKodFormularza( new KodFormularza(){{
@@ -395,6 +406,8 @@ public class Factory_JPK_V7K_2_v1_0e extends Factory_JPK_V7 {
     @Override protected boolean isSettlement() {
         return period.getEnd().getMonthValue()% 3 == 0;
     }
+
+
 
     @Override protected String getNumber() {
         return "VAT-7K "+ period.getEnd().getYear()+ "K"+

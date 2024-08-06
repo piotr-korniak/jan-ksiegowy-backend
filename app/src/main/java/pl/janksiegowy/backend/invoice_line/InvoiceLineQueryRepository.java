@@ -1,6 +1,7 @@
 package pl.janksiegowy.backend.invoice_line;
 
 import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.shared.financial.TaxMethod;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineSumDto;
@@ -9,6 +10,7 @@ import pl.janksiegowy.backend.period.QuarterPeriod;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface InvoiceLineQueryRepository {
@@ -32,17 +34,20 @@ public interface InvoiceLineQueryRepository {
             QuarterPeriod period);
 
     List<JpaInvoiceSumDto> sumSalesByKindAndPeriodGroupByRate(
-            InvoiceRegisterKind kind,
-            QuarterPeriod quarterPeriod);
+            InvoiceRegisterKind salesKind, QuarterPeriod period);
+    List<JpaInvoiceSumDto> sumSalesByKindAndPeriodGroupByRate(
+            InvoiceRegisterKind salesKind, MonthPeriod period);
 
     List<JpaInvoiceSumDto> sumSalesByKindAndItemTypeGroupByType(
             List<InvoiceRegisterKind> salesKinds,
             String quarterPeriod);
 
     List<JpaInvoiceSumDto> sumPurchaseByKindAndItemTypeGroupByType(
-            List<InvoiceRegisterKind> purchaseKinds,
-            QuarterPeriod quarterPeriod);
+            List<InvoiceRegisterKind> purchaseKinds, QuarterPeriod period);
+    List<JpaInvoiceSumDto> sumPurchaseByKindAndItemTypeGroupByType(
+            List<InvoiceRegisterKind> purchaseKinds, MonthPeriod period);
 
-    List<JpaInvoiceSumDto> sumPurchaseByTypeAndPeriodGroupByType( QuarterPeriod quarterPeriodId);
+    List<JpaInvoiceSumDto> sumPurchaseByTypeAndPeriodGroupByType( QuarterPeriod period);
+    List<JpaInvoiceSumDto> sumPurchaseByTypeAndPeriodGroupByType( MonthPeriod period);
 
 }

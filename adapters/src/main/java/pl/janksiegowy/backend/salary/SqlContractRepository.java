@@ -2,7 +2,9 @@ package pl.janksiegowy.backend.salary;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import pl.janksiegowy.backend.salary.dto.ContractDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,6 +15,10 @@ public interface SqlContractRepository extends JpaRepository<Contract, UUID> {
 
 interface SqlContractQueryRepository extends ContractQueryRepository, Repository<Contract, UUID> {
 
+    @Override
+    @Query( "SELECT c FROM Contract c " +
+            "WHERE c.begin <= :date AND (c.end IS NULL OR c.end >= :date)")
+    List<ContractDto> findAllActive( LocalDate date);
 }
 
 @org.springframework.stereotype.Repository

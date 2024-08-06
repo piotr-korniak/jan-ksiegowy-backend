@@ -2,7 +2,19 @@ package pl.janksiegowy.backend.shared.pattern;
 
 public enum PatternId {
 
-    JPK_V7K_2_v1_0e {
+    VAT_7_17_1_0e {
+        @Override
+        public <T> T accept(PatternJpkVisitor<T> visitor) {
+            return null;
+        }
+
+        @Override
+        public <T> T accept(PatternCitVisitor<T> visitor) {
+            return null;
+        }
+    },
+
+    JPK_V7K_2_1_0e {
         @Override public <T> T accept( PatternJpkVisitor<T> visitor) {
             return visitor.visit_JPK_V7K_2_v1_0e();
         }

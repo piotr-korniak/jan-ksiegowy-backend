@@ -29,9 +29,9 @@ public class SalaryController {
     @PostMapping
     public ResponseEntity calculate( @PathVariable String periodId) {
         return periods.findById( periodId).map( period -> {
-            contracts.findBy( ContractDto.class)                   // fixme: major simplification
+            contracts.findAllActive( period.getBegin())
                     .forEach( contract -> salary.approval(
-                            salary.calculate( contract, period.getEnd())));
+                            salary.calculatePayslip( contract, period)));
 
             return ResponseEntity.ok(  ).build();
         })

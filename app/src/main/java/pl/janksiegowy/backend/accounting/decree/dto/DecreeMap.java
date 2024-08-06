@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class DecreeMap implements DecreeDto {
@@ -20,7 +21,7 @@ public class DecreeMap implements DecreeDto {
 
     public DecreeMap( DecreeDto decree) {
         this.decree= decree;
-        this.lines= new ArrayList<>();// decree.getLines());
+        this.lines= Optional.ofNullable( decree.getLines()).orElseGet( ArrayList::new);
     }
 
     public DecreeMap add( DecreeLineDto line) {

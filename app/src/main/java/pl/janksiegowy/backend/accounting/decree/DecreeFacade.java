@@ -23,6 +23,7 @@ public class DecreeFacade {
     public Decree book( Document document) {
         return save( decree.to( document));
     }
+
     public void book( PayableStatement statement) {
         save( decree.to( statement));
     }

@@ -7,9 +7,13 @@ import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.finances.document.Document;
 import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.settlement.PayslipSettlement;
+import pl.janksiegowy.backend.finances.settlement.SettlementKind;
+import pl.janksiegowy.backend.statement.Statement;
+import pl.janksiegowy.backend.statement.StatementLine;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -22,49 +26,38 @@ import java.util.UUID;
 public class Payslip extends Document {
     static final String TABLE_NAME= "PAYSLIPS";
 
-    @Column( table= TABLE_NAME)
-    private BigDecimal gross;
+    @Enumerated( EnumType.STRING)
+    private SettlementKind kind= SettlementKind.C;
 
-    @Column( table= TABLE_NAME)
-    private BigDecimal insuranceEmployee;
+    @JoinColumn( table= TABLE_NAME, updatable= false, insertable= false)
+    @ManyToOne
+    private Contract contract;
 
-    @Column( table= TABLE_NAME)
-    private BigDecimal insuranceEmployer;
+    @Column( table= TABLE_NAME, name= "CONTRACT_ID")
+    private UUID contractId;
 
-    @Column( table= TABLE_NAME)
-    private BigDecimal insuranceHealth;
+    @OneToMany( fetch= FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval= true)
+    @JoinColumn( name= "PAYSLIP_ID")
+    private List<PayslipLine> lines;
 
-    @Column( table= TABLE_NAME)
-    private BigDecimal taxAdvance;
-
-    public Payslip setPayable( BigDecimal payable) {
-        //settlement.setCt( payable );
-        return this;
-    }
-
-    public Payslip setDate( LocalDate date ) {
-        //settlement.setDate( date);
-        //settlement.setDue( date);
-        return this;
-    }
-
-    public Payslip setNumber( String number) {
-        //settlement.setNumber( number);
+    public Payslip setLines( List<PayslipLine> lines) {
+        this.lines= lines;
         return this;
     }
 
     @Override
     public <T> T accept( DocumentVisitor<T> visitor ) {
-        return null;
+        return visitor.visit( this);
     }
 
     @Override
     public Document setAmount( BigDecimal amount ) {
-        return null;
+        setCt( amount);
+        return this;
     }
 
     @Override
     public BigDecimal getAmount() {
-        return null;
+        return getCt();
     }
 }
