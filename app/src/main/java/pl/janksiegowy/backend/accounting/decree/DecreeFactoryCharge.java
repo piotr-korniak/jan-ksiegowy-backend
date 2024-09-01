@@ -35,7 +35,7 @@ public class DecreeFactoryCharge implements ChargeType.ChargeTypeVisitor<Templat
                     @Override public Optional<AccountDto> getAccount( TemplateLine line) {
                         return Optional.ofNullable(
                                 switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
-                                    case "P"-> createAccount( line, EntityType.C);
+                                    case "K"-> createAccount( line, EntityType.C);
                                     case "W"-> createAccount( line, EntityType.S);
                                     default -> AccountDto.create()
                                             .name( charge.getEntity().getName())

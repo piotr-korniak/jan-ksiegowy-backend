@@ -24,6 +24,12 @@ public class PeriodFacade {
                         .type( PeriodType.M).begin( date)));
     }
 
+    public AnnualPeriod findAnnualPeriodOrAdd( LocalDate date){
+        return periods.findAnnualByDate( date)
+                .orElseGet(()-> (AnnualPeriod) save( PeriodDto.create()
+                        .type( PeriodType.A).begin( date)));
+    }
+
     public Period save( PeriodDto source) {
 
         return periods.save( Optional.ofNullable( source.getId())

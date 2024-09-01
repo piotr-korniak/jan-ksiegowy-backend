@@ -69,10 +69,10 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
                     @Override public Optional<AccountDto> getAccount( TemplateLine line) {
                         return Optional.of(
                                 switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
-                                    case "P"-> AccountDto.create()
+                                    case "K"-> AccountDto.create()
                                             .name( invoice.getEntity().getName())
                                             .parent( line.getAccount().getNumber())
-                                            .number( line.getAccount().getNumber().replaceAll( "\\[P\\]",
+                                            .number( line.getAccount().getNumber().replaceAll( "\\[K\\]",
                                                     invoice.getEntity().getAccountNumber()));
                             default -> AccountDto.create()
                                     .name( line.getAccount().getName())

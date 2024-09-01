@@ -30,16 +30,20 @@ public interface DecreeLineQueryRepository {
         return sumValueByParentAccountNumberGroupByAccount( accountNumber, periodStart, periodEnd).getCt();
     }
 
+    default BigDecimal turnoverDt( Period period, String name) {
+        return turnoverDt( name, period.getBegin(), period.getEnd());
+    }
+
     default BigDecimal turnoverDt( String name, LocalDate periodStart, LocalDate periodEnd) {
         return sumValueByTypeAndAccountNameLike( DecreeDtLine.class, name, periodStart, periodEnd);
     }
 
-    default BigDecimal turnoverDt( Period period, String name) {
-        return sumValueByTypeAndAccountNameLike( DecreeDtLine.class, name, period.getBegin(), period.getEnd());
+    default BigDecimal turnoverCt( Period period, String name) {
+        return turnoverCt( name, period.getBegin(), period.getEnd());
     }
 
-    default BigDecimal turnoverCt( Period period, String name) {
-        return sumValueByTypeAndAccountNameLike( DecreeCtLine.class, name, period.getBegin(), period.getEnd());
+    default BigDecimal turnoverCt( String name, LocalDate periodStart, LocalDate periodEnd) {
+        return sumValueByTypeAndAccountNameLike( DecreeCtLine.class, name, periodStart, periodEnd);
     }
 
     BigDecimal sumValueByTypeAndAccountNameLike( Class<? extends DecreeLine> type, String name,

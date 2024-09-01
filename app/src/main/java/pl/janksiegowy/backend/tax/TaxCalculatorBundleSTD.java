@@ -9,7 +9,6 @@ import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
-import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.statement.*;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
 import pl.janksiegowy.backend.statement.dto.StatementLineDto;
@@ -26,18 +25,15 @@ import java.util.List;
 public class TaxCalculatorBundleSTD implements TaxCalculatorBundle {
 
     private final TaxService taxService;
-    private final FormatterService formatter;
 
     private final MetricRepository metrics;
     private final EntityQueryRepository entities;
     private final StatementRepository statements;
+
+    private final FormatterService formatters;
     private final NumeratorFacade numerator;
     private final LocalDate dateApplicable= LocalDate.of(1970, 1, 1);
-/*
-    private void save( MonthPeriod period, StatementDto source) {
-        facade.approve( facade.save( period, source));
-    }
-*/
+
     @Override public List<StatementDto> calculateTaxes(MonthPeriod period) {
         System.err.println( "Tax calculation STD");
 
@@ -49,18 +45,15 @@ public class TaxCalculatorBundleSTD implements TaxCalculatorBundle {
                     if( metric.isVatMonthly().isVat()) {
 
                         var items= taxService.calculate( period, TaxType.V);
-                        formatter.format( period, TaxType.V, items);
 
-
-                        var version= PatternId.VAT_7_17_1_0e;
-                        taxes.add( StatementMap.create(
-                                statements.findFirstByPatternLikeAndPeriodOrderByNoDesc( version.toString(), period)
+                        taxes.add( addLine( addLine( addLine( addLine( addLine( addLine( StatementMap.create(
+                                statements.findFirstByPatternLikeAndPeriodOrderByNoDesc( "VAT%", period)
                                 .filter( statement-> StatementStatus.S != statement.getStatus())
                                 .map( statement-> StatementDto.create()
                                         .statementId( statement.getStatementId())
                                         .no( statement.getNo()))
                                 .orElseGet(()-> StatementDto.create()
-                                        .no( Integer.valueOf(  numerator.
+                                        .no( Integer.parseInt( numerator.
                                                 increment( NumeratorCode.ST, "VAT", period.getEnd()))))
                                     .type( StatementType.V)    // VAT
                                     .kind( StatementKind.S)    // Settlement
@@ -68,28 +61,17 @@ public class TaxCalculatorBundleSTD implements TaxCalculatorBundle {
                                             "M"+ String.format( "%02d", period.getEnd().getMonthValue()))
                                     .date( Util.min( LocalDate.now(), period.getEnd().plusDays( 25)))
                                     .due( period.getEnd().plusDays( 25 ))
-                                    .patternId( version)
+                                    .patternId( formatters.getFormatterVersion( period, TaxType.VM))
                                     .period( period)
                                     .liability( items.getVariable( "Kwota_Zobowiazania", BigDecimal.ZERO))
                                     .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode())
-                                        .orElseThrow()))
-
-                                .addLine( StatementLineDto.create()
-                                        .itemCode( StatementItemCode.VAT_NZ)
-                                        .amount( items.getVariable( "Razem_Nalezny", BigDecimal.ZERO)))
-                                .addLine( StatementLineDto.create()
-                                        .itemCode( StatementItemCode.VAT_NC)
-                                        .amount( items.getVariable( "Razem_Naliczony", BigDecimal.ZERO)))
-                                .addLine( StatementLineDto.create()
-                                        .itemCode( StatementItemCode.KOR_NZ)
-                                        .amount( items.getVariable( "Korekta_Naleznego", BigDecimal.ZERO)))
-                                .addLine( StatementLineDto.create()
-                                        .itemCode( StatementItemCode.KOR_NC)
-                                        .amount( items.getVariable( "Korekta_Naliczonego", BigDecimal.ZERO)))
-                                .addLine( StatementLineDto.create()
-                                        .itemCode( StatementItemCode.STORNO)
-                                        .amount( items.getVariable( "Kwota_Przeniesienia", BigDecimal.ZERO))));
-
+                                        .orElseThrow())),
+                                StatementItemCode.VAT_NZ, items.getVariable( "Razem_Nalezny")),
+                                StatementItemCode.VAT_NC, items.getVariable( "Razem_Naliczony")),
+                                StatementItemCode.KOR_NZ, items.getVariable( "Korekta_Naleznego")),
+                                StatementItemCode.KOR_NC, items.getVariable( "Korekta_Naliczonego")),
+                                StatementItemCode.DO_PRZ, items.getVariable( "Do_Przeniesienia")),
+                                StatementItemCode.Z_PRZ, items.getVariable( "Z_Przeniesienia")));
                     }
 
                     System.err.println( "Czy VAT kwartalny: "+ metric.isVatQuarterly());
@@ -103,5 +85,11 @@ public class TaxCalculatorBundleSTD implements TaxCalculatorBundle {
     @Override
     public LocalDate getDateApplicable() {
         return dateApplicable;
+    }
+
+    private StatementMap addLine( StatementMap statementMap, StatementItemCode itemCode, BigDecimal amount) {
+        if( amount!=null && amount.signum()!= 0)
+            statementMap.addLine( StatementLineDto.create().itemCode( itemCode).amount( amount));
+        return statementMap;
     }
 }

@@ -11,6 +11,8 @@ public enum StatementItemCode {
     /** Korekta naliczonego */
     KOR_NC,
     /** Kwota do przeniesienia */
-    STORNO;
+    DO_PRZ,
+    /** Kwota z przeniesienia */
+    Z_PRZ;
 
 }

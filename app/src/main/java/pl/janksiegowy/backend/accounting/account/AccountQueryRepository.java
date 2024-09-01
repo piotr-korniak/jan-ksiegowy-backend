@@ -11,4 +11,10 @@ public interface AccountQueryRepository {
 
     Optional<AccountDto> findByNumber( String number);
     List<AccountDto> findByParentId( UUID parentId);
+
+    default List<AccountDto> findAllAnalyticalBlanceAccountsByType() {
+        return findAllAnalyticalAccountsByType( BalanceAccount.class);
+    }
+
+    List<AccountDto> findAllAnalyticalAccountsByType( Class<? extends Account> type);
 }

@@ -79,13 +79,13 @@ public class MigrationConfiguration {
     protected List<AccountDto> getInitialAccount() {
         return List.of(
             AccountDto.create()
-                .type( AccountType.B).number( "100-[K]").name( "Kasa"),
+                .type( AccountType.B).number( "100-[S]").name( "Kasa"),
             AccountDto.create()
                 .type( AccountType.B).number( "130-[B]").name( "Bank"),
             AccountDto.create()
-                .type( AccountType.B).number( "201-[P]").name( "Rozrachunki z Dostawcami"),
+                .type( AccountType.B).number( "201-[K]").name( "Rozrachunki z Dostawcami"),
             AccountDto.create()
-                .type( AccountType.B).number( "202-[P]").name( "Rozrachunki z Odbiorcami"),
+                .type( AccountType.B).number( "202-[K]").name( "Rozrachunki z Odbiorcami"),
             AccountDto.create()
                 .type( AccountType.P).number( "703").name( "Przychody ze sprzedaży usług"),
             AccountDto.create()
@@ -151,7 +151,12 @@ public class MigrationConfiguration {
                     .add( TemplateLineDto.create()
                             .page( AccountPage.D)
                             .function( PaymentFunction.SplataZobowiazania )
-                            .account( AccountDto.create().number( "202-[P]"))
+                            .account( AccountDto.create().number( "202-[K]"))
+                            .description( "zapłata zobowiązania"))
+                    .add( TemplateLineDto.create()
+                            .page( AccountPage.D)
+                            .function( PaymentFunction.SplataZobowiazania )
+                            .account( AccountDto.create().number( "234-[P]"))
                             .description( "zapłata zobowiązania"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.D)
@@ -162,7 +167,7 @@ public class MigrationConfiguration {
                             .page( AccountPage.C)
                             .function( PaymentFunction.SplataZobowiazania )
 //                            .registerType( PaymentRegisterType.C)
-                            .account( AccountDto.create().number( "100-[K]"))
+                            .account( AccountDto.create().number( "100-[S]"))
                             .description( "wypłata z kasy"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
@@ -188,7 +193,7 @@ public class MigrationConfiguration {
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
                             .function( PaymentFunction.WplataNaleznosci)
-                            .account( AccountDto.create().number( "201-[P]"))
+                            .account( AccountDto.create().number( "201-[K]"))
                             .description( "wpłata należności"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
@@ -199,7 +204,7 @@ public class MigrationConfiguration {
                             .page( AccountPage.D)
                             .function( PaymentFunction.WplataNaleznosci)
                             .registerType( PaymentRegisterType.C)
-                            .account( AccountDto.create().number( "100-[K]"))
+                            .account( AccountDto.create().number( "100-[S]"))
                             .description( "wpłata do kasy"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.D)
@@ -215,7 +220,7 @@ public class MigrationConfiguration {
                     .add( TemplateLineDto.create()
                             .page( AccountPage.D)
                             .function( InvoiceFunction.KwotaBurtto)
-                            .account( AccountDto.create().number( "201-[P]"))
+                            .account( AccountDto.create().number( "201-[K]"))
                             .description( "brutto faktury sprzedaży"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
@@ -235,7 +240,7 @@ public class MigrationConfiguration {
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
                             .function( InvoiceFunction.KwotaBurtto)
-                            .account( AccountDto.create().number( "202-[P]"))
+                            .account( AccountDto.create().number( "202-[K]"))
                             .description( "brutto faktury zakupu"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.D)
@@ -381,7 +386,7 @@ public class MigrationConfiguration {
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
                             .function( SettlementFunction.WartoscZobowiazania )
-                            .account( AccountDto.create().number( "202-[P]"))
+                            .account( AccountDto.create().number( "202-[K]"))
                             .description( "wartość noty otrzymanej")),
                 new TemplateMap( TemplateDto.create().code( "CF")
                         .name( "Opłata, podatek")
@@ -396,7 +401,7 @@ public class MigrationConfiguration {
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)
                             .function( SettlementFunction.WartoscZobowiazania )
-                            .account( AccountDto.create().number( "202-[P]"))
+                            .account( AccountDto.create().number( "202-[K]"))
                             .description( "opłata, podatek"))
                     .add( TemplateLineDto.create()
                             .page( AccountPage.C)

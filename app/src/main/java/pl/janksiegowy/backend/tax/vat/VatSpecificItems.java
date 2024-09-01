@@ -5,15 +5,15 @@ import org.apache.logging.log4j.util.TriConsumer;
 import org.springframework.stereotype.Component;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineQueryRepository;
 import pl.janksiegowy.backend.invoice_line.dto.JpaInvoiceSumDto;
-import pl.janksiegowy.backend.period.Period;
-import pl.janksiegowy.backend.period.AnnualPeriod;
-import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.metric.MetricRepository;
+import pl.janksiegowy.backend.period.*;
 import pl.janksiegowy.backend.period.Period.PeriodVisitor;
-import pl.janksiegowy.backend.period.PeriodType.PeriodTypeVisitor;
-import pl.janksiegowy.backend.period.QuarterPeriod;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
+import pl.janksiegowy.backend.statement.StatementItemCode;
+import pl.janksiegowy.backend.statement.StatementLine;
+import pl.janksiegowy.backend.statement.StatementRepository;
 import pl.janksiegowy.backend.tax.SpecificItems;
 import pl.janksiegowy.backend.tax.TaxType;
 
@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -68,6 +69,9 @@ public class VatSpecificItems implements SpecificItems<Interpreter> {
     };
 
     private final InvoiceLineQueryRepository lines;
+    private final MetricRepository metrics;
+    private final PeriodRepository periods;
+    private final StatementRepository statements;
     private final Map<TaxRate, TriConsumer<Interpreter, BigDecimal, BigDecimal>>
             salesDomesticFunctions= Map.of(
             TaxRate.S1, (account, base, vat)-> {
@@ -100,6 +104,29 @@ public class VatSpecificItems implements SpecificItems<Interpreter> {
     public Interpreter calculate( Period period) {
         final Interpreter result= (new Interpreter()).setVariable("JEDEN", BigDecimal.ONE);
 
+        metrics.findByDate( period.getBegin().minusDays( 1)).ifPresent( metric-> {
+            if( metric.isVatQuarterly()){
+
+            }
+            //if( metric.isVatMonthly()== VAT.Yes){
+
+                periods.findMonthByDate( period.getBegin().minusDays(1))
+                        .ifPresent( monthPeriod -> {
+                            statements.findFirstByPatternLikeAndPeriodOrderByNoDesc( "VAT%", monthPeriod)
+                                    .ifPresent( statement -> {
+                                        result.add( "Z_Przeniesienia",
+                                        statement.getLines().stream()
+                                                .collect( Collectors.toMap( StatementLine::getItemCode, StatementLine::getAmount))
+                                                .getOrDefault( StatementItemCode.DO_PRZ, BigDecimal.ZERO));
+                                    });
+                        });
+            //}
+        });
+
+
+        System.err.println( "Pokaż storno: "+ result.getVariable( "Z_Przeniesienia", BigDecimal.TEN));
+        result.setVariable( "Z_Przeniesienia", result.getVariable( "Z_Przeniesienia", BigDecimal.ZERO));
+
         // Domestic sales divided by tax rate
         period.accept( domesticSales)
                 .forEach( sum-> salesDomesticFunctions.get( sum.getTaxRate())
@@ -127,7 +154,7 @@ public class VatSpecificItems implements SpecificItems<Interpreter> {
             result.interpret("Import_Uslug_Netto", "[Import_Uslug_Netto]@ [JEDEN]");
 
         result.sum("Razem", "Sprzedaz_Netto_S1", "Import_Uslug_Netto");
-        result.sum("Razem_Nalezny", "Sprzedaz_Vat_S1", "Import_Uslug_Vat");
+        result.sum("Razem_Nalezny",  "Sprzedaz_Vat_S1", "Import_Uslug_Vat");
 
         // Purchase
         period.accept( purchase)
@@ -160,8 +187,9 @@ public class VatSpecificItems implements SpecificItems<Interpreter> {
 
         result.setVariable( "Kwota_Zobowiazania", result.getVariable( "Podatek"));
         if( result.getVariable( "Podatek").signum()<0)
-            result.setVariable( "Kwota_Przeniesienia", result.getVariable( "Podatek").abs());
+            result.setVariable( "Do_Przeniesienia", result.getVariable( "Podatek").abs());
 
         return result;
     }
+
 }

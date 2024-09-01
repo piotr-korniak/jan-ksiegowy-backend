@@ -8,7 +8,6 @@ import pl.janksiegowy.backend.metric.Metric;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.Period;
-import pl.janksiegowy.backend.period.tax.VAT;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
@@ -18,7 +17,6 @@ import pl.janksiegowy.backend.statement.dto.StatementDto;
 import pl.janksiegowy.backend.statement.dto.StatementLineDto;
 import pl.janksiegowy.backend.statement.dto.StatementMap;
 import pl.janksiegowy.backend.statement.formatter.FormatterService;
-import pl.janksiegowy.backend.statement.formatter.TaxDeclarationFormatter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -52,8 +50,7 @@ public class TaxCalculatorBundleV7 implements TaxCalculatorBundle {
                 .date( Util.min( LocalDate.now(), period.getEnd().plusDays( 25)))
                 .due( period.getEnd().plusDays( 25 ))
                 .period( period)
-                .type( StatementType.V)    // VAT
-                .kind( StatementKind.S);   // Settlement
+                .type( StatementType.V);    // VAT
     }
 
     private StatementMap getVatStatementMap( StatementDto statementDto, Interpreter result) {
@@ -71,7 +68,7 @@ public class TaxCalculatorBundleV7 implements TaxCalculatorBundle {
                         .itemCode( StatementItemCode.KOR_NC)
                         .amount( result.getVariable( "Korekta_Naliczonego", BigDecimal.ZERO)))
                 .addLine( StatementLineDto.create()
-                        .itemCode( StatementItemCode.STORNO)
+                        .itemCode( StatementItemCode.DO_PRZ)
                         .amount( result.getVariable( "Kwota_Przeniesienia", BigDecimal.ZERO)));
     }
 
@@ -88,6 +85,7 @@ public class TaxCalculatorBundleV7 implements TaxCalculatorBundle {
 
                 if( period.getEnd().getMonthValue()% 3 == 0) {
                     var statementDto= getVatStatement( metric, period.getParent())
+                            .kind( StatementKind.S)   // Settlement
                             .number( "VAT-7K "+ period.getEnd().getYear()+ "K"+
                                     (( period.getEnd().getMonth().getValue()- 1) / 3 + 1));
                     var result=taxService.calculate( period.getParent(), TaxType.V)
@@ -97,7 +95,8 @@ public class TaxCalculatorBundleV7 implements TaxCalculatorBundle {
                                     .xml( formatters.format( period, TaxType.VQ, result))
                                     .patternId( formatters.getFormatterVersion( period, TaxType.VQ)), result));
                 } else {
-                    var statementDto= getVatStatement( metric, period);
+                    var statementDto= getVatStatement( metric, period)
+                            .kind( StatementKind.R);   // No Settlement;
                     toPersist.add( statementDto.xml( formatters.format( period, TaxType.VQ,
                             new Interpreter().setVariable( "POWOD", new BigDecimal( statementDto.getNo()))))
                             .patternId( formatters.getFormatterVersion( period, TaxType.VQ)));

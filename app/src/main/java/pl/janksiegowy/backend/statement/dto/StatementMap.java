@@ -101,4 +101,10 @@ public class StatementMap implements StatementDto {
         lines.add( line);
         return this;
     }
+
+    public StatementMap addLineIfNotZero( StatementLineDto line) {
+        if( line.getAmount().signum()!=0)
+            addLine( line);
+        return this;
+    }
 }

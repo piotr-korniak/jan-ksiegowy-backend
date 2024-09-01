@@ -28,7 +28,8 @@ public enum EntityType {
             return visitor.visitShareholders();
         }
     },
-    E { // Employee
+    /** Employee */
+    E {
         @Override public <T> T accept( EntityTypeVisitor<T> visitor) {
             return visitor.visitEmployee();
         }

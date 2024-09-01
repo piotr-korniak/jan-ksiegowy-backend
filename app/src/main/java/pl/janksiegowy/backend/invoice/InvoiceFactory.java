@@ -74,13 +74,15 @@ public class InvoiceFactory {
                         .ifPresent( entity-> invoice.setEntity( entity)));
 
         Optional.ofNullable( source.getLineItems())
-                .ifPresent( invoiceLines->update( invoiceLines, invoice));
+                .ifPresent( invoiceLines->update( invoiceLines, invoice, source.getInvoiceDate()));
 
         if( source.getPaymentMetod()!= null)
             invoice.setPaymentMetod( source.getPaymentMetod());
 
         //decrees.findById( invoice.getDocumentId())
         //        .ifPresent( invoice::setDecree);
+
+        System.err.println( "Data faktury: "+ source.getInvoiceDate());
 
         return ((Invoice)invoice
                 .setMetric( metrics.findByDate( source.getInvoiceDate()).orElseThrow())
@@ -96,10 +98,10 @@ public class InvoiceFactory {
         ).setStatus( invoice.isValidated()? InvoiceStatus.V: InvoiceStatus.N);
     }
 
-    public Invoice update( List<InvoiceLineDto> lines, Invoice invoice) {
+    public Invoice update( List<InvoiceLineDto> lines, Invoice invoice, LocalDate invoiceDate) {
 
         return invoice.setLineItems( lines.stream().map( invoiceLineDto->
-                line.from( invoiceLineDto, Optional.ofNullable( invoice.getInvoiceDate()).orElse( LocalDate.now()))
+                line.from( invoiceLineDto, Optional.ofNullable( invoiceDate).orElse( LocalDate.now()))
                         .setInvoice( invoice))
                 .collect( Collectors.toList()));
     }

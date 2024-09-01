@@ -24,7 +24,8 @@ public class TaxController {
 
         periods.findMonthById( periodId)
                 .ifPresent( monthPeriod-> taxCalculatorManager.calculate( monthPeriod)
-                        .forEach( statementDto-> statementFacade.save( monthPeriod, statementDto)));
+                        .forEach( statementDto->
+                                statementFacade.approve( statementFacade.save( monthPeriod, statementDto))));
 
         return ResponseEntity.ok( "Calculate All Tax!");
     }

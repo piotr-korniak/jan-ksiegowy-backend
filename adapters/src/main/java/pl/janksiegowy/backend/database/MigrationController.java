@@ -83,6 +83,9 @@ public class MigrationController extends MigrationConfiguration {
                 .begin( LocalDate.of( 2017, 1, 1))
                 .end( LocalDate.of( 2017, 12, 31)),
             PeriodDto.create().type( PeriodType.A)
+                    .begin( LocalDate.of( 2018, 1, 1))
+                    .end( LocalDate.of( 2018, 12, 31)),
+            PeriodDto.create().type( PeriodType.A)
                     .begin( LocalDate.of( 2021, 1, 1))
                     .end( LocalDate.of( 2021, 12, 31)),
             PeriodDto.create().type( PeriodType.A)

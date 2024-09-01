@@ -66,10 +66,11 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType> {
                     @Override public Optional<AccountDto> getAccount( TemplateLine line) {
                         return Optional.ofNullable(
                             switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
-                                case "P"-> createAccount( line, EntityType.C);
+                                case "P"-> createAccount( line, EntityType.E);
+                                case "K"-> createAccount( line, EntityType.C);
                                 case "W"-> createAccount( line, EntityType.S);
                                 case "B"-> createAccount( line, PaymentRegisterType.B);
-                                case "K"-> createAccount( line, PaymentRegisterType.C);
+                                case "S"-> createAccount( line, PaymentRegisterType.C);
                                 default -> AccountDto.create()
                                         .name( payment.getEntity().getName())
                                         .number( line.getAccount().getNumber());
