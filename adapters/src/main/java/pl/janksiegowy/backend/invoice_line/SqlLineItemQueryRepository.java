@@ -11,6 +11,7 @@ import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.QuarterPeriod;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,6 +69,39 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             @Param( "salesKinds") List<InvoiceRegisterKind> salesKinds,
             @Param( "purchaseKinds") List<InvoiceRegisterKind> purchaseKinds,
             String period);
+
+    @Query( value= "SELECT L.invoice.documentId AS invoiceId, " +
+            "L.invoice.number AS invoiceNumber, " +
+            "L.invoice.entity.name AS entityName, " +
+            "L.invoice.entity.taxNumber AS taxNumber, " +
+            "L.invoice.entity.country AS entityCountry, " +
+            "L.invoice.invoiceDate AS invoiceDate, " +
+            "L.invoice.issueDate AS issueDate, " +
+            "CASE WHEN TYPE( L.invoice) = SalesInvoice " +
+            "   THEN TREAT( L.invoice AS SalesInvoice).register.kind ELSE NULL " +
+            "END AS salesKind, " +
+            "CASE WHEN TYPE( L.invoice)= PurchaseInvoice " +
+            "   THEN TREAT( L.invoice AS PurchaseInvoice).register.kind ELSE NULL " +
+            "END AS purchaseKind, " +
+            "L.item.type AS itemType, " +
+            "L.taxRate AS taxRate, " +
+            "SUM( L.base) AS base, SUM( L.vat) AS vat " +
+            "FROM InvoiceLine L " +
+            "WHERE vat!=0 AND L.invoice.invoicePeriodId= :period AND " +
+            "LEAST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate AND " + // dodanie warunku na zakres dat
+            "((TYPE( L.invoice) = SalesInvoice AND " +
+            "  TREAT( L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR" +
+            " (TYPE( L.invoice) = PurchaseInvoice AND " +
+            "  TREAT(L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds)) " +
+            "GROUP BY invoiceId, invoiceNumber, entityName, taxNumber, " +
+            "entityCountry, invoiceDate, issueDate, salesKind, purchaseKind, " +
+            "taxRate, itemType " +
+            "ORDER BY issueDate ASC, invoiceDate ASC")
+    List<JpaInvoiceSumDto> findByKindAndPeriodGroupByRate(
+            @Param( "salesKinds") List<InvoiceRegisterKind> salesKinds,
+            @Param( "purchaseKinds") List<InvoiceRegisterKind> purchaseKinds,
+            @Param( "startDate") LocalDate startDate,
+            @Param( "endDate") LocalDate endDate);
 
     @Override
     @Query( value= "SELECT L.taxRate AS taxRate, " +

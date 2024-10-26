@@ -59,6 +59,11 @@ public class DecreeFactoryStatement implements StatementTypeVisitor<TemplateType
                                     @Override public BigDecimal visitZobowiazanie() {
                                         return statement.getLiability();
                                     }
+
+                                    @Override
+                                    public BigDecimal visitZaliczkaCIT() {
+                                        return statement.getLiability();
+                                    }
                                 });
                     }
                     @Override public Optional<AccountDto> getAccount( TemplateLine line) {

@@ -4,7 +4,7 @@ public enum AccountingRegisterType {
     /**
      * All Account Registers
      */
-    A;
+    R;
 
 
 }

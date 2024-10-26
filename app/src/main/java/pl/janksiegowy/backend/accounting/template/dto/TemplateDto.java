@@ -2,7 +2,10 @@ package pl.janksiegowy.backend.accounting.template.dto;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.accounting.account.AccountType;
 import pl.janksiegowy.backend.accounting.template.TemplateType;
+import pl.janksiegowy.backend.entity.EntityType;
+import pl.janksiegowy.backend.entity.dto.EntityDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +24,8 @@ public interface TemplateDto {
     List<TemplateLineDto> getLines();
     String getName();
 
+    EntityType getEntityType();
+
     @Setter
     @Accessors( fluent= true, chain= true)
     class Proxy implements TemplateDto {
@@ -29,6 +34,7 @@ public interface TemplateDto {
         private LocalDate date;
         private String code;
         private TemplateType documentType;
+        private EntityType entityType;
         private List<TemplateLineDto> items;
         private String registerCode;
         private String name;
@@ -54,6 +60,10 @@ public interface TemplateDto {
         @Override public String getName() {
             return name;
         }
+        @Override public EntityType getEntityType() {
+            return entityType;
+        }
+
 
     }
 

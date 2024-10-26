@@ -3,11 +3,8 @@ package pl.janksiegowy.backend.tax;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
-import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.MonthPeriod;
-import pl.janksiegowy.backend.shared.Util;
-import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.statement.*;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
@@ -25,6 +22,7 @@ import java.util.List;
 public class TaxCalculatorBundleSTD implements TaxCalculatorBundle {
 
     private final TaxService taxService;
+    private final StatementService statementService;
 
     private final MetricRepository metrics;
     private final EntityQueryRepository entities;
@@ -44,8 +42,9 @@ public class TaxCalculatorBundleSTD implements TaxCalculatorBundle {
                     System.err.println( "Czy VAT miesięczny: "+ metric.isVatMonthly());
                     if( metric.isVatMonthly().isVat()) {
 
-                        var items= taxService.calculate( period, TaxType.V);
-
+                        //var items= taxService.calculate( period, TaxType.V);
+                        taxes.add( statementService.build( metric, period, TaxType.VM));
+/*
                         taxes.add( addLine( addLine( addLine( addLine( addLine( addLine( StatementMap.create(
                                 statements.findFirstByPatternLikeAndPeriodOrderByNoDesc( "VAT%", period)
                                 .filter( statement-> StatementStatus.S != statement.getStatus())
@@ -72,6 +71,8 @@ public class TaxCalculatorBundleSTD implements TaxCalculatorBundle {
                                 StatementItemCode.KOR_NC, items.getVariable( "Korekta_Naliczonego")),
                                 StatementItemCode.DO_PRZ, items.getVariable( "Do_Przeniesienia")),
                                 StatementItemCode.Z_PRZ, items.getVariable( "Z_Przeniesienia")));
+
+ */
                     }
 
                     System.err.println( "Czy VAT kwartalny: "+ metric.isVatQuarterly());

@@ -12,6 +12,9 @@ import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandEntityAccount;
 
 @AllArgsConstructor
 public class DecreeFactoryCharge implements ChargeType.ChargeTypeVisitor<TemplateType> {
@@ -33,24 +36,17 @@ public class DecreeFactoryCharge implements ChargeType.ChargeTypeVisitor<Templat
                     }
 
                     @Override public Optional<AccountDto> getAccount( TemplateLine line) {
-                        return Optional.ofNullable(
-                                switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
-                                    case "K"-> createAccount( line, EntityType.C);
-                                    case "W"-> createAccount( line, EntityType.S);
-                                    default -> AccountDto.create()
-                                            .name( charge.getEntity().getName())
-                                            .number( line.getAccount().getNumber());
-                                });
+                        var account= line.getAccount();
+                        return Stream.of( account.getNumber())
+                                .filter(k-> k.matches(".*\\[[CRS]].*"))
+                                .findFirst()
+                                .map(s-> expandEntityAccount( account.getNumber(), charge.getEntity()))
+                                .orElseGet(()-> Optional.of( AccountDto.create()
+                                        .name( account.getName())
+                                        .number( account.getNumber() // Opcjonalnie, jeśli nic nie pasuje
+                                        )));
                     }
 
-                    private AccountDto createAccount( TemplateLine line, EntityType type) {
-                        return type== charge.getEntity().getType()?
-                                AccountDto.create()
-                                        .name( charge.getEntity().getName())
-                                        .parent( line.getAccount().getNumber())
-                                        .number( line.getAccount().getNumber().replaceAll( "\\[[A-Z]\\]+",
-                                                charge.getEntity().getAccountNumber())): null;
-                    }
                 }.build( template, charge.getIssueDate(), charge.getNumber(), charge.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( charge.getDecree())
                         .map( decree-> decreeMap.setNumer( decreeMap.getNumber()))

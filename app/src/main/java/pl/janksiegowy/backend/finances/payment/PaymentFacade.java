@@ -34,6 +34,7 @@ public class PaymentFacade {
     }
 
     public Payment save( PaymentDto source ) {
+        System.err.println( "Utrwalamy: "+ source.getNumber());
         return payments.save( payment.from( source));
     }
 

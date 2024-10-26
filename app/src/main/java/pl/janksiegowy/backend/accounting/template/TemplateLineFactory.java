@@ -15,10 +15,11 @@ public class TemplateLineFactory {
 
         return accounts.findByNumber( source.getAccount().getNumber())
                 .map( account-> Optional.ofNullable( source.getId())
-                    .map( id-> line.setId( id))
+                    .map( line::setId)
                     .orElseGet(()-> line)
                         .setPage( source.getPage())
                         .setAccount( account)
+                        .setSettlementType( source.getSettlementType())
                         .setDescription( source.getDescription()))
                 .orElseThrow();
     }

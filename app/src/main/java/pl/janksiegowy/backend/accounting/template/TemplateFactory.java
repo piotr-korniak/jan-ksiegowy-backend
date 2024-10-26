@@ -56,7 +56,8 @@ public class TemplateFactory {
                                     StatementFunction.valueOf( templateLineDto.getFunction()));
                         }
                         @Override public TemplateLine visitCitStatement() {
-                            return null;
+                            return new StatementTemplateLine().setFunction(
+                                    StatementFunction.valueOf( templateLineDto.getFunction()));
                         }
                         @Override public TemplateLine visitPitStatement() {
                             return null;
@@ -96,12 +97,16 @@ public class TemplateFactory {
                     })).setTemplate( template))
                 .collect( Collectors.toList())));
 
+        System.out.println( "Znaleziony: "+ source.getRegisterCode());
+        System.out.println( "Znaleziony: "+ registers.findByCode( source.getRegisterCode()).get().getCode());
+
         return registers.findByCode( source.getRegisterCode())
                 .map( register -> template.setRegister( register))
                 .orElseThrow()
                 .setDocumentType( source.getDocumentType())
                 .setCode( source.getCode())
-                .setName( source.getName());
+                .setName( source.getName())
+                .setEntityType( source.getEntityType());
     }
 
 

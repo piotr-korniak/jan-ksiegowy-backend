@@ -7,7 +7,9 @@ import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @DiscriminatorValue( "E")
@@ -16,8 +18,8 @@ public class PaymentExpense extends Payment {
     @Enumerated( EnumType.STRING)
     private SettlementKind kind= SettlementKind.D;
 
-    @OneToMany( mappedBy = "receivableId", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
-    private List<Clearing> clearings= new ArrayList<>();
+    @OneToMany( mappedBy = "receivable", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+    private Set<Clearing> clearings= new HashSet<>();
 
     @Override public Document setAmount( BigDecimal amount) {
         this.dt = amount;
@@ -28,11 +30,16 @@ public class PaymentExpense extends Payment {
         return this.dt;
     }
 
-    @Override public List<Clearing> getClearings() {
+    @Override
+    public SettlementKind getSettlementKind() {
+        return kind;
+    }
+
+    @Override public Set<Clearing> getClearings() {
         return clearings;
     }
 
-    @Override public Payment setClearings( List<Clearing> clearings) {
+    @Override public Payment setClearings( Set<Clearing> clearings) {
         this.clearings= clearings;
         this.ct= clearings.stream()
                 .map( Clearing::getAmount)

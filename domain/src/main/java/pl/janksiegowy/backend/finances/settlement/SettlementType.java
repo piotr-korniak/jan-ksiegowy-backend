@@ -50,7 +50,7 @@ public enum SettlementType {
     }},
 
     /** DRA Statement */
-    D { @Override public <T> T accept( SettlementTypeVisitor<T> visitor ) {
+    Z { @Override public <T> T accept( SettlementTypeVisitor<T> visitor ) {
         return visitor.visitDraStatement();
     }},
 
@@ -68,6 +68,17 @@ public enum SettlementType {
     /** Fee Charge */
     F { @Override public <T> T accept( SettlementTypeVisitor<T> visitor) {
             return visitor.visitFeeCharge();
+    }},
+
+
+    /** Acquisition of Shares */
+    A {@Override public <T> T accept( SettlementTypeVisitor<T> visitor) {
+        return visitor.visitAcquisition();
+    }},
+
+    /** Disposal of Shares */
+    D {@Override public <T> T accept( SettlementTypeVisitor<T> visitor) {
+        return visitor.visitDisposal();
     }};
 
     public abstract <T> T accept( SettlementTypeVisitor<T> visitor);
@@ -83,7 +94,6 @@ public enum SettlementType {
         T visitReceiveNote();
         T visitIssuedNote();
 
-
         T visitVatStatement();
         T visitCitStatement();
         T visitPitStatement();
@@ -93,6 +103,9 @@ public enum SettlementType {
 
         T visitLevyCharge();
         T visitFeeCharge();
+
+        T visitAcquisition();
+        T visitDisposal();
 
     }
 }

@@ -35,8 +35,12 @@ public enum StatementFunction {
         @Override public <T> T accept( StatementFunctionVisitor<T> visitor ) {
             return visitor.visitZobowiazanie();
         }
-    }
-    ;
+    },
+    ZaliczkaCIT {
+        @Override public <T> T accept( StatementFunctionVisitor<T> visitor) {
+            return visitor.visitZaliczkaCIT();
+        }
+    };
 
     public abstract <T> T accept( StatementFunctionVisitor<T> visitor);
 
@@ -48,5 +52,6 @@ public enum StatementFunction {
         T visitKorektaNaliczonegoPlus();
         T visitKorektaNaliczonegoMinus();
         T visitZobowiazanie();
+        T visitZaliczkaCIT();
     }
 }

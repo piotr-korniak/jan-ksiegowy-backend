@@ -65,8 +65,8 @@ interface SqlSettlementQueryRepository extends SettlementQueryRepository, Reposi
             "      e.name AS entityName, e.type AS entityType "+
             "   FROM Settlement s "+
             "   LEFT JOIN Clearing c " +
-            "   ON ((s.kind= 'D' AND s.settlementId= c.receivableId ) " +
-            "   OR (s.kind = 'C' AND s.settlementId= c.payableId)) AND c.date <= :date " +
+            "   ON ((s.kind= 'D' AND s= c.receivable ) " +
+            "   OR (s.kind = 'C' AND s= c.payable)) AND c.date <= :date " +
             "   JOIN s.entity e "+
             "   WHERE e.type= :entityType AND e.accountNumber= :accountNumber AND s.date <= :date " +
             "   GROUP BY s.type, s.number, s.kind, s.date, s.due, e.accountNumber, e.name, e.type, s.dt, s.ct "+
@@ -90,8 +90,8 @@ interface SqlSettlementQueryRepository extends SettlementQueryRepository, Reposi
             "      e.name AS entityName, e.type AS entityType " +
             "   FROM Settlement s "+
             "   LEFT JOIN Clearing c " +
-            "   ON ((s.kind= 'D' AND s.settlementId= c.receivableId ) " +
-            "   OR (s.kind = 'C' AND s.settlementId= c.payableId)) AND c.date <= :date " +
+            "   ON ((s.kind= 'D' AND s= c.receivable) " +
+            "   OR (s.kind = 'C' AND s= c.payable)) AND c.date <= :date " +
             "   JOIN s.entity e "+
             "   WHERE s.date <= :date " +
             "   GROUP BY s.type, s.number, s.kind, s.date, s.due, e.accountNumber, e.name, e.type, s.dt, s.ct "+

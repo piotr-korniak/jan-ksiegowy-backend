@@ -11,7 +11,7 @@ import java.util.List;
 @DiscriminatorValue( "C")
 public class Payable extends Settlement {
 
-    @OneToMany( mappedBy = "payableId", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+    @OneToMany( mappedBy = "payable", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
     private List<Clearing> clearings= new ArrayList<>();// receivable;
 
     @Override

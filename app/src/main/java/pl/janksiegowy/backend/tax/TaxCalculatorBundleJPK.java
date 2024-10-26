@@ -1,25 +1,67 @@
 package pl.janksiegowy.backend.tax;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.janksiegowy.backend.entity.EntityQueryRepository;
+import pl.janksiegowy.backend.entity.EntityType;
+import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.period.tax.CIT;
+import pl.janksiegowy.backend.shared.Util;
+import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
+import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
+import pl.janksiegowy.backend.statement.*;
 import pl.janksiegowy.backend.statement.dto.StatementDto;
+import pl.janksiegowy.backend.statement.dto.StatementLineDto;
+import pl.janksiegowy.backend.statement.dto.StatementMap;
+import pl.janksiegowy.backend.statement.formatter.FormatterService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class TaxCalculatorBundleJPK implements TaxCalculatorBundle {
+
+    private final StatementService statementService;
+    private final MetricRepository metrics;
+    private final EntityQueryRepository entities;
+    private final StatementRepository statements;
+
+    private final FormatterService formatters;
+    private final NumeratorFacade numerator;
 
     private final LocalDate dateApplicable= LocalDate.of(2018, 1, 1);
 
     @Override
     public List<StatementDto> calculateTaxes(MonthPeriod period) {
         System.err.println( "Tax calculation JPK");
-        return null;
+
+        List <StatementDto> taxes = new ArrayList<>();
+
+        metrics.findByDate( period.getBegin()).ifPresent(
+                metric-> {
+                    System.err.println( "Czy VAT miesięczny: "+ metric.isVatMonthly());
+
+                    if( metric.isVatMonthly().isVat())
+                        taxes.add( statementService.build( metric, period, TaxType.VM));
+
+                    if( period.isCit())
+                        taxes.add( statementService.build( metric, period, TaxType.CM));
+
+                    System.err.println( "Czy VAT kwartalny: "+ metric.isVatQuarterly());
+                }
+        );
+        return taxes;
+
     }
 
     @Override
     public LocalDate getDateApplicable() {
         return dateApplicable;
     }
+
+
 }

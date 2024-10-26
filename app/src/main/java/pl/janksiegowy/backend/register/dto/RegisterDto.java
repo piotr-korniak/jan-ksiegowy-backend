@@ -41,7 +41,7 @@ public interface RegisterDto {
             return type;
         }
 
-        public String getKind() {
+        @Override public String getKind() {
             return kind;
         }
 

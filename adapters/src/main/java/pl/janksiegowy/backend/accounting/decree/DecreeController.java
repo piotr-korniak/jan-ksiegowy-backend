@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.janksiegowy.backend.accounting.account.AccountPage;
 import pl.janksiegowy.backend.accounting.account.AccountQueryRepository;
+import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeMap;
@@ -14,6 +15,7 @@ import pl.janksiegowy.backend.register.RegisterQueryRepository;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.subdomain.TenantController;
+import pl.janksiegowy.backend.tax.vat.ProfitAndLossItems;
 
 import java.time.LocalDate;
 
@@ -26,17 +28,20 @@ public class DecreeController {
     protected final AccountingRegisterRepository registers;
     private final AccountQueryRepository accountQueryRepository;
     private final DecreeLineQueryRepository decreeLines;
+    private final ProfitAndLossItems profitAndLossItems;
 
     public DecreeController(final PaymentRepository payments,
                             final DecreeFacade decreeFacade,
                             final AccountingRegisterRepository registers,
                             final AccountQueryRepository accountQueryRepository,
-                            final DecreeLineQueryRepository decreeLines) {
+                            final DecreeLineQueryRepository decreeLines,
+                            final ProfitAndLossItems profitAndLossItems) {
         this.decrees= new DecreeInitializer( payments);
         this.decreeFacade = decreeFacade;
         this.registers = registers;
         this.accountQueryRepository = accountQueryRepository;
         this.decreeLines = decreeLines;
+        this.profitAndLossItems = profitAndLossItems;
     }
 
     @PostMapping
@@ -83,11 +88,26 @@ public class DecreeController {
                 }
         );
 
-        dupa.getLines().forEach( account -> {
-            if( account.getAccount()!= null)
-            System.err.println( "Konto "+ account.getPage()+ " " + account.getAccount().getNumber()
-                    + " - " + account.getAccount().getName() + ": " + account.getValue().toString());
-        });
+        dupa.getLines().stream()
+                .map( DecreeLineDto::getAccount)
+                .map( AccountDto::getNumber)
+                .filter( number-> number.startsWith( "860"))
+                .findAny()
+                .ifPresentOrElse( s-> {}, ()-> {
+                    var profit = profitAndLossItems.calculate(startDate, endDate).getVariable("Wynik");
+                    if( profit.signum()> 0) {
+                        dupa.add( DecreeLineDto.create()
+                            .page( AccountPage.C)
+                            .account( accountQueryRepository.findByNumber( "860").orElseThrow())
+                            .value( profit));
+                    }
+                    if( profit.signum()< 0) {
+                        dupa.add( DecreeLineDto.create()
+                            .page( AccountPage.D)
+                            .account( accountQueryRepository.findByNumber( "860").orElseThrow())
+                            .value( profit.negate()));
+                    }
+                });
 
         decreeFacade.save( dupa);
 

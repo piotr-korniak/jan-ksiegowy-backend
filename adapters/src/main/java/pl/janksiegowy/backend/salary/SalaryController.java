@@ -34,8 +34,7 @@ public class SalaryController {
                             salary.calculatePayslip( contract, period)));
 
             return ResponseEntity.ok(  ).build();
-        })
-                .orElseThrow();
+        }).orElseThrow();
     }
 }
 

@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandEntityAccount;
+import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandPaymentRegisterAccount;
+
 @AllArgsConstructor
 public class DecreeFactoryPayslip {
 
@@ -33,17 +36,16 @@ public class DecreeFactoryPayslip {
                         return ((PayslipTemplateLine)line).getFunction()
                                 .accept( new PayslipFunction.PayslipFunctionVisitor<BigDecimal>() {
                                     @Override public BigDecimal visitSkladkaPracownika() {
-                                        return BigDecimal.ZERO;
+                                        return lines.getOrDefault( PayslipItemCode.UB_ZAT, BigDecimal.ZERO);
                                     }
                                     @Override public BigDecimal visitSkladkaPracodawcy() {
-                                        return BigDecimal.ZERO;
+                                        return lines.getOrDefault( PayslipItemCode.UB_PRA, BigDecimal.ZERO);
                                     }
                                     @Override public BigDecimal visitWynagrodzenieBrutto() {
                                         return lines.getOrDefault( PayslipItemCode.KW_BRT, BigDecimal.ZERO);
                                     }
-
                                     @Override public BigDecimal visitUbezpiecznieZdrowotne() {
-                                        return BigDecimal.ZERO;
+                                        return lines.getOrDefault( PayslipItemCode.UB_ZDR, BigDecimal.ZERO);
                                     }
                                     @Override public BigDecimal visitZaliczkaPIT() {
                                         return lines.getOrDefault( PayslipItemCode.TAX_ZA, BigDecimal.ZERO);
@@ -56,17 +58,14 @@ public class DecreeFactoryPayslip {
 
                     @Override
                     Optional<AccountDto> getAccount(TemplateLine line) {
-                        return Optional.of(
-                                switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
-                                    case "P"-> AccountDto.create()
-                                            .name( payslip.getEntity().getName())
-                                            .parent( line.getAccount().getNumber())
-                                            .number( line.getAccount().getNumber().replaceAll( "\\[P\\]",
-                                                    payslip.getEntity().getAccountNumber()));
-                                    default -> AccountDto.create()
-                                            .name( line.getAccount().getName())
-                                            .number( line.getAccount().getNumber());
-                                });
+                        var account= line.getAccount();
+
+                        if( account.getNumber().matches(".*\\[[E]].*"))
+                            return expandEntityAccount( account.getNumber(), payslip.getEntity());
+
+                        return Optional.of( AccountDto.create()
+                                .name( account.getName())
+                                .number( account.getNumber()));
                     }
 
 

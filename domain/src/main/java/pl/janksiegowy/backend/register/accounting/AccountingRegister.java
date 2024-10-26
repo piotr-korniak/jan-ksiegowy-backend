@@ -6,7 +6,7 @@ import pl.janksiegowy.backend.register.Register;
 
 @Getter
 @Entity
-@DiscriminatorValue( value= "A")
+@DiscriminatorValue( value= "R")
 public class AccountingRegister extends Register {
 
     @Column( insertable= false, updatable= false)
@@ -14,7 +14,7 @@ public class AccountingRegister extends Register {
     private AccountingRegisterType type;
 
     @Enumerated( EnumType.STRING)
-    private AccountingRegisterType kind= AccountingRegisterType.A;
+    private AccountingRegisterType kind= AccountingRegisterType.R;
 
 }
 

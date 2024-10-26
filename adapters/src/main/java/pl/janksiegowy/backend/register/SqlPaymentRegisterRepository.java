@@ -36,6 +36,6 @@ class PaymentRegisterRepositoryImpl implements PaymentRegisterRepository {
 
     @Override
     public List<BankAccount> findBankAccounts() {
-        return repository.findByType( PaymentRegisterType.B);
+        return repository.findByType( PaymentRegisterType.A);
     }
 }

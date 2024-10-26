@@ -92,7 +92,7 @@ public class VatSpecificItems implements SpecificItems<Interpreter> {
             });
 
     @Override public boolean isApplicable(TaxType taxType) {
-        return taxType== TaxType.V;
+        return taxType==TaxType.VM;
     }
 
     @Override
@@ -184,6 +184,8 @@ public class VatSpecificItems implements SpecificItems<Interpreter> {
         result.sum( "Razem_Naliczony", "Zakupy_Trwale_Vat", "Zakupy_Pozostale_Vat");
 
         result.interpret( "Podatek", "[Razem_Nalezny]- [Razem_Naliczony]");
+
+        System.err.println( "Razem należny: "+ result.getVariable( "Razem_Nalezny"));
 
         result.setVariable( "Kwota_Zobowiazania", result.getVariable( "Podatek"));
         if( result.getVariable( "Podatek").signum()<0)

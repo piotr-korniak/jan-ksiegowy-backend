@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.accounting.account.AccountPage;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.template.*;
+import pl.janksiegowy.backend.finances.settlement.SettlementType;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
 
 import java.util.UUID;
@@ -21,6 +22,7 @@ public interface TemplateLineDto {
     String getFunction();
     String getRegisterType();
     String getDescription();
+    SettlementType getSettlementType();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -32,6 +34,7 @@ public interface TemplateLineDto {
         private String function;
         private String registerType;
         private String description;
+        private SettlementType settlementType;
 
         public Proxy function( PaymentFunction function) {
             this.function= function.name();
@@ -76,6 +79,9 @@ public interface TemplateLineDto {
         }
         @Override public String getDescription() {
             return description;
+        }
+        @Override public SettlementType getSettlementType() {
+            return settlementType;
         }
 
     }

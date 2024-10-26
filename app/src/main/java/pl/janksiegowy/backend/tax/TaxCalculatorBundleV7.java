@@ -34,6 +34,7 @@ public class TaxCalculatorBundleV7 implements TaxCalculatorBundle {
     private final TaxService taxService;
     private final FormatterService formatters;
     private final NumeratorFacade numerator;
+    private final StatementService statementService;
 
  //   private final StatementFacade statementFacade;
     private final LocalDate dateApplicable= LocalDate.of(2020, 10, 1);
@@ -46,7 +47,7 @@ public class TaxCalculatorBundleV7 implements TaxCalculatorBundle {
                         .no( statement.getNo()))
                 .orElseGet(()-> StatementDto.create()
                         .no( Integer.valueOf( numerator.increment( NumeratorCode.ST, "JPK", period.getEnd()))))
-                .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode()).orElseThrow())
+                .revenue( entities.findByTypeAndTaxNumber( EntityType.O, metric.getRcCode()).orElseThrow())
                 .date( Util.min( LocalDate.now(), period.getEnd().plusDays( 25)))
                 .due( period.getEnd().plusDays( 25 ))
                 .period( period)
@@ -82,25 +83,8 @@ public class TaxCalculatorBundleV7 implements TaxCalculatorBundle {
         metrics.findByDate( period.getBegin()).ifPresent( metric-> {
 
             if( metric.isVatQuarterly()) {
+                toPersist.add( statementService.build( metric, period, TaxType.VQ));
 
-                if( period.getEnd().getMonthValue()% 3 == 0) {
-                    var statementDto= getVatStatement( metric, period.getParent())
-                            .kind( StatementKind.S)   // Settlement
-                            .number( "VAT-7K "+ period.getEnd().getYear()+ "K"+
-                                    (( period.getEnd().getMonth().getValue()- 1) / 3 + 1));
-                    var result=taxService.calculate( period.getParent(), TaxType.V)
-                            .setVariable( "POWOD", new BigDecimal( statementDto.getNo()));
-                    toPersist.add( getVatStatementMap( statementDto
-                                    .liability( result.getVariable( "Kwota_Zobowiazania", BigDecimal.ZERO))
-                                    .xml( formatters.format( period, TaxType.VQ, result))
-                                    .patternId( formatters.getFormatterVersion( period, TaxType.VQ)), result));
-                } else {
-                    var statementDto= getVatStatement( metric, period)
-                            .kind( StatementKind.R);   // No Settlement;
-                    toPersist.add( statementDto.xml( formatters.format( period, TaxType.VQ,
-                            new Interpreter().setVariable( "POWOD", new BigDecimal( statementDto.getNo()))))
-                            .patternId( formatters.getFormatterVersion( period, TaxType.VQ)));
-                }
             }
 
         });

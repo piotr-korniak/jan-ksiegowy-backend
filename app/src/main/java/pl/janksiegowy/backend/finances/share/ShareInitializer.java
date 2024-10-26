@@ -3,9 +3,6 @@ package pl.janksiegowy.backend.finances.share;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.entity.EntityType;
-import pl.janksiegowy.backend.finances.charge.ChargeFacade;
-import pl.janksiegowy.backend.finances.charge.ChargeType;
-import pl.janksiegowy.backend.finances.charge.dto.ChargeDto;
 import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.finances.share.dto.ShareDto;
 import pl.janksiegowy.backend.shared.DataLoader;
@@ -46,7 +43,7 @@ public class ShareInitializer {
                     .equity( new BigDecimal( fields[3]))
                     .date( Util.toLocalDate( fields[4]))
                     .entity( entities.findByCountryAndTypeAndTaxNumber(
-                                    entity.getCountry(), EntityType.S, entity.getTaxNumber())
+                                    entity.getCountry(), EntityType.H, entity.getTaxNumber())
                                             .orElseThrow()));
         }
 

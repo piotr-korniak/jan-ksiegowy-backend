@@ -5,7 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import pl.janksiegowy.backend.accounting.account.AccountFacade;
 import pl.janksiegowy.backend.accounting.account.AccountRepository;
 import pl.janksiegowy.backend.accounting.template.TemplateRepository;
+import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
+import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
+import pl.janksiegowy.backend.finances.settlement.SettlementRepository;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterFactory;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
@@ -22,10 +25,11 @@ public class DecreeConfiguration {
                                final AccountFacade account,
                                final PeriodFacade period,
                                final NumeratorFacade numerators,
-                               final ClearingRepository clearings ) {
+                               final ClearingRepository clearings,
+                               final ClearingQueryRepository clearingsQuery) {
         return new DecreeFacade( new AccountingRegisterFactory(), registers,
                 new DecreeFactory( templates, registers,
-                        new DecreeLineFactory( accounts, account), period, numerators, clearings),
+                        new DecreeLineFactory( accounts, account), period, numerators, clearings, clearingsQuery),
                 decrees);
     }
 }

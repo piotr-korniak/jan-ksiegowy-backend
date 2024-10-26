@@ -10,6 +10,10 @@ import pl.janksiegowy.backend.accounting.template.SettlementFunction.SettlementF
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandEntityAccount;
+import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandPaymentRegisterAccount;
 
 @AllArgsConstructor
 public class DecreeFactoryNote implements NoteTypeVisitor<TemplateType> {
@@ -21,26 +25,25 @@ public class DecreeFactoryNote implements NoteTypeVisitor<TemplateType> {
                     @Override public BigDecimal getValue( TemplateLine line) {
                         return ((FinanceTemplateLine)line).getFunction()
                                 .accept( new SettlementFunctionVisitor<BigDecimal>() {
-                            @Override public BigDecimal visitWartoscZobowiazania() {
-                                return note.getCt();
-                            }
-                            @Override public BigDecimal visitWartoscNaleznosci() {
-                                return note.getDt();
-                            }
-                        });
+                                    @Override public BigDecimal visitWartoscZobowiazania() {
+                                        return note.getCt();
+                                    }
+                                    @Override public BigDecimal visitWartoscNaleznosci() {
+                                        return note.getDt();
+                                    }
+                                });
                     }
- /*                   @Override public AccountDto getAccount( AccountDto.Proxy account) {
-                        return switch( account.getNumber().replaceAll("[^A-Z]+", "")){
-                            case "P"-> account.name( note.getEntity().getName())
-                                    .number( account.getNumber().replaceAll( "\\[P\\]",
-                                            note.getEntity().getAccountNumber()));
-                            default -> account;
-                        };
-                    }
-*/
-                    @Override
-                    public Optional<AccountDto> getAccount(TemplateLine line) {
-                        return Optional.empty();
+
+                    @Override public Optional<AccountDto> getAccount(TemplateLine line) {
+                        var account= line.getAccount();
+
+                        if( account.getNumber().matches(".*\\[[CO]].*"))
+                            return expandEntityAccount( account.getNumber(), note.getEntity());
+
+                        return Optional.of( AccountDto.create()
+                                .name( account.getName())
+                                .number( account.getNumber()));
+
                     }
                 }.build( template, note.getIssueDate(), note.getNumber(), note.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( note.getDecree())

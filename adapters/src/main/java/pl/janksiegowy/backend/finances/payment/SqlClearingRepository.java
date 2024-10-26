@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SqlClearingRepository extends JpaRepository<Clearing, ClearingId> {
-    List<Clearing> findByReceivableId( UUID settlementId);
+   // List<Clearing> findByReceivableId( UUID settlementId);
 
-    List<Clearing> findByPayableId( UUID settlementId);
+    //List<Clearing> findByPayableId( UUID settlementId);
 }
 
 interface SqlClearingQueryRepository extends ClearingQueryRepository, Repository<Clearing, ClearingId> {
@@ -25,7 +25,7 @@ interface SqlClearingQueryRepository extends ClearingQueryRepository, Repository
     @Override
     @Query( value= "SELECT COUNT( C) > 0 FROM Clearing C "+
             "LEFT OUTER JOIN Settlement S "+
-            "ON C.receivableId= S.settlementId "+
+            "ON C.receivable= S "+
             "WHERE S.entity.taxNumber= :taxNumber "+
             "AND S.number= :number AND C.date= :date")
     boolean existReceivable( String number, String taxNumber, LocalDate date );
@@ -33,7 +33,7 @@ interface SqlClearingQueryRepository extends ClearingQueryRepository, Repository
     @Override
     @Query( value= "SELECT COUNT( C) > 0 FROM Clearing C "+
             "LEFT OUTER JOIN Settlement S "+
-            "ON C.payableId= S.settlementId "+
+            "ON C.payable= S "+
             "WHERE S.entity.taxNumber= :taxNumber "+
             "AND S.number= :number AND C.date= :date")
     boolean existPayable( String number, String taxNumber, LocalDate date );
@@ -50,10 +50,12 @@ class ClearingRepositoryImpl implements ClearingRepository {
     }
 
     @Override public List<Clearing> receivableId( UUID settlementId ) {
-        return repository.findByReceivableId( settlementId);
+        // return repository.findByReceivableId( settlementId);
+        return null;
     }
 
     @Override public List<Clearing> payableId( UUID settlementId) {
-        return repository.findByPayableId( settlementId);
+        // return repository.findByPayableId( settlementId);
+        return null;
     }
 }

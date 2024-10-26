@@ -71,7 +71,7 @@ public class InvoiceFactory {
 
         Optional.ofNullable( source.getEntity()).ifPresent( entityDto->
                 entities.findByEntityIdAndDate( entityDto.getEntityId(), source.getInvoiceDate())
-                        .ifPresent( entity-> invoice.setEntity( entity)));
+                        .ifPresent( invoice::setEntity));
 
         Optional.ofNullable( source.getLineItems())
                 .ifPresent( invoiceLines->update( invoiceLines, invoice, source.getInvoiceDate()));
@@ -81,8 +81,6 @@ public class InvoiceFactory {
 
         //decrees.findById( invoice.getDocumentId())
         //        .ifPresent( invoice::setDecree);
-
-        System.err.println( "Data faktury: "+ source.getInvoiceDate());
 
         return ((Invoice)invoice
                 .setMetric( metrics.findByDate( source.getInvoiceDate()).orElseThrow())

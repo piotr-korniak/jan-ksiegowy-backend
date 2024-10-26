@@ -38,7 +38,7 @@ public class CitApproval {
         return periods.findById( periodId).map( period-> {
 
             var inter =new Interpreter()
-                    .setVariable( "podatek", new BigDecimal( "0.09"))
+                    .setVariable( "podatek", new BigDecimal( "0.15"))
                     .setVariable( "703", lines.turnoverCt( period, "703"))
                     .setVariable( "760", lines.turnoverCt( period, "760"))
                     .setVariable( "750_1", lines.turnoverDt( period, "750-1"))
@@ -47,10 +47,11 @@ public class CitApproval {
                     .setVariable( "403_1", lines.turnoverDt( period,"403-1"))
                     .setVariable( "404", lines.turnoverDt( period, "404"))
                     .setVariable( "405", lines.turnoverDt( period, "405"))
+                    .setVariable( "406", lines.turnoverDt( period, "406"))
                     .setVariable( "409_1", lines.turnoverDt( period, "409-1"))
                     .setVariable( "755_1", lines.turnoverDt( period, "755-1"))
                     .setVariable( "765", lines.turnoverDt( period, "765"))
-                    .interpret( "koszty", "[402_1]+ [403_1]+ [404]+ [405]+ [409_1]+ [755_1]+ [765]")
+                    .interpret( "koszty", "[402_1]+ [403_1]+ [404]+ [405]+ [406]+ [409_1]+ [755_1]+ [765]")
                     .interpret( "wynik", "[przychody]- [koszty]")
                     .setVariable( "JEDEN", BigDecimal.ONE)
                     .interpret( "podstawa", "[wynik]@ [JEDEN]" )
@@ -90,7 +91,7 @@ public class CitApproval {
                                         ((period.getEnd().getYear()- period.getBegin().getYear())==1?
                                                 period.getEnd().getYear()%100: ""))
                                 .due( period.getEnd().plusMonths( 3))
-                                .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode())
+                                .revenue( entities.findByTypeAndTaxNumber( EntityType.O, metric.getRcCode())
                                         .orElseThrow())
                                 .period( period)) );
             }
@@ -106,6 +107,7 @@ public class CitApproval {
                     .append( toPrint( "   - usługi obce", inter.getVariable( "403_1")))
                     .append( toPrint( "   - opłaty, podatki", inter.getVariable( "404")))
                     .append( toPrint( "   - wynagrodzenia", inter.getVariable( "405")))
+                    .append( toPrint( "   - narzuty na płace", inter.getVariable( "406")))
                     .append( toPrint( "   - koszty pozostałe", inter.getVariable( "409_1")))
                     .append( toPrint( "   - pozostałe", inter.getVariable( "765")))
                     .append( toPrint( "   - finansowe", inter.getVariable( "755_1")))

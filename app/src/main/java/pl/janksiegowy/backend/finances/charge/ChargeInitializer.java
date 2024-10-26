@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.finances.charge.dto.ChargeDto;
-import pl.janksiegowy.backend.finances.note.NoteFacade;
-import pl.janksiegowy.backend.finances.note.NoteType;
-import pl.janksiegowy.backend.finances.note.dto.NoteDto;
 import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
@@ -51,8 +48,10 @@ public class ChargeInitializer {
                             .orElseGet(()-> entities.findByCountryAndTypeAndTaxNumber(
                                             entity.getCountry(), EntityType.B, entity.getTaxNumber())
                                     .orElseGet(()-> entities.findByCountryAndTypeAndTaxNumber(
-                                                    entity.getCountry(), EntityType.S, entity.getTaxNumber())
-                                            .orElseThrow()))));
+                                                    entity.getCountry(), EntityType.H, entity.getTaxNumber())
+                                            .orElseGet( ()-> entities.findByCountryAndTypeAndTaxNumber(
+                                                            entity.getCountry(), EntityType.O, entity.getTaxNumber())
+                                                    .orElseThrow())))));
         }
 
         return String.format( "%-40s %16s\n",

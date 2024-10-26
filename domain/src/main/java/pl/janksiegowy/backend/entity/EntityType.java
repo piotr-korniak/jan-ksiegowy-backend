@@ -1,29 +1,26 @@
 package pl.janksiegowy.backend.entity;
 
 public enum EntityType {
-    /**
-     * Bank
-     */
+    /** Bank */
     B {
         @Override public <T> T accept( EntityTypeVisitor<T> visitor ) {
             return visitor.visitBank();
         }
     },
-    /**
-     * Contact
-     */
+    /** Contact */
     C {
         @Override public <T> T accept( EntityTypeVisitor<T> visitor) {
             return visitor.visitContact();
         }
     },
-    R { // Revenue
+    /** Revenue */
+    O {
         @Override public <T> T accept( EntityTypeVisitor<T> visitor) {
             return visitor.visitRevenue();
         }
     },
     /** Shareholders */
-    S {
+    H {
         @Override public <T> T accept( EntityTypeVisitor<T> visitor) {
             return visitor.visitShareholders();
         }

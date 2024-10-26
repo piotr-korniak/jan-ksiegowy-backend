@@ -12,6 +12,9 @@ import pl.janksiegowy.backend.item.ItemType;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandEntityAccount;
 
 @AllArgsConstructor
 public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
@@ -66,19 +69,18 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
                                 });
                     }
 
-                    @Override public Optional<AccountDto> getAccount( TemplateLine line) {
-                        return Optional.of(
-                                switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
-                                    case "K"-> AccountDto.create()
-                                            .name( invoice.getEntity().getName())
-                                            .parent( line.getAccount().getNumber())
-                                            .number( line.getAccount().getNumber().replaceAll( "\\[K\\]",
-                                                    invoice.getEntity().getAccountNumber()));
-                            default -> AccountDto.create()
-                                    .name( line.getAccount().getName())
-                                    .number( line.getAccount().getNumber());
-                        });
+                    public Optional<AccountDto> getAccount(TemplateLine line) {
+                        var account= line.getAccount();
+                        return Stream.of( account.getNumber())
+                                .filter(k-> k.matches(".*\\[C].*"))
+                                .findFirst()
+                                .map(s-> expandEntityAccount( account.getNumber(), invoice.getEntity()))
+                                .orElseGet(()-> Optional.of( AccountDto.create()
+                                        .name( account.getName())
+                                        .number( account.getNumber() // Opcjonalnie, jeśli nic nie pasuje
+                                        )));
                     }
+
                 }.build( template, invoice.getInvoiceDate(), invoice.getNumber(), invoice.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( invoice.getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))

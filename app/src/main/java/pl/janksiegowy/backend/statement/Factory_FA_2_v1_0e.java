@@ -36,6 +36,7 @@ public class Factory_FA_2_v1_0e extends Factory_FA {
                 }});
             }}).setPodmiot2( new Podmiot2() {{
                 var entity= invoice.getEntity();
+                System.err.println( "Podmiot2: " + entity.getAccountNumber());
                 setDaneIdentyfikacyjne( new TPodmiot2() {{
                     setNIP( entity.getTaxNumber());
                     setNazwa( entity.getName());

@@ -1,5 +1,6 @@
 package pl.janksiegowy.backend.tax;
 
 public enum TaxType {
-    V, VQ, VM;
+    VQ, VM,
+    CM, CQ, CY;
 }

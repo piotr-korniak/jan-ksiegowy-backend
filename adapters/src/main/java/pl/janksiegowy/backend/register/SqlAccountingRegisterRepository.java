@@ -6,8 +6,6 @@ import org.springframework.data.repository.Repository;
 import pl.janksiegowy.backend.register.accounting.AccountingRegister;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterQueryRepository;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
-import pl.janksiegowy.backend.register.invoice.InvoiceRegister;
-import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
 
 import java.util.Optional;
 import java.util.UUID;

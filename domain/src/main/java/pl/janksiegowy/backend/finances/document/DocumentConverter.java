@@ -48,6 +48,14 @@ public class DocumentConverter implements SettlementType.SettlementTypeVisitor<T
         return TemplateType.CF;
     }
 
+    @Override public TemplateType visitAcquisition() {
+        return TemplateType.HA;
+    }
+
+    @Override public TemplateType visitDisposal() {
+        return TemplateType.HD;
+    }
+
     @Override public TemplateType visitReceiveNote() {
         return TemplateType.NR;
     }

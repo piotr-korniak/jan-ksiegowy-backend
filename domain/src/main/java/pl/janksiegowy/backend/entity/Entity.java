@@ -72,7 +72,7 @@ class Contact extends Entity {
 @Accessors( chain= true)
 
 @jakarta.persistence.Entity
-@DiscriminatorValue( value= "R")
+@DiscriminatorValue( value= "O")
 class Revenue extends Entity {
 
 }
@@ -82,7 +82,7 @@ class Revenue extends Entity {
 @Accessors( chain= true)
 
 @jakarta.persistence.Entity
-@DiscriminatorValue( value= "S")
+@DiscriminatorValue( value= "H")
 class Shareholders extends Entity {
 
 }

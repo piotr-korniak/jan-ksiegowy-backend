@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.register.accounting.AccountingRegister;
 
 import java.time.LocalDate;
@@ -33,7 +34,8 @@ public class Template {
     @Enumerated( EnumType.STRING)
     private TemplateType documentType;
 
-
+    @Enumerated( EnumType.STRING)
+    private EntityType entityType;
 
     @OneToMany( fetch= FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval= true)
     @OrderColumn( name= "NO")

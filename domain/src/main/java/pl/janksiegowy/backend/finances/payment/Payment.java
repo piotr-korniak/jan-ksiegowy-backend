@@ -6,10 +6,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.finances.clearing.Clearing;
 import pl.janksiegowy.backend.finances.document.Document;
-import pl.janksiegowy.backend.invoice.InvoiceType;
+import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 import pl.janksiegowy.backend.register.payment.PaymentRegister;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,11 +32,13 @@ public abstract class Payment extends Document {
         return PaymentType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
     }
 
+    public abstract SettlementKind getSettlementKind();
+
     @Override public <T> T accept( DocumentVisitor<T> visitor ) {
         return visitor.visit( this);
     }
 
-    public abstract List<Clearing> getClearings();
+    public abstract Set<Clearing> getClearings();
 
-    public abstract Payment setClearings( List<Clearing> clearings);
+    public abstract Payment setClearings( Set<Clearing> clearings);
 }

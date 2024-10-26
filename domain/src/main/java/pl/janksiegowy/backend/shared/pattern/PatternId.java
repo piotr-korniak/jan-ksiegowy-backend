@@ -30,6 +30,17 @@ public enum PatternId {
             return null;
         }
     },
+    CIT_8_25_v1_0e {
+        @Override
+        public <T> T accept(PatternJpkVisitor<T> visitor) {
+            return null;
+        }
+
+        @Override
+        public <T> T accept(PatternCitVisitor<T> visitor) {
+            return null;
+        }
+    },
     CIT_8_33_v2_0e {
         @Override public <T> T accept( PatternJpkVisitor<T> visitor) {
             return null;

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.janksiegowy.backend.accounting.decree.DecreeLineQueryRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.subdomain.TenantController;
+import pl.janksiegowy.backend.tax.vat.BalanceItems;
 import pl.janksiegowy.backend.tax.vat.ProfitAndLossItems;
 
 import java.time.LocalDate;
@@ -19,10 +20,10 @@ public class BalanceSheetController {
     private final BalanceSheet balanceSheet;
     private final PeriodRepository periods;
 
-    public BalanceSheetController(DecreeLineQueryRepository decreeLines,
-                                  ProfitAndLossItems profitAndLossItems, PeriodRepository periods){
+    public BalanceSheetController( final PeriodRepository periods,
+                                   final BalanceItems balanceItems){
         this.periods = periods;
-        this.balanceSheet= new BalanceSheet( decreeLines, profitAndLossItems);
+        this.balanceSheet= new BalanceSheet( balanceItems);
     }
 
     @GetMapping

@@ -12,6 +12,11 @@ public enum PaymentFunction {
             return visitor.visitSplataZobowiazania();
         }
     },
+    WartoscRozrachowania {
+        @Override public <T> T accept( PaymentFunctionVisitor<T> visitor) {
+            return visitor.visitWartoscRozrachowania();
+        }
+    },
     WplataNoty {
         @Override public <T> T accept( PaymentFunctionVisitor<T> visitor ) {
             return visitor.visitWplataNoty();
@@ -26,6 +31,16 @@ public enum PaymentFunction {
         @Override public <T> T accept( PaymentFunctionVisitor<T> visitor) {
             return visitor.visitOplacenieUdzialow();
         }
+    },
+    SplataVat {
+        @Override public <T> T accept( PaymentFunctionVisitor<T> visitor) {
+            return visitor.visitSplataVat();
+        }
+    },
+    SplataNKUP {
+        @Override public <T> T accept(PaymentFunctionVisitor<T> visitor) {
+            return visitor.visitSplataNKUP();
+        }
     };
 
     public abstract <T> T accept( PaymentFunctionVisitor<T> visitor);
@@ -36,5 +51,8 @@ public enum PaymentFunction {
         T visitWplataNoty();
         T visitSplataNoty();
         T visitOplacenieUdzialow();
+        T visitSplataVat();
+        T visitSplataNKUP();
+        T visitWartoscRozrachowania();
     }
 }

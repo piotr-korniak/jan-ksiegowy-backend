@@ -7,6 +7,7 @@ import pl.janksiegowy.backend.finances.settlement.dto.SettlementListDto;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface SettlementQueryRepository {
 
@@ -23,4 +24,6 @@ public interface SettlementQueryRepository {
             EntityType entityType, String accountNumber, LocalDate date, boolean zeroBalance);
 
     List<SettlementListDto> findByAllAsAtDate( LocalDate date, boolean zeroBalance);
+
+    Optional<SettlementDto> findBySettlementId(UUID settlementId);
 }

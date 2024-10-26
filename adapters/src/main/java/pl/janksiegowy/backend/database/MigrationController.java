@@ -170,7 +170,6 @@ public class MigrationController extends MigrationConfiguration {
         registers.initAccountingRegisters( getAccountingRegister());
         log.warn( "Registers migration complete!");
 
-
         accounts.init( getInitialAccount());
         log.warn( "Accounts migration complete!");
 
