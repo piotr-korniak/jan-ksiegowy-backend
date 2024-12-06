@@ -37,7 +37,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "WHERE L.invoice.documentId= :id "+
                     "GROUP BY invoiceId, salesKind, purchaseKind, rate")
     List<InvoiceLineSumDto> findByInvoiceId( UUID id);
-
+/*
     @Override
     @Query( value= "SELECT L.invoice.documentId AS invoiceId, " +
                     "L.invoice.number AS invoiceNumber, "+
@@ -69,7 +69,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             @Param( "salesKinds") List<InvoiceRegisterKind> salesKinds,
             @Param( "purchaseKinds") List<InvoiceRegisterKind> purchaseKinds,
             String period);
-
+*/
     @Query( value= "SELECT L.invoice.documentId AS invoiceId, " +
             "L.invoice.number AS invoiceNumber, " +
             "L.invoice.entity.name AS entityName, " +
@@ -87,11 +87,12 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "L.taxRate AS taxRate, " +
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L " +
-            "WHERE vat!=0 AND L.invoice.invoicePeriodId= :period AND " +
-            "LEAST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate AND " + // dodanie warunku na zakres dat
+            "WHERE vat!=0 AND " +
             "((TYPE( L.invoice) = SalesInvoice AND " +
+            "  LEAST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate AND " +
             "  TREAT( L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR" +
             " (TYPE( L.invoice) = PurchaseInvoice AND " +
+            "  GREATEST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate AND" +
             "  TREAT(L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds)) " +
             "GROUP BY invoiceId, invoiceNumber, entityName, taxNumber, " +
             "entityCountry, invoiceDate, issueDate, salesKind, purchaseKind, " +
@@ -108,14 +109,15 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.invoicePeriod.parent= :period AND " +
-            "(TYPE( L.invoice)= SalesInvoice AND" +
+            "(TYPE( L.invoice)= SalesInvoice AND " +
+            " LEAST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate AND " +
             " TREAT( L.invoice AS SalesInvoice).register.kind= :kind)" +
             "GROUP BY taxRate")
     List<JpaInvoiceSumDto> sumSalesByKindAndPeriodGroupByRate(
             @Param( "kind") InvoiceRegisterKind kind,
-            @Param( "period") QuarterPeriod quarterPeriod);
-
+            @Param( "startDate") LocalDate startDate,
+            @Param( "endDate") LocalDate endDate);
+/*
     @Override
     @Query( value= "SELECT L.taxRate AS taxRate, " +
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
@@ -128,20 +130,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
     List<JpaInvoiceSumDto> sumSalesByKindAndPeriodGroupByRate(
             @Param( "kind") InvoiceRegisterKind salesKind,
             @Param( "period") MonthPeriod period);
-
-    @Override
-    @Query( value= "SELECT L.item.type AS itemType, " +
-            "TREAT(L.invoice AS SalesInvoice).register.kind AS invoiceRegisterKind, " +
-            "SUM(L.base) AS base, SUM(L.vat) AS vat " +
-            "FROM InvoiceLine L " +
-            "WHERE vat != 0 AND " +
-            "L.invoice.invoicePeriodId= :period AND " +
-            "(TYPE( L.invoice)= SalesInvoice AND" +
-            " TREAT( L.invoice AS SalesInvoice).register.kind IN :kinds)" +
-            "GROUP BY invoiceRegisterKind, itemType")
-    List<JpaInvoiceSumDto> sumSalesByKindAndItemTypeGroupByType(
-            @Param( "kinds") List<InvoiceRegisterKind> salesKinds,
-            @Param( "period") String quarterPeriod);
+*/
 
     @Override
     @Query( value= "SELECT L.item.type AS itemType, " +
@@ -149,14 +138,15 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM( L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.invoicePeriod.parent= :period AND " +
-            "(TYPE( L.invoice)= PurchaseInvoice AND" +
+            "(TYPE( L.invoice)= PurchaseInvoice AND " +
+            " LEAST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate AND " +
             " TREAT( L.invoice AS PurchaseInvoice).register.kind IN :kinds)" +
             "GROUP BY purchaseKind, itemType")
     List<JpaInvoiceSumDto> sumPurchaseByKindAndItemTypeGroupByType(
             @Param( "kinds") List<InvoiceRegisterKind> purchaseKinds,
-            @Param( "period") QuarterPeriod quarterPeriod);
-
+            @Param( "startDate") LocalDate startDate,
+            @Param( "endDate") LocalDate endDate);
+/*
     @Override
     @Query( value= "SELECT L.item.type AS itemType, " +
             "TREAT( L.invoice AS PurchaseInvoice).register.kind AS purchaseKind, " +
@@ -170,7 +160,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
     List<JpaInvoiceSumDto> sumPurchaseByKindAndItemTypeGroupByType(
             @Param( "kinds") List<InvoiceRegisterKind> purchaseKinds,
             @Param( "period") MonthPeriod period);
-
+*/
     @Override
     @Query( value= "SELECT L.taxRate AS rate, " +
             "CASE WHEN TYPE( L.invoice) = SalesInvoice " +
@@ -182,16 +172,18 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
-            "L.invoice.invoicePeriod.parent= :period AND " +
-            "(( TYPE( L.invoice) = SalesInvoice AND "+
+            "(( TYPE( L.invoice) = SalesInvoice AND" +
+            "   LEAST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate AND "+
             "  TREAT(L.invoice AS SalesInvoice).register.kind IN :salesKinds) OR" +
-            " ( TYPE( L.invoice) = PurchaseInvoice AND "+
+            " ( TYPE( L.invoice) = PurchaseInvoice AND " +
+            "   GREATEST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate AND"+
             "  TREAT(L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds)) " +
             "GROUP BY salesKind, purchaseKind, L.taxRate")
     List<JpaInvoiceSumDto> sumByKindAndPeriodGroupByRate(
             @Param( "salesKinds") List<InvoiceRegisterKind> salesKinds,
             @Param( "purchaseKinds") List<InvoiceRegisterKind> purchaseKinds,
-            @Param( "period") QuarterPeriod period);
+            @Param( "startDate") LocalDate startDate,
+            @Param( "endDate") LocalDate endDate);
 
     @Override
     @Query( value= "SELECT L.invoice.documentId AS invoiceId, " +
@@ -204,12 +196,15 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
                     "L.item.type AS itemType, "+
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
-                    "WHERE vat!=0 AND L.invoice.invoicePeriodId= :period AND "+
-                    "TYPE( L.invoice)= PurchaseInvoice "+
+                    "WHERE vat!=0 AND "+
+                    "TYPE( L.invoice)= PurchaseInvoice AND " +
+                    "  GREATEST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate "+
                     "GROUP BY invoiceId, invoiceNumber, entityName, taxNumber, " +
                             "entityCountry, invoiceDate, issueDate, itemType "+
                     "ORDER BY issueDate ASC, invoiceDate ASC ")
-    List<JpaInvoiceSumDto> findByKindAndPeriodGroupByType( @Param( "period") String periodId);
+    List<JpaInvoiceSumDto> findByKindAndPeriodGroupByType(
+            @Param( "startDate") LocalDate startDate,
+            @Param( "endDate") LocalDate endDate);
 
     @Override
     @Query( value= "SELECT L.item.type AS itemType, "+
@@ -218,23 +213,26 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "END AS purchaseKind, " +
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L "+
-            "WHERE vat!=0 AND L.invoice.invoicePeriod.parent= :period AND "+
+            "WHERE vat!=0 AND L.invoice.issueDate BETWEEN :startDate AND :endDate AND "+
             "(TYPE( L.invoice) = PurchaseInvoice AND "+
             " TREAT( L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds) " +
             "GROUP BY purchaseKind, itemType ")
     List<JpaInvoiceSumDto> sumByKindAndPeriodGroupByType(
             List<InvoiceRegisterKind> purchaseKinds,
-            QuarterPeriod period);
+            @Param( "startDate") LocalDate startDate,
+            @Param( "endDate") LocalDate endDate);
 
     @Override
     @Query( value= "SELECT L.item.type AS itemType, "+
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L "+
-            "WHERE vat!=0 AND L.invoice.invoicePeriod.parent= :quarterPeriod AND " +
+            "WHERE vat!=0 AND L.invoice.issueDate BETWEEN :startDate AND :endDate AND " +
             "TYPE( L.invoice) = PurchaseInvoice "+
             "GROUP BY itemType ")
-    List<JpaInvoiceSumDto> sumPurchaseByTypeAndPeriodGroupByType( QuarterPeriod quarterPeriod);
-
+    List<JpaInvoiceSumDto> sumPurchaseByTypeAndPeriodGroupByType(
+            @Param( "startDate") LocalDate startDate,
+            @Param( "endDate") LocalDate endDate);
+/*
     @Override
     @Query( value= "SELECT L.item.type AS itemType, "+
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
@@ -243,4 +241,5 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "TYPE( L.invoice) = PurchaseInvoice "+
             "GROUP BY itemType ")
     List<JpaInvoiceSumDto> sumPurchaseByTypeAndPeriodGroupByType( MonthPeriod period);
+*/
 }

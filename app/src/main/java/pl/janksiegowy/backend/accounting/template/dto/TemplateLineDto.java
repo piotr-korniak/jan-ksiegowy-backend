@@ -2,7 +2,7 @@ package pl.janksiegowy.backend.accounting.template.dto;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.accounting.account.AccountPage;
+import pl.janksiegowy.backend.accounting.account.AccountSide;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.finances.settlement.SettlementType;
@@ -17,10 +17,9 @@ public interface TemplateLineDto {
     }
 
     UUID getId();
-    AccountPage getPage();
+    AccountSide getSide();
     AccountDto getAccount();
     String getFunction();
-    String getRegisterType();
     String getDescription();
     SettlementType getSettlementType();
 
@@ -29,10 +28,9 @@ public interface TemplateLineDto {
     class Proxy implements TemplateLineDto {
 
         private UUID id;
-        private AccountPage page;
+        private AccountSide side;
         private AccountDto account;
         private String function;
-        private String registerType;
         private String description;
         private SettlementType settlementType;
 
@@ -57,25 +55,17 @@ public interface TemplateLineDto {
             return this;
         }
 
-        public Proxy registerType( PaymentRegisterType registerType ) {
-            this.registerType= registerType.name();
-            return this;
-        }
-
         @Override public UUID getId() {
             return id;
         }
-        @Override public AccountPage getPage() {
-            return page;
+        @Override public AccountSide getSide() {
+            return side;
         }
         @Override public AccountDto getAccount() {
             return account;
         }
         @Override public String getFunction() {
             return function;
-        }
-        @Override public String getRegisterType() {
-            return registerType;
         }
         @Override public String getDescription() {
             return description;

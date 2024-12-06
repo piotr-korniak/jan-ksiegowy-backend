@@ -2,7 +2,7 @@ package pl.janksiegowy.backend.accounting.decree.dto;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.accounting.account.AccountPage;
+import pl.janksiegowy.backend.accounting.account.AccountSide;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 
 import java.math.BigDecimal;
@@ -13,7 +13,7 @@ public interface DecreeLineDto {
         return new Proxy();
     }
 
-    AccountPage getPage();
+    AccountSide getSide();
     AccountDto getAccount();
     BigDecimal getValue();
     String getDescription();
@@ -22,13 +22,13 @@ public interface DecreeLineDto {
     @Accessors( fluent= true, chain= true)
     class Proxy implements DecreeLineDto {
 
-        private AccountPage page;
+        private AccountSide side;
         private AccountDto account;
         private BigDecimal value;
         private String description;
 
-        @Override public AccountPage getPage() {
-            return page;
+        @Override public AccountSide getSide() {
+            return side;
         }
 
         @Override public AccountDto getAccount() {

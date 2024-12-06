@@ -108,7 +108,7 @@ public class Formatter_JPK_V7K_2_1_0e implements TaxDeclarationFormatter {
             lines.findByKindAndPeriodGroupByRate(
                     List.of( InvoiceRegisterKind.D),
                             List.of( InvoiceRegisterKind.U, InvoiceRegisterKind.W),
-                            period.getId())
+                            period.getBegin(), period.getEnd())
                     .stream()
                     .collect(Collectors.groupingBy(JpaInvoiceSumDto::getInvoiceId,
                                 LinkedHashMap::new, Collectors.toList()))
@@ -163,7 +163,7 @@ public class Formatter_JPK_V7K_2_1_0e implements TaxDeclarationFormatter {
                 var zakupCtrl= new ZakupCtrl();
                 setZakupCtrl( zakupCtrl);
 
-            lines.findByKindAndPeriodGroupByType( period.getId())
+            lines.findByKindAndPeriodGroupByType( period)
                     .stream()
                     .collect( Collectors.groupingBy( JpaInvoiceSumDto::getInvoiceId,
                             LinkedHashMap::new, Collectors.toList()))

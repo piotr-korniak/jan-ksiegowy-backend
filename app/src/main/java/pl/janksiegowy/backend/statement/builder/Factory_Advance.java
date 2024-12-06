@@ -70,7 +70,7 @@ public class Factory_Advance implements SpecificStatement<StatementDto> {
                         .number( "CIT-8 "+ period.getEnd().getYear()+
                                 "M"+ String.format( "%02d", period.getEnd().getMonthValue()))
                         .due( period.getEnd().plusDays( 20))
-                        .revenue( entities.findByTypeAndTaxNumber( EntityType.O, metric.getRcCode()).orElseThrow()));
+                        .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode()).orElseThrow()));
     }
 
     @Override public boolean isApplicable( TaxType taxType) {

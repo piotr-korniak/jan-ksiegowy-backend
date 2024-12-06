@@ -65,7 +65,7 @@ public class StatementApproval {
                             .type( jpk.isSettlement()? StatementType.V: StatementType.R)
                             .date( Util.min( LocalDate.now(), period.getEnd().plusDays( 25)))
                             .due( period.getEnd().plusDays( 25 ))
-                            .revenue( entities.findByTypeAndTaxNumber( EntityType.O, metric.getRcCode())
+                            .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode())
                                     .orElseThrow())
                             .number( jpk.getNumber())
                             .created( LocalDateTime.now())

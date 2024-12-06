@@ -37,7 +37,7 @@ public class DecreeFactoryNote implements NoteTypeVisitor<TemplateType> {
                     @Override public Optional<AccountDto> getAccount(TemplateLine line) {
                         var account= line.getAccount();
 
-                        if( account.getNumber().matches(".*\\[[CO]].*"))
+                        if( account.getNumber().matches(".*\\[[CR]].*"))
                             return expandEntityAccount( account.getNumber(), note.getEntity());
 
                         return Optional.of( AccountDto.create()

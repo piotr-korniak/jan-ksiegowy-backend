@@ -38,10 +38,10 @@ public class DecreeFactoryShare implements ShareTypeVisitor<TemplateType> {
                     @Override public Optional<AccountDto> getAccount( TemplateLine line) {
                         return Optional.of(
                                 switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
-                                    case "W"-> AccountDto.create()
+                                    case "S"-> AccountDto.create()
                                             .name( share.getEntity().getName())
                                             .parent( line.getAccount().getNumber())
-                                            .number( line.getAccount().getNumber().replaceAll( "\\[W\\]",
+                                            .number( line.getAccount().getNumber().replaceAll( "\\[S\\]",
                                                     share.getEntity().getAccountNumber()));
                                     default -> AccountDto.create()
                                             .name( line.getAccount().getName())

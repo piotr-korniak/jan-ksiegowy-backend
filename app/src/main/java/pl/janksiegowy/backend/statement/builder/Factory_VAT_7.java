@@ -57,7 +57,7 @@ public class Factory_VAT_7 implements SpecificStatement<StatementDto> {
                     .patternId( formatters.getFormatterVersion( period, TaxType.VM))
                     .period( period)
                     .liability( items.getVariable( "Kwota_Zobowiazania", BigDecimal.ZERO))
-                    .revenue( entities.findByTypeAndTaxNumber( EntityType.O, metric.getRcCode()).orElseThrow())),
+                    .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode()).orElseThrow())),
                                                     StatementItemCode.VAT_NZ, items.getVariable( "Razem_Nalezny")),
                                             StatementItemCode.VAT_NC, items.getVariable( "Razem_Naliczony")),
                                     StatementItemCode.KOR_NZ, items.getVariable( "Korekta_Naleznego")),

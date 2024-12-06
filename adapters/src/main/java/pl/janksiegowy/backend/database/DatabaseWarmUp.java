@@ -14,7 +14,7 @@ import pl.janksiegowy.backend.tenant.TenantInitializer;
 @Order( 0)
 public class DatabaseWarmUp implements ApplicationListener<ContextRefreshedEvent> {
 
-    //private final TenantInitializer tenants;
+    private final TenantInitializer tenants;
     private final TenantFacade tenant;
 
     private final CompanyInitializer companies;
@@ -24,7 +24,7 @@ public class DatabaseWarmUp implements ApplicationListener<ContextRefreshedEvent
                            final CompanyFacade company){
 
         this.tenant= tenant;
-        //this.tenants= new TenantInitializer( tenant);
+        this.tenants= new TenantInitializer( tenant);
         this.company= company;
         this.companies= new CompanyInitializer( company);
     }
@@ -32,7 +32,7 @@ public class DatabaseWarmUp implements ApplicationListener<ContextRefreshedEvent
     @Override
     public void onApplicationEvent( @NonNull ContextRefreshedEvent event) {
 
-      //  tenants.init();
+        tenants.init();
 
         TenantContext.setCurrentTenant( TenantContext.Context.create().tenant( "eleftheria"));  //.setCurrentTenant( "eleftheria");
         companies.init();

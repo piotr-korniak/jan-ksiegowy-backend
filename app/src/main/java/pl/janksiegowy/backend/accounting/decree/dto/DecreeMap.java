@@ -25,7 +25,7 @@ public class DecreeMap implements DecreeDto {
     }
 
     public DecreeMap add( DecreeLineDto line) {
-        switch (line.getPage()) {
+        switch (line.getSide()) {
             case D -> ct= Util.addOrAddend( ct, line.getValue());
             case C -> dt= Util.addOrAddend( dt, line.getValue());
         }

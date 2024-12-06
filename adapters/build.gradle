@@ -18,18 +18,21 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'org.liquibase:liquibase-core'
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
-    implementation 'com.azure.spring:spring-cloud-azure-starter-storage-file-share:5.0.0'
+    implementation 'com.azure.spring:spring-cloud-azure-starter-storage-file-share:5.18.0'
+    implementation 'software.amazon.awssdk:s3:2.29.23'
 
 
     // because we don't have boot-starter-webflux
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.16.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.18.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.18.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2'
 
-    implementation 'org.springframework:spring-oxm:6.1.2'
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
+    implementation 'org.springframework:spring-oxm:6.1.14'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
 
-    implementation 'org.apache.xmlgraphics:fop:2.9'
+    implementation 'org.apache.xmlgraphics:fop:2.10'
 
     implementation 'org.testng:testng:7.1.0'
 

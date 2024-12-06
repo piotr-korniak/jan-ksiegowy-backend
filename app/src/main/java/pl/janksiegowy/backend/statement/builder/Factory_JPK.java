@@ -35,7 +35,7 @@ public class Factory_JPK implements SpecificStatement<StatementDto> {
     private final FormatterService formatters;
 
     @Override
-    public StatementDto build(Metric metric, MonthPeriod period) {
+    public StatementDto build( Metric metric, MonthPeriod period) {
         System.err.println( "Factory_JPK build: "+  period.getId());
         if( period.getEnd().getMonthValue()% 3 == 0) {
             var statementDto= getVatStatement( metric, period.getParent())
@@ -76,7 +76,7 @@ public class Factory_JPK implements SpecificStatement<StatementDto> {
                         .no( statement.getNo()))
                 .orElseGet(()-> StatementDto.create()
                         .no( Integer.valueOf( numerator.increment( NumeratorCode.ST, "JPK", period.getEnd()))))
-                .revenue( entities.findByTypeAndTaxNumber( EntityType.O, metric.getRcCode()).orElseThrow())
+                .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode()).orElseThrow())
                 .date( Util.min( LocalDate.now(), period.getEnd().plusDays( 25)))
                 .due( period.getEnd().plusDays( 25 ))
                 .period( period)
@@ -84,6 +84,7 @@ public class Factory_JPK implements SpecificStatement<StatementDto> {
     }
 
     private StatementMap getVatStatementMap(StatementDto statementDto, Interpreter result) {
+        System.err.println( "VAT należny: "+ result.getVariable( "Razem_Nalezny", BigDecimal.ZERO));
         return StatementMap.create( statementDto)
                 .addLine( StatementLineDto.create()
                         .itemCode( StatementItemCode.VAT_NZ)

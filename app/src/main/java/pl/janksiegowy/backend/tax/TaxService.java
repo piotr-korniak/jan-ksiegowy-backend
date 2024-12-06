@@ -16,7 +16,8 @@ public class TaxService {
 
     public Interpreter calculate( Period period, TaxType taxType){
         return strategies.stream()
-                .filter( s-> s.isApplicable( taxType)&& !s.getDateApplicable().isAfter( period.getEnd()))
+                .filter( s-> s.isApplicable( taxType)&&
+                        !s.getDateApplicable().isAfter( period.getEnd()))
                 .max( Comparator.comparing( SpecificItems::getDateApplicable))
                 .map( specificItems -> specificItems.calculate( period))
                 .orElseGet( Interpreter::new);

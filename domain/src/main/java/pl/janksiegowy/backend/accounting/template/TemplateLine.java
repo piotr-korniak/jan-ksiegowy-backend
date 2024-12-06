@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.UuidGenerator;
 import pl.janksiegowy.backend.accounting.account.Account;
-import pl.janksiegowy.backend.accounting.account.AccountPage;
+import pl.janksiegowy.backend.accounting.account.AccountSide;
 import pl.janksiegowy.backend.finances.settlement.SettlementType;
 
 import java.util.UUID;
@@ -29,7 +29,7 @@ public abstract class TemplateLine {
     private Template template;
 
     @Enumerated( EnumType.STRING)
-    private AccountPage page;
+    private AccountSide side;
 
     @Enumerated( EnumType.STRING)
     private SettlementType settlementType;

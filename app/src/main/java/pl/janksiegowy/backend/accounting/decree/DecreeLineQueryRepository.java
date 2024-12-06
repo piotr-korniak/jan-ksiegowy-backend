@@ -1,12 +1,12 @@
 package pl.janksiegowy.backend.accounting.decree;
 
-import pl.janksiegowy.backend.accounting.decree.dto.DecreeSumDto;
+import pl.janksiegowy.backend.accounting.decree.dto.DecreeBalanceDto;
+import pl.janksiegowy.backend.accounting.decree.dto.DecreeSummaryDto;
 import pl.janksiegowy.backend.period.Period;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 public interface DecreeLineQueryRepository {
 
@@ -49,14 +49,15 @@ public interface DecreeLineQueryRepository {
     BigDecimal sumValueByTypeAndAccountNameLike( Class<? extends DecreeLine> type, String name,
                                                  LocalDate periodStart, LocalDate periodEnd);
 
-    DecreeSumDto sumValueByAccountNumberLike(
+    DecreeSummaryDto sumValueByAccountNumberLike(
             String accountNumber, LocalDate periodStart, LocalDate periodEnd);
 
-    DecreeSumDto sumValueByParentAccountNumberGroupByAccount(
+    DecreeSummaryDto sumValueByParentAccountNumberGroupByAccount(
             String accountNumber, LocalDate periodStart, LocalDate periodEnd);
 
-    DecreeSumDto sumValueByParentAccountNumber(
+    DecreeSummaryDto sumValueByParentAccountNumber(
             String accountNumber, LocalDate periodStart, LocalDate periodEnd);
 
+    List<DecreeBalanceDto> sum( LocalDate periodStart, LocalDate periodEnd);
 }
 

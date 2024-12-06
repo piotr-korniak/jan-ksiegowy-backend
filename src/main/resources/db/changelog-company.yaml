@@ -1,3 +1,41 @@
 databaseChangeLog:
-  - includeAll:
-      path: db/company
+  - include:
+      file: db/company/01-metrics.sql
+  - include:
+      file: db/company/02-entities.sql
+  - include:
+      file: db/company/03-invoices.sql
+  - include:
+      file: db/company/04-period.sql
+  - include:
+      file: db/company/05-items.sql
+  - include:
+      file: db/company/06-invoices_lines.sql
+  - include:
+      file: db/company/07-statements.sql
+  - include:
+      file: db/company/08-payments.sql
+  - include:
+      file: db/company/09-numerators.sql
+  - include:
+      file: db/company/10-templates.sql
+  - include:
+      file: db/company/11-accounts.sql
+  - include:
+      file: db/company/12-templates_lines.sql
+  - include:
+      file: db/company/13-decree.sql
+  - include:
+      file: db/company/14-contracts.sql
+  - include:
+      file: db/company/15-bank_accounts.sql
+  - include:
+      file: db/company/16-shares.sql
+  - include:
+      file: db/company/17-statement_lines.sql
+  - include:
+      file: db/company/18-payslip_lines.sql
+  - include:
+      file: db/company/19-updates.sql
+
+

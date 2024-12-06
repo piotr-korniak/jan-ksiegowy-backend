@@ -19,9 +19,11 @@ dependencies {
 
     implementation 'org.apache.xmlgraphics:fop:2.9'
 
-    implementation 'org.springframework:spring-oxm:6.1.2'
+    implementation 'com.opencsv:opencsv:5.9'
 
-    implementation 'com.sun.xml.bind:jaxb-impl:4.0.4'
+    implementation 'org.springframework:spring-oxm:6.1.14'
+
+    implementation 'com.sun.xml.bind:jaxb-impl:4.0.5'
     implementation 'net.sf.saxon:Saxon-HE:10.5' // Saxon-HE (Home Edition)
 
     testImplementation platform('org.junit:junit-bom:5.9.1')

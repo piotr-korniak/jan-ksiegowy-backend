@@ -36,8 +36,11 @@ public class Metric {
 
     private boolean vatQuarterly= false;
     private boolean citQuarterly= false;
-    private boolean vatPl= false;
-    private boolean vatUe= false;
+
+    @Column( name = "vat_pl")
+    private boolean vatPL= false;
+    @Column( name = "vat_ue")
+    private boolean vatUE= false;
 
     private String rcCode;
 
@@ -49,10 +52,10 @@ public class Metric {
     }
 
     public VAT isVatMonthly() {
-        return vatPl&&!vatQuarterly? VAT.Yes: VAT.No;
+        return vatPL&&!vatQuarterly? VAT.Yes: VAT.No;
     }
     public boolean isVatQuarterly() {
-        return vatPl&&vatQuarterly;
+        return vatPL&&vatQuarterly;
     }
 
     public boolean isTaxQuarterly() {

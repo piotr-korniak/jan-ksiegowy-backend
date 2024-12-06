@@ -1,16 +1,7 @@
 package pl.janksiegowy.backend.accounting.decree;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.accounting.account.AccountPage;
-import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
-import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
-import pl.janksiegowy.backend.accounting.decree.dto.DecreeMap;
 import pl.janksiegowy.backend.finances.payment.*;
-import pl.janksiegowy.backend.shared.Util;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.UUID;
 
 @AllArgsConstructor
 public class DecreeInitializer {

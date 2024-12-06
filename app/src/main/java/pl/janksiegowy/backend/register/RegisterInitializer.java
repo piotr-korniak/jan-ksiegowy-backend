@@ -7,8 +7,6 @@ import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterQueryRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterQueryRepository;
-import pl.janksiegowy.backend.register.invoice.InvoiceRegisterType;
-import pl.janksiegowy.backend.register.payment.PaymentRegisterFactory;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 

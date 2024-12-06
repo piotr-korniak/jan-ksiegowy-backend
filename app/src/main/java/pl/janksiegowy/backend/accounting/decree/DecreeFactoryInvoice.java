@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.item.ItemType;
+import pl.janksiegowy.backend.shared.Util;
 
 
 import java.math.BigDecimal;
@@ -81,7 +82,8 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
                                         )));
                     }
 
-                }.build( template, invoice.getInvoiceDate(), invoice.getNumber(), invoice.getDocumentId()))
+                }.build( template, Util.min( invoice.getIssueDate(), invoice.getInvoiceDate()),
+                        invoice.getNumber(), invoice.getDocumentId()))
                 .map( decreeMap-> Optional.ofNullable( invoice.getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
                         .orElseGet(()-> decreeMap))

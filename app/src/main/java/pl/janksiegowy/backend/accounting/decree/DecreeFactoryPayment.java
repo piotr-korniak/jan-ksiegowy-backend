@@ -133,7 +133,7 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType>, S
                     @Override public Optional<AccountDto> getAccount( TemplateLine line) {
                         var account= line.getAccount();
 
-                        if( account.getNumber().matches(".*\\[[CEHO]].*"))
+                        if( account.getNumber().matches(".*\\[[CERS]].*"))
                             return expandEntityAccount( account.getNumber(), payment.getEntity());
 
                         if( account.getNumber().matches(".*\\[[AD]].*"))

@@ -46,7 +46,7 @@ interface SqlEntityQueryRepository extends EntityQueryRepository, Repository<Ent
             "FROM Entity M " +
             "LEFT OUTER JOIN Entity P "+
             "ON M.entityId= P.entityId AND M.date < P.date "+
-            "WHERE TYPE(M)= :type AND P.date IS NULL")
+            "WHERE M.type= :type AND P.date IS NULL")
     <T> List<T> findByType(Class<T> tClass, EntityType type);
 }
 

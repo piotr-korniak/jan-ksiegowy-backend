@@ -48,9 +48,9 @@ public class ChargeInitializer {
                             .orElseGet(()-> entities.findByCountryAndTypeAndTaxNumber(
                                             entity.getCountry(), EntityType.B, entity.getTaxNumber())
                                     .orElseGet(()-> entities.findByCountryAndTypeAndTaxNumber(
-                                                    entity.getCountry(), EntityType.H, entity.getTaxNumber())
+                                                    entity.getCountry(), EntityType.S, entity.getTaxNumber())
                                             .orElseGet( ()-> entities.findByCountryAndTypeAndTaxNumber(
-                                                            entity.getCountry(), EntityType.O, entity.getTaxNumber())
+                                                            entity.getCountry(), EntityType.R, entity.getTaxNumber())
                                                     .orElseThrow())))));
         }
 

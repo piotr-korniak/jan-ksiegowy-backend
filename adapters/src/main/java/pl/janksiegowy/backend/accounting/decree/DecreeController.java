@@ -4,14 +4,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.janksiegowy.backend.accounting.account.AccountPage;
+import pl.janksiegowy.backend.accounting.account.AccountSide;
 import pl.janksiegowy.backend.accounting.account.AccountQueryRepository;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeMap;
 import pl.janksiegowy.backend.finances.payment.PaymentRepository;
-import pl.janksiegowy.backend.register.RegisterQueryRepository;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.subdomain.TenantController;
@@ -72,7 +71,7 @@ public class DecreeController {
                     var dt= decreeLines.balanceDtLike( account.getNumber(), startDate, endDate);
                     if( dt.signum()!= 0) {
                         dupa.add(DecreeLineDto.create()
-                                .page(AccountPage.D)
+                                .side( AccountSide.D)
                                 .account(account)
                                 .value(dt));
 
@@ -80,7 +79,7 @@ public class DecreeController {
                     var ct= decreeLines.balanceCtLike( account.getNumber(), startDate, endDate);
                     if( ct.signum()!= 0) {
                         dupa.add(DecreeLineDto.create()
-                                .page(AccountPage.C)
+                                .side( AccountSide.C)
                                 .account(account)
                                 .value(ct));
 
@@ -97,13 +96,13 @@ public class DecreeController {
                     var profit = profitAndLossItems.calculate(startDate, endDate).getVariable("Wynik");
                     if( profit.signum()> 0) {
                         dupa.add( DecreeLineDto.create()
-                            .page( AccountPage.C)
+                                        .side( AccountSide.C)
                             .account( accountQueryRepository.findByNumber( "860").orElseThrow())
                             .value( profit));
                     }
                     if( profit.signum()< 0) {
                         dupa.add( DecreeLineDto.create()
-                            .page( AccountPage.D)
+                            .side( AccountSide.D)
                             .account( accountQueryRepository.findByNumber( "860").orElseThrow())
                             .value( profit.negate()));
                     }

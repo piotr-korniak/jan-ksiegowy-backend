@@ -14,13 +14,13 @@ public enum EntityType {
         }
     },
     /** Revenue */
-    O {
+    R {
         @Override public <T> T accept( EntityTypeVisitor<T> visitor) {
             return visitor.visitRevenue();
         }
     },
     /** Shareholders */
-    H {
+    S {
         @Override public <T> T accept( EntityTypeVisitor<T> visitor) {
             return visitor.visitShareholders();
         }

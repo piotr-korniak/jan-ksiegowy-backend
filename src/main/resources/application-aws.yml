@@ -1,0 +1,41 @@
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type:
+          EnumType: trace
+        orm:
+          jdbc:
+            bind: trace
+
+server:
+  port: 5000
+
+databases:
+  main:
+    datasource:
+      url: jdbc:postgresql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
+      username: ${RDS_USERNAME}
+      password: ${RDS_PASSWORD}
+      hikari:
+        schema: jan
+        poolName: mainDataSource
+    packages: pl.janksiegowy
+    liquibase:
+      enabled: true
+      changeLog: classpath:db/changelog-main.yaml
+  tenant:
+    datasource:
+      url-prefix: jdbc:postgresql://${RDS_HOSTNAME}:${RDS_PORT}/
+    cache:
+      maximumSize: 2
+      expireAfterAccess: 10
+    liquibase:
+      changeLog: classpath:db/changelog-tenant.yaml
+  company:
+    liquibase:
+      changelog: classpath:db/changelog-company.yaml
+
+s3:
+  bucket-name: elasticbeanstalk-eu-central-1-816069151609

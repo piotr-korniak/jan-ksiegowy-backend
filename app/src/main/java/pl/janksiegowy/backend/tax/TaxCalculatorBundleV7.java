@@ -47,7 +47,7 @@ public class TaxCalculatorBundleV7 implements TaxCalculatorBundle {
                         .no( statement.getNo()))
                 .orElseGet(()-> StatementDto.create()
                         .no( Integer.valueOf( numerator.increment( NumeratorCode.ST, "JPK", period.getEnd()))))
-                .revenue( entities.findByTypeAndTaxNumber( EntityType.O, metric.getRcCode()).orElseThrow())
+                .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode()).orElseThrow())
                 .date( Util.min( LocalDate.now(), period.getEnd().plusDays( 25)))
                 .due( period.getEnd().plusDays( 25 ))
                 .period( period)
@@ -81,8 +81,11 @@ public class TaxCalculatorBundleV7 implements TaxCalculatorBundle {
         //period.isVat()
 
         metrics.findByDate( period.getBegin()).ifPresent( metric-> {
+            System.err.println( "Tax V7 : "+ metric.getId());
+            System.err.println( "Tax V7 Quarterly? "+ metric.isVatQuarterly());
 
             if( metric.isVatQuarterly()) {
+
                 toPersist.add( statementService.build( metric, period, TaxType.VQ));
 
             }

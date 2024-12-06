@@ -29,6 +29,7 @@ public class CompanyLiquibase implements InitializingBean {
     private TenantConnectionProvider tenantConnectionProvider;
 
     @Autowired
+    @Qualifier( "webApplicationContext")
     private ResourceLoader resourceLoader;
 
     @Override

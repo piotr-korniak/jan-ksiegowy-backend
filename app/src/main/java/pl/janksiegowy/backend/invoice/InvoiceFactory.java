@@ -85,7 +85,7 @@ public class InvoiceFactory {
         return ((Invoice)invoice
                 .setMetric( metrics.findByDate( source.getInvoiceDate()).orElseThrow())
                 .setInvoiceDate( source.getInvoiceDate())
-                .setInvoicePeriodId( source.getInvoicePeriod().getId())
+                //.setInvoicePeriodId( source.getInvoicePeriod().getId())
                 .setIssueDate( source.getIssueDate())
                 .setPeriod( periods.findMonthPeriodOrAdd( source.getIssueDate()))
                 .setDueDate( source.getDueDate())

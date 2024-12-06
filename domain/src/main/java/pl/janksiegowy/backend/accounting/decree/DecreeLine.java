@@ -17,7 +17,7 @@ import java.util.UUID;
 @Entity
 @Table( name= "DECREES_LINES")
 @Inheritance( strategy= InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn( name= "PAGE", discriminatorType= DiscriminatorType.STRING, length= 1)
+@DiscriminatorColumn( name= "SIDE", discriminatorType= DiscriminatorType.STRING, length= 1)
 public abstract class DecreeLine {
 
     @Id

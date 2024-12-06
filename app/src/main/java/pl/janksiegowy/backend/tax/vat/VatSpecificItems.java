@@ -28,33 +28,6 @@ import java.util.stream.Collectors;
 public class VatSpecificItems implements SpecificItems<Interpreter> {
 
     private final LocalDate dateApplicable= LocalDate.of( 1970, 1, 4);
-    private final PeriodVisitor<List<JpaInvoiceSumDto>> domesticSales= new PeriodVisitor<List<JpaInvoiceSumDto>>() {
-        @Override public List<JpaInvoiceSumDto> visit( AnnualPeriod annualPeriod) {
-            throw new IllegalArgumentException( "Unsupported period type: Annual");
-        }
-        @Override public List<JpaInvoiceSumDto> visit( QuarterPeriod quarterPeriod) {
-            return lines.sumSalesByKindAndPeriodGroupByRate(
-                    InvoiceRegisterKind.D, quarterPeriod);
-        }
-        @Override public List<JpaInvoiceSumDto> visit( MonthPeriod monthPeriod) {
-            return lines.sumSalesByKindAndPeriodGroupByRate(
-                    InvoiceRegisterKind.D, monthPeriod);
-        }
-    };
-
-    private final PeriodVisitor<List<JpaInvoiceSumDto>> otherPurchase= new PeriodVisitor<List<JpaInvoiceSumDto>>() {
-        @Override public List<JpaInvoiceSumDto> visit( AnnualPeriod annualPeriod) {
-            throw new IllegalArgumentException( "Unsupported period type: Annual");
-        }
-        @Override public List<JpaInvoiceSumDto> visit( QuarterPeriod quarterPeriod) {
-            return lines.sumPurchaseByKindAndItemTypeGroupByType(
-                    List.of( InvoiceRegisterKind.U, InvoiceRegisterKind.W), quarterPeriod);
-        }
-        @Override public List<JpaInvoiceSumDto> visit( MonthPeriod monthPeriod) {
-            return lines.sumPurchaseByKindAndItemTypeGroupByType(
-                    List.of( InvoiceRegisterKind.U, InvoiceRegisterKind.W), monthPeriod);
-        }
-    };
 
     private final PeriodVisitor<List<JpaInvoiceSumDto>> purchase= new PeriodVisitor<List<JpaInvoiceSumDto>>() {
         @Override public List<JpaInvoiceSumDto> visit( AnnualPeriod annualPeriod) {
@@ -92,7 +65,7 @@ public class VatSpecificItems implements SpecificItems<Interpreter> {
             });
 
     @Override public boolean isApplicable(TaxType taxType) {
-        return taxType==TaxType.VM;
+        return taxType==TaxType.VM || taxType==TaxType.VQ;
     }
 
     @Override
@@ -128,12 +101,13 @@ public class VatSpecificItems implements SpecificItems<Interpreter> {
         result.setVariable( "Z_Przeniesienia", result.getVariable( "Z_Przeniesienia", BigDecimal.ZERO));
 
         // Domestic sales divided by tax rate
-        period.accept( domesticSales)
+        lines.sumSalesByKindAndPeriodGroupByRate( InvoiceRegisterKind.D, period.getBegin(), period.getEnd())
                 .forEach( sum-> salesDomesticFunctions.get( sum.getTaxRate())
                         .accept( result, sum.getBase(), sum.getVat()));
 
         // Other purchase
-        period.accept( otherPurchase)
+        lines.sumPurchaseByKindAndItemTypeGroupByType( List.of( InvoiceRegisterKind.U, InvoiceRegisterKind.W),
+                        period.getBegin(), period.getEnd())
                 .forEach( sum-> { switch (sum.getPurchaseKind()) {
                     case W -> {
                         result.add("Import_Uslug_Netto", sum.getBase());

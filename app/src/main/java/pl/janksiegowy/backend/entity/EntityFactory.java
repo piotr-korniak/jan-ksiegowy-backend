@@ -19,7 +19,7 @@ public class EntityFactory implements EntityTypeVisitor<Entity> {
         return update( source, source.getType()
                 .accept( this)
                     .setEntityId( UUID.randomUUID())
-                    .setAccountNumber( EntityType.O == source.getType()?
+                    .setAccountNumber( EntityType.R == source.getType()?
                             source.getTaxNumber(): numerators.increment( NumeratorCode.EN,
                             EntityType.B== source.getType()?
                                     EntityType.C.name(): source.getType().name()))

@@ -4,7 +4,6 @@ package pl.janksiegowy.backend.database;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import pl.janksiegowy.backend.accounting.account.AccountFacade;
 import pl.janksiegowy.backend.accounting.account.AccountInitializer;
 import pl.janksiegowy.backend.accounting.account.AccountQueryRepository;
@@ -24,9 +23,9 @@ import pl.janksiegowy.backend.finances.note.NoteInitializer;
 import pl.janksiegowy.backend.finances.payment.PaymentQueryRepository;
 import pl.janksiegowy.backend.finances.settlement.*;
 import pl.janksiegowy.backend.finances.share.ShareFacade;
-import pl.janksiegowy.backend.finances.share.ShareInitializer;
+import pl.janksiegowy.backend.finances.share.ShareMigrationService;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
-import pl.janksiegowy.backend.invoice.InvoiceInitializer;
+import pl.janksiegowy.backend.invoice.InvoiceMigrationService;
 import pl.janksiegowy.backend.invoice.InvoiceQueryRepository;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineInitializer;
 import pl.janksiegowy.backend.item.ItemFacade;
@@ -48,22 +47,24 @@ import pl.janksiegowy.backend.salary.ContractFacade;
 import pl.janksiegowy.backend.salary.ContractInitializer;
 import pl.janksiegowy.backend.salary.ContractQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
+import pl.janksiegowy.backend.shared.loader.MigrationLoader;
 import pl.janksiegowy.backend.shared.numerator.*;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 
 @TenantController
-@RequestMapping( "/v2/migrate")
 public class MigrationController extends MigrationConfiguration {
 
     private final EntityInitializer entities;
     private final MetricInitializer metrics;
     private final RegisterInitializer registers;
     private final PeriodInitializer periods;
-    private final InvoiceInitializer invoices;
     private final ItemInitializer items;
     private final InvoiceLineInitializer lines;
     private final PaymentInitializer payments;
@@ -76,7 +77,6 @@ public class MigrationController extends MigrationConfiguration {
 
     private final NoteInitializer notices;
     private final ChargeInitializer charges;
-    private final ShareInitializer shares;
 
     private final PeriodDto[] initialPeriods= {
             PeriodDto.create().type( PeriodType.A)
@@ -98,6 +98,8 @@ public class MigrationController extends MigrationConfiguration {
                 .begin( LocalDate.of( 2024, 1, 1))
                 .end( LocalDate.of( 2024, 12, 31))
     };
+
+    private final MigrationLoader migrationLoader;
 
     public MigrationController(final EntityQueryRepository entities,
                                final EntityFacade entity,
@@ -129,17 +131,18 @@ public class MigrationController extends MigrationConfiguration {
                                final EntityRepository entityRepository,
                                final NoteFacade notice,
                                final ChargeFacade charge,
-                               final ShareFacade share,
-
-                                final DataLoader loader) {
+                               final DataLoader loader,
+                               final InvoiceMigrationService migrationService,
+                               final MigrationExecutor migrationExecutor,
+                               final ShareMigrationService shareMigration){
+        this.invoiceMigration = migrationService;
+        this.migrationExecutor= migrationExecutor;
 
         this.metrics = new MetricInitializer( new MetricFactory(), metrics, loader);
         this.entities= new EntityInitializer( entities, entity, loader);
         this.registers= new RegisterInitializer( invoiceRegisters, paymentRegisters, accountingRegisters,
                                                    decree, invoice, payment, loader);
         this.periods= new PeriodInitializer( period);
-        this.invoices= new InvoiceInitializer( settlements, invoiceRegisters,
-                                                periods, entities, period, invoice, loader);
         this.items= new ItemInitializer( items, item, loader);
         this.lines= new InvoiceLineInitializer( invoices, invoice, items, loader);
         this.payments= new PaymentInitializer( clearing, settlements, paymentRegisters, payment, settlement,
@@ -152,13 +155,33 @@ public class MigrationController extends MigrationConfiguration {
         this.settlements= new SettlementInitializer( settlements, entities, settlement, decree, loader);
         this.notices= new NoteInitializer( settlements, entities, notice, loader);
         this.charges = new ChargeInitializer( settlements, entities, charge, loader);
-        this.shares= new ShareInitializer( settlements, entities, share, loader);
+        this.migrationLoader= new MigrationLoader( loader);
+        this.shareMigration= shareMigration;
     }
 
-    @PostMapping
-    public ResponseEntity migrate() {
+    private final MigrationExecutor migrationExecutor;
 
-        var response= new StringBuilder();
+    private final InvoiceMigrationService invoiceMigration;
+    private final ShareMigrationService shareMigration;
+
+    @PostMapping( "/v2/migrate/invoice")
+    public ResponseEntity invoiceMigrate() {
+        log.warn( "Invoices migration complete!");
+        return ResponseEntity.ok( invoiceMigration.init());
+    }
+
+    @PostMapping( "/v2/migrate/share")
+    public ResponseEntity shareMigrate() {
+        log.warn( "Shares migration complete!");
+        var response= shareMigration.init();
+        System.err.println( "Response: "+ response.toString());
+        return ResponseEntity.ok( response);
+    }
+
+    @PostMapping( "/v2/migrate")
+    public ResponseEntity<List<String>> migrate() {
+
+        List<String> responses= new ArrayList<>();
 
         log.warn( "Migration start...");
 
@@ -187,7 +210,7 @@ public class MigrationController extends MigrationConfiguration {
 
         items.init();
         log.warn( "Items migration complete!");
-
+/*
         response.append( invoices.init());
         log.warn( "Invoices migration complete!");
 
@@ -196,20 +219,35 @@ public class MigrationController extends MigrationConfiguration {
 
         response.append( contracts.init( getInitialContracts()));
         log.warn( "Contracts migration complete!");
+*/
+        try {
+            migrationLoader.loadSteps( "migration.yml", MigrationDto.class)
+                    .forEach( migrationDto -> {
+                        responses.add( migrationExecutor.executeMigration( migrationDto).getBody().toString());
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
 /*
         response.append( settlements.init());
         log.warn( "Settlements migration complete!");
 */
 
-        response.append( notices.init());
+        //response.append( notices.init());
 
-        response.append( charges.init());
+        //response.append( charges.init());
 
-        response.append( shares.init());
 
+/*
         payments.init();
         log.warn( "Payments migration complete!");
+*/
+        responses.forEach( responseEntity -> {
+            System.err.println( "responseEntity: "+ responseEntity.toString());
+        });
 
-        return ResponseEntity.ok( response.toString());
+        //responses.add( response.toString()));
+        return ResponseEntity.ok( responses);
     }
 }

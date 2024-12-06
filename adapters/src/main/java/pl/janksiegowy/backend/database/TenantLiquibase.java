@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
-import pl.janksiegowy.backend.database.LiquibaseConfig;
-import pl.janksiegowy.backend.database.TenantConnectionProvider;
 import pl.janksiegowy.backend.tenant.SqlTenantRepository;
 import pl.janksiegowy.backend.tenant.Tenant;
 
@@ -24,6 +22,7 @@ public class TenantLiquibase implements InitializingBean {
     private TenantConnectionProvider tenantConnectionProvider;
 
     @Autowired
+    @Qualifier( "webApplicationContext")
     private ResourceLoader resourceLoader;
 
     @Override

@@ -20,6 +20,14 @@ public class TaxCalculatorManager {
     }
 
     public List<StatementDto> calculate( MonthPeriod period) {
+
+        System.err.println( "Calculate: "+ period.getId());
+        taxCalculatorBundles.forEach( taxCalculatorBundle -> {
+            System.err.println( "calculator: "+
+                    taxCalculatorBundle.getDateApplicable()+ " : "+
+                    taxCalculatorBundle.getClass().getSimpleName());
+        });
+
         return taxCalculatorBundles.stream()
                 .filter( d-> !d.getDateApplicable().isAfter( period.getEnd()))
                 .max( Comparator.comparing( TaxCalculatorBundle::getDateApplicable))

@@ -20,7 +20,8 @@ public class MetricFactory {
                 .setCapital( source.getCapital())
                 .setVatQuarterly( source.isVatQuarterly())
                 .setCitQuarterly( source.isCitQuarterly())
-                .setVatUe( source.isVatUe())
+                .setVatPL( source.isVatPL())
+                .setVatUE( source.isVatUE())
                 .setRcCode( source.getRcCode());
     }
 

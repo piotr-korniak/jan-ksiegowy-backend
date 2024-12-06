@@ -112,7 +112,7 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
                                             ()-> decree.add( DecreeLineDto.create()
                                                     .account( accountDto)
                                                     .value( getValue( templateItem))
-                                                    .page( templateItem.getPage())
+                                                    .side( templateItem.getSide())
                                                     .description( templateItem.getDescription()))))));
             return decree;
         }

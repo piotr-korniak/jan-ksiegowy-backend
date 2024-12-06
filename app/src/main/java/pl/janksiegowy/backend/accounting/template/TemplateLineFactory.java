@@ -17,7 +17,7 @@ public class TemplateLineFactory {
                 .map( account-> Optional.ofNullable( source.getId())
                     .map( line::setId)
                     .orElseGet(()-> line)
-                        .setPage( source.getPage())
+                        .setSide( source.getSide())
                         .setAccount( account)
                         .setSettlementType( source.getSettlementType())
                         .setDescription( source.getDescription()))

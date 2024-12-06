@@ -49,10 +49,10 @@ public abstract class Statement {
     private LocalDateTime created;
 
     private String xml;
-
+/*
     private BigDecimal value_1;
     private BigDecimal value_2;
-
+*/
     private int no;
 
     @Enumerated( EnumType.STRING)

@@ -91,7 +91,7 @@ public class CitApproval {
                                         ((period.getEnd().getYear()- period.getBegin().getYear())==1?
                                                 period.getEnd().getYear()%100: ""))
                                 .due( period.getEnd().plusMonths( 3))
-                                .revenue( entities.findByTypeAndTaxNumber( EntityType.O, metric.getRcCode())
+                                .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode())
                                         .orElseThrow())
                                 .period( period)) );
             }

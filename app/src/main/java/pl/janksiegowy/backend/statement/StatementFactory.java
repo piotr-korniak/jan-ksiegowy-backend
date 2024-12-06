@@ -32,9 +32,9 @@ public class StatementFactory {
                                 .setSettlementDate( settlementPeriod.getEnd())
                                 .setLiability( source.getLiability())
                                 .setDue( source.getDue())
-                                .setNumber( source.getNumber())
-                                .setValue_1( source.getValue1())
-                                .setValue_2( source.getValue2());
+                                .setNumber( source.getNumber());
+                                //.setValue_1( source.getValue1())
+                                //.setValue_2( source.getValue2());
                     }
                     @Override public Statement visitRegisterStatement() {
                         return new RegisterStatement();

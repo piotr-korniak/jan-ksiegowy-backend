@@ -6,7 +6,7 @@ import pl.janksiegowy.backend.accounting.account.AccountFacade;
 import pl.janksiegowy.backend.accounting.account.AccountRepository;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
-import pl.janksiegowy.backend.accounting.account.AccountPage.AccountPageVisitor;
+import pl.janksiegowy.backend.accounting.account.AccountSide.AccountPageVisitor;
 
 @AllArgsConstructor
 public class DecreeLineFactory implements AccountPageVisitor<DecreeLine>{
@@ -26,7 +26,7 @@ public class DecreeLineFactory implements AccountPageVisitor<DecreeLine>{
                             .setParent( parent))
                     .orElseThrow());
 
-        return source.getPage().accept( this)
+        return source.getSide().accept( this)
                 .setValue( source.getValue())
                 .setAccount( account)
                 .setDescription( source.getDescription());

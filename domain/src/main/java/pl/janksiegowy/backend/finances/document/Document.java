@@ -54,10 +54,7 @@ public abstract class Document {
 
  //   @Column( name= "PERIOD_ID")
  //   private String periodId;
-/*
-    public DocumentType getType() {
-        return DocumentType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
-    }*/
+
 
     @OneToOne( mappedBy= "settlement", cascade = CascadeType.ALL)
     protected DocumentDecree decree;

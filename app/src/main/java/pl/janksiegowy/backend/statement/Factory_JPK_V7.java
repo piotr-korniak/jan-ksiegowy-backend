@@ -97,12 +97,12 @@ public abstract class Factory_JPK_V7 {
         this.salesInvoice= lines.findByKindAndPeriodGroupByRate(
                         List.of( InvoiceRegisterKind.D),
                         List.of( InvoiceRegisterKind.U, InvoiceRegisterKind.W),
-                        period.getId())
+                        period.getBegin(), period.getEnd())
                 .stream()
                 .collect( Collectors.groupingBy( JpaInvoiceSumDto::getInvoiceId,
                         LinkedHashMap::new, Collectors.toList()));
 
-        this.purchaseInvoice= lines.findByKindAndPeriodGroupByType( period.getId())
+        this.purchaseInvoice= lines.findByKindAndPeriodGroupByType( period)
                 .stream()
                 .collect( Collectors.groupingBy( JpaInvoiceSumDto::getInvoiceId,
                         LinkedHashMap::new, Collectors.toList()));

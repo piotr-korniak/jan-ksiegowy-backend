@@ -1,3 +1,5 @@
 databaseChangeLog:
-  - includeAll:
-      path: db/main
+  - include:
+      file: db/main/01-tenants.sql
+  - include:
+      file: db/main/02-password.sql

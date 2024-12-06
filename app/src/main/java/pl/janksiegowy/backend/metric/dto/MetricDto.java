@@ -1,8 +1,11 @@
 package pl.janksiegowy.backend.metric.dto;
 
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByNames;
+import com.opencsv.bean.CsvDate;
+import com.opencsv.bean.CsvNumber;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.tenant.dto.TenantDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,28 +28,56 @@ public interface MetricDto {
     BigDecimal getCapital();
     boolean isVatQuarterly();
     boolean isCitQuarterly();
-    boolean isVatUe();
+    boolean isVatPL();
+    boolean isVatUE();
     String getRcCode();
-
-
 
     @Setter
     @Accessors( fluent= true, chain= true)
     class Proxy implements MetricDto {
 
+        @CsvBindByName( column= "Date")
+        @CsvDate( "dd.MM.yyyy")
         private LocalDate id;
+
+        @CsvBindByName( column= "Tax Number")
         private String taxNumber;
+
+        @CsvBindByName( column= "Registration Number")
         private String registrationNumber;
+
+        @CsvBindByName( column= "Business Number")
         private String businessNumber;
+
+        @CsvBindByName
         private String name;
+
+        @CsvBindByName
         private String address;
+
+        @CsvBindByName
         private String town;
+
+        @CsvBindByName
         private String postcode;
+
+        @CsvBindByName
         private String country;
+
+        @CsvBindByName
         private BigDecimal capital;
+
+        @CsvBindByName
         private boolean vatQuarterly;
+        @CsvBindByName
         private boolean citQuarterly;
+
+        @CsvBindByName
+        private boolean vatPL;
+        @CsvBindByName
         private boolean vatUE;
+
+        @CsvBindByName
         private String rcCode;
 
         @Override public LocalDate getId() {
@@ -85,7 +116,8 @@ public interface MetricDto {
         @Override public boolean isCitQuarterly() {
             return citQuarterly;
         }
-        @Override public boolean isVatUe() {
+        @Override public boolean isVatPL() { return vatPL;}
+        @Override public boolean isVatUE() {
             return vatUE;
         }
         @Override public String getRcCode() {
