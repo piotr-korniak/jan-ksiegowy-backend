@@ -4,7 +4,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.finances.charge.ChargeType;
-import pl.janksiegowy.backend.finances.note.NoteType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

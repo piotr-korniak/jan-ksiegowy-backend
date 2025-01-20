@@ -3,11 +3,10 @@ package pl.janksiegowy.backend.salary;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
 import pl.janksiegowy.backend.period.Period;
-import pl.janksiegowy.backend.salary.dto.ContractDto;
+import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.salary.dto.PayslipDto;
-import pl.janksiegowy.backend.shared.interpreter.Interpreter;
+import pl.janksiegowy.backend.salary.strategy.SalaryStrategy;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,6 +25,7 @@ public class SalaryFacade {
     }
 
     public Payslip approval( Payslip payslip) {
+        System.err.println( "Księgujemy płace!!!");
         decree.book( payslip);
         return payslip;
     }

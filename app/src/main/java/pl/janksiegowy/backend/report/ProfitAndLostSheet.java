@@ -19,6 +19,53 @@ public class ProfitAndLostSheet {
 
     public StringBuilder prepare(LocalDate startDate, LocalDate endDate) {
         var inter= profitAndLossItems.calculate( startDate, endDate );
+        /*
+        return List.of( 
+                List.of( "A. Przychody netto ze sprzedaży i zrównane z nimi:",
+                        inter.getVariable( "Przychody"),
+                        List.of( "I. Przychody netto ze sprzedaży produktów",
+                                inter.getVariable( "703"))),
+                List.of( "B. Koszty działalności operacyjnej",
+                        inter.getVariable("KosztyOperacyjne"))
+        );
+        
+        return List.of(
+                new DecreeReportDto() {
+                    @Override public String getLabel() {
+                        return "A. Przychody netto ze sprzedaży i zrównane z nimi:";
+                    }
+                    @Override public BigDecimal getAmount() {
+                        return inter.getVariable( "Przychody");
+                    }
+
+                    @Override
+                    public List<DecreeRaportLineDto> getDecree() {
+                        return List.of( new DecreeRaportLineDto() {
+
+                            @Override public String getLabel() {
+                                return "I. Przychody netto ze sprzedaży produktów";
+                            }
+
+                            @Override
+                            public BigDecimal getAmount() {
+                                return inter.getVariable( "703");
+                            }
+
+                        });
+                    }
+                },
+
+                new DecreeRaportLineDto() {
+                    @Override public String getLabel() {
+                        return "B. Koszty działalności operacyjnej";
+                    }
+                    @Override public BigDecimal getAmount() {
+                        return inter.getVariable("KosztyOperacyjne");
+                    }
+
+                });
+        
+*/
         return new StringBuilder()
                 .append( String.format( "\n%-47s%10s - %10s\n\n", "Rachunek Zysków i Strat (kalkulacyjny)",
                         Util.toString( startDate), Util.toString( endDate)))

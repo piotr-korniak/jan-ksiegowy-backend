@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.UuidGenerator;
-import pl.janksiegowy.backend.finances.note.NoteType;
 
 import java.time.LocalDate;
 import java.util.UUID;

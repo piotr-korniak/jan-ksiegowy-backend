@@ -1,5 +1,7 @@
 package pl.janksiegowy.backend.shared.loader;
 
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +36,7 @@ public class DataLoaderConfiguration  {
     }
 
     @Bean
-    public DataLoader dataLoader( ResourceLoaderFake loader) {
-        return new DataLoaderImpl( loader);
+    public DataLoader dataLoader(ResourceLoaderFake loader, CsvMapper csvMapper, YAMLMapper yamlMapper) {
+        return new DataLoaderImpl( loader, csvMapper, yamlMapper);
     }
 }

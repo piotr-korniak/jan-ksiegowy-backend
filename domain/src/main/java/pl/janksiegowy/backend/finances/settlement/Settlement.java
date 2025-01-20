@@ -87,7 +87,8 @@ public abstract class Settlement {
     public abstract BigDecimal getAmount();
     public abstract Settlement setAmount( BigDecimal amount);
 
-    public abstract Settlement setClearings( List<Clearing> clearings);
+    public abstract Settlement setClearings( int sign, List<Clearing> clearings);
+    public abstract List<Clearing> getClearings();
 
     public interface SettlementVisitor<T> {
         T visit( PayslipSettlement payslip);

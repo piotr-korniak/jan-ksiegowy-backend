@@ -4,11 +4,8 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
-import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.finances.charge.Charge;
 import pl.janksiegowy.backend.finances.charge.ChargeType;
-import pl.janksiegowy.backend.finances.note.Note;
-import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
 
 import java.math.BigDecimal;
 import java.util.Optional;

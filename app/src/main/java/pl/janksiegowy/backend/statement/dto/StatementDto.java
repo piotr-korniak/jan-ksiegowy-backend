@@ -35,8 +35,6 @@ public interface StatementDto {
 
     Period getPeriod();
 
-    BigDecimal getValue1();
-    BigDecimal getValue2();
     int getNo();
     StatementStatus getStatus();
 
@@ -58,8 +56,6 @@ public interface StatementDto {
         private String number;
         private EntityDto revenue;
         private Period period;
-        private BigDecimal value1;
-        private BigDecimal value2;
         private int no;
         private StatementStatus status;
         private List<StatementLineDto> statementLines;
@@ -101,12 +97,6 @@ public interface StatementDto {
         }
         @Override public Period getPeriod() {
             return period;
-        }
-        @Override public BigDecimal getValue1() {
-            return value1;
-        }
-        @Override public BigDecimal getValue2() {
-            return value2;
         }
         @Override public int getNo() {
             return no;

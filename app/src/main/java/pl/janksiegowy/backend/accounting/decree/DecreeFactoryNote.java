@@ -4,16 +4,14 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
-import pl.janksiegowy.backend.finances.note.Note;
-import pl.janksiegowy.backend.finances.note.NoteType.NoteTypeVisitor;
+import pl.janksiegowy.backend.finances.notice.Note;
+import pl.janksiegowy.backend.finances.notice.NoteType.NoteTypeVisitor;
 import pl.janksiegowy.backend.accounting.template.SettlementFunction.SettlementFunctionVisitor;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandEntityAccount;
-import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandPaymentRegisterAccount;
 
 @AllArgsConstructor
 public class DecreeFactoryNote implements NoteTypeVisitor<TemplateType> {

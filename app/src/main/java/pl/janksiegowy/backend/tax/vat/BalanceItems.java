@@ -15,9 +15,6 @@ public class BalanceItems {
     private final ProfitAndLossItems profitAndLossItems;
 
     public Interpreter calculate( LocalDate beginPeriod, LocalDate endPeriod) {
-        // System.err.println( "Kasa: "+  lines.parentBalanceDt( "100-[B]", beginPeriod, endPeriod));
-        // System.err.println( "Bank: "+  lines.parentBalanceDt( "130-[B]", beginPeriod, endPeriod));
-        // System.err.println( "US: "+ lines.developedBalanceCt( "224-[U]", beginPeriod, endPeriod));
 
         return profitAndLossItems.calculate( beginPeriod, endPeriod)
                 .setVariable( "Trwale", BigDecimal.ZERO)
@@ -32,7 +29,7 @@ public class BalanceItems {
                 .sum( "Naleznosci", "SaldoWn201", "SaldoWn202", "SaldoWn221_2", "SaldoWn221_3")
                 .sum( "Obrotowe", "Naleznosci", "SaldoWn100", "SaldoWn130")
 
-                .setVariable( "SaldoWn241", lines.parentBalanceDt( "241-[H]", beginPeriod, endPeriod))
+                .setVariable( "SaldoWn241", lines.parentBalanceDt( "241-[S]", beginPeriod, endPeriod))
                 .interpret( "Aktywa", "[Trwale]+[Obrotowe]+[SaldoWn241]")
                 .setVariable( "SaldoMa801", lines.balanceCtLike( "801", beginPeriod, endPeriod))
                 .setVariable( "SaldoMa860", lines.balanceCtLike( "860", beginPeriod, endPeriod))
@@ -44,11 +41,11 @@ public class BalanceItems {
                 .setVariable( "SaldoMa221_1", lines.balanceCtLike( "221-1", beginPeriod, endPeriod))
                 .setVariable( "SaldoMa221_2", lines.balanceCtLike( "221-2", beginPeriod, endPeriod))
                 .setVariable( "SaldoMa221_3", lines.balanceCtLike( "221-3", beginPeriod, endPeriod))
-                .setVariable( "SaldoMa224", lines.developedBalanceCt( "224-[O]", beginPeriod, endPeriod))
+                .setVariable( "SaldoMa224", lines.developedBalanceCt( "224-[R]", beginPeriod, endPeriod))
                 .setVariable( "SaldoMa225", lines.balanceCtLike( "225", beginPeriod, endPeriod))
                 .setVariable( "SaldoMa226", lines.balanceCtLike( "226", beginPeriod, endPeriod))
                 .setVariable( "SaldoMa234", lines.developedBalanceCt( "234-[E]", beginPeriod, endPeriod))
-        //   inter.setVariable( "SaldoMa248", decreeLines.developedBalanceCt( "248-[W]", startDate, endDate));
+                .setVariable( "SaldoMa248", lines.developedBalanceCt( "248-[S]", beginPeriod, endPeriod))
                 .setVariable( "SaldoMa227", lines.balanceCtLike( "227", beginPeriod, endPeriod))
                 .sum( "Zobowiazania", "SaldoMa202", "SaldoMa201", "SaldoMa221_1",
                         "SaldoMa221_3", "SaldoMa224", "SaldoMa225", "SaldoMa226", "SaldoMa227", "SaldoMa234")

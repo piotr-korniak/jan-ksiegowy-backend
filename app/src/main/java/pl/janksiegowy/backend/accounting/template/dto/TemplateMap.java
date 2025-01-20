@@ -1,5 +1,6 @@
 package pl.janksiegowy.backend.accounting.template.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.janksiegowy.backend.accounting.template.TemplateType;
 import pl.janksiegowy.backend.entity.EntityType;
 
@@ -7,13 +8,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class TemplateMap implements TemplateDto{
 
-    private final TemplateDto template;
-    private final List<TemplateLineDto> lines;
+    private TemplateDto template;
 
-    public TemplateMap( TemplateDto template) {
+    private List<TemplateLineDto> lines= new ArrayList<>();
+
+        public TemplateMap( TemplateDto template) {
         this.template= template;
         this.lines= new ArrayList<>();
     }
@@ -22,6 +25,7 @@ public class TemplateMap implements TemplateDto{
         this.lines.add( line);
         return this;
     }
+
 
     @Override public UUID getTemplateId() {
         return template.getTemplateId();
@@ -38,8 +42,10 @@ public class TemplateMap implements TemplateDto{
     @Override public String getRegisterCode() {
         return template.getRegisterCode();
     }
+
     @Override public List<TemplateLineDto> getLines() {
-        return lines;
+        return lines.stream().map( proxy -> (TemplateLineDto)proxy)
+                .collect( Collectors.toList());
     }
     @Override public String getName() {
         return template.getName();

@@ -26,4 +26,9 @@ public class AcquiredShare extends Share {
     public BigDecimal getAmount() {
         return getCt();
     }
+
+    @Override
+    public SettlementKind getKind() {
+        return kind;
+    }
 }

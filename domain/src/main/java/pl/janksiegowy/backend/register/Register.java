@@ -19,7 +19,7 @@ import java.util.UUID;
 public abstract class Register {
 
     @Id
-    @UuidGenerator
+//    @UuidGenerator
     @Column( name= "ID")
     private UUID registerId;
 

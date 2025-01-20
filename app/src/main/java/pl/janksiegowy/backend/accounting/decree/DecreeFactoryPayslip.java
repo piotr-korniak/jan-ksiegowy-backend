@@ -35,23 +35,21 @@ public class DecreeFactoryPayslip {
                     @Override public BigDecimal getValue( TemplateLine line ) {
                         return ((PayslipTemplateLine)line).getFunction()
                                 .accept( new PayslipFunction.PayslipFunctionVisitor<BigDecimal>() {
-                                    @Override public BigDecimal visitSkladkaPracownika() {
-                                        return lines.getOrDefault( PayslipItemCode.UB_ZAT, BigDecimal.ZERO);
+                                    @Override public BigDecimal visitUbezpieczenieEmerytalneZatrudniony() {
+                                        return lines.getOrDefault( PayslipItemCode.UE_ZAT, BigDecimal.ZERO);
                                     }
-                                    @Override public BigDecimal visitSkladkaPracodawcy() {
-                                        return lines.getOrDefault( PayslipItemCode.UB_PRA, BigDecimal.ZERO);
+                                    @Override public BigDecimal visitUbezpieczenieZdrowotne() {
+                                        return lines.getOrDefault( PayslipItemCode.UB_ZDR, BigDecimal.ZERO);
                                     }
+
                                     @Override public BigDecimal visitWynagrodzenieBrutto() {
                                         return lines.getOrDefault( PayslipItemCode.KW_BRT, BigDecimal.ZERO);
                                     }
-                                    @Override public BigDecimal visitUbezpiecznieZdrowotne() {
-                                        return lines.getOrDefault( PayslipItemCode.UB_ZDR, BigDecimal.ZERO);
-                                    }
-                                    @Override public BigDecimal visitZaliczkaPIT() {
-                                        return lines.getOrDefault( PayslipItemCode.TAX_ZA, BigDecimal.ZERO);
-                                    }
                                     @Override public BigDecimal visitDoWyplaty() {
                                         return lines.getOrDefault( PayslipItemCode.KW_NET, BigDecimal.ZERO);
+                                    }
+                                    @Override public BigDecimal visitKwotaZaliczki() {
+                                        return lines.getOrDefault( PayslipItemCode.KW_ZAL, BigDecimal.ZERO);
                                     }
                                 } );
                     }

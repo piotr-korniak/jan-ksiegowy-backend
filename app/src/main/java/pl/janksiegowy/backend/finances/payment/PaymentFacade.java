@@ -7,6 +7,7 @@ import pl.janksiegowy.backend.finances.clearing.ClearingFactory;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
 import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
+import pl.janksiegowy.backend.register.dto.BankAccountDto;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.register.payment.PaymentRegister;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterFactory;
@@ -44,9 +45,11 @@ public class PaymentFacade {
     }
 
     public PaymentRegister save( RegisterDto source) {
-        return registers.save( Optional.ofNullable( source.getRegisterId())
-                .map( uuid-> register.update( source))
-                .orElse( register.from( source)));
+        return registers.save( register.from( source));
+    }
+
+    public PaymentRegister save( BankAccountDto source) {
+        return registers.save( register.from( source));
     }
 
 

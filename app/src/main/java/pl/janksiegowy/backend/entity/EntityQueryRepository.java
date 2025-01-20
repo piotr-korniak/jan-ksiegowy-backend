@@ -12,6 +12,7 @@ public interface EntityQueryRepository {
             Country country, EntityType type, String taxNumber);
 
     Optional<EntityDto> findByTypeAndTaxNumber( EntityType type, String taxNumber);
+    List<EntityDto> findByCountryAndTaxNumberAndTypes( Country country, String taxNumber, EntityType... types);
 
     <T> List<T> findByType( Class<T> tClass, EntityType type);
 }

@@ -45,8 +45,12 @@ public abstract class Factory_CIT_8 {
                 .interpret( "koszty", "[402_1]+ [403_1]+ [404]+ [405]+ [409_1]+ [755_1]+ [765]")
                 .interpret( "wynik", "[przychody]- [koszty]")
                 .setVariable( "JEDEN", BigDecimal.ONE)
-                .interpret( "podstawa", "[wynik]@ [JEDEN]" )
+                .interpret( "podstawa", "[wynik]@ [JEDEN]" );
+        // podatek, jeśli podstawa > 0
+        data.setVariable( "podstawa", data.getVariable("podstawa").max( BigDecimal.ZERO))
                 .interpret( "podatek", "[podstawa]* [podatek]");
+        System.err.println( "Podstawa: " + data.getVariable("podstawa"));
+        System.err.println( "Podatek: " + data.getVariable("podatek"));
         return this;
     }
 

@@ -69,8 +69,3 @@ public abstract class Decree implements DecreeLineVisitor<Decree> {
     }
 }
 
-@Entity
-@DiscriminatorValue( "B")
-class BasicDecree extends Decree {
-
-}

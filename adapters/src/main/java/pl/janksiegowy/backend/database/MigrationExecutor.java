@@ -23,11 +23,9 @@ public class MigrationExecutor {
 
     private final RestTemplate restTemplate= new RestTemplate();
     private final UpdateRepository updateRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ResponseEntity executeMigration( MigrationDto step) {
-
-        ResponseEntity<String> response;
+    public String executeMigration( MigrationDto step) {
+        var response= "Step already executed: "+ step.getUrl();
 
         if( step.isAlways()|| !updateRepository.existsByStepUrl( step.getUrl())) {
             try {
@@ -37,23 +35,18 @@ public class MigrationExecutor {
                         .toUriString();
                 HttpEntity<Map<String, String>> request= new HttpEntity<>( new HashMap<>());
 
-                response= restTemplate.exchange(baseUrl+ step.getUrl(),
-                        method,
-                        request,
-                        String.class
-                );
+                response= restTemplate.exchange(baseUrl+ step.getUrl(), method, request, String.class).getBody();
+
                 // Zapisz w historii tylko kroki jednorazowe
                 if( !step.isAlways()) {
                     updateRepository.save( new Update()
                             .setStepUrl( step.getUrl())
-                            .setExecutedAt( LocalDateTime.now()));
+                            .setExecutedAt( LocalDateTime.now())
+                            .setResult( response));
                 }
-
             } catch( Exception e) {
-                 response= ResponseEntity.ok("Failed to execute step: "+ step.getUrl());
+                 response= "Failed to execute step: "+ step.getUrl();
             }
-        }else{
-            response= ResponseEntity.ok( "Step already executed: "+ step.getUrl());
         }
         return response;
     }

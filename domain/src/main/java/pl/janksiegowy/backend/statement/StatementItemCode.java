@@ -13,6 +13,9 @@ public enum StatementItemCode {
     /** Kwota do przeniesienia */
     DO_PRZ,
     /** Kwota z przeniesienia */
-    Z_PRZ;
+    Z_PRZ,
+    /** Zaliczka PIT4 */
+    PIT4_Z,
+    CIT8_Z;
 
 }

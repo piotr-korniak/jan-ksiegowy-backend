@@ -11,7 +11,7 @@ import java.util.List;
 @DiscriminatorValue( "C")
 public class Payable extends Settlement {
 
-    @OneToMany( mappedBy = "payable", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+    @OneToMany( mappedBy = "payable", fetch = FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval=true)
     private List<Clearing> clearings= new ArrayList<>();// receivable;
 
     @Override
@@ -28,11 +28,16 @@ public class Payable extends Settlement {
         return this;
     }
 
-    @Override public Settlement setClearings( List<Clearing> clearings) {
+    @Override public Settlement setClearings( int sign, List<Clearing> clearings) {
         this.clearings= clearings;
         this.dt= clearings.stream()
                 .map( Clearing::getAmount)
                 .reduce( BigDecimal.ZERO, BigDecimal::add);
+        this.dt= sign<0 ? dt.negate(): dt;
         return this;
+    }
+
+    @Override public List<Clearing> getClearings() {
+        return clearings;
     }
 }

@@ -1,48 +1,40 @@
 package pl.janksiegowy.backend.finances.settlement;
 
+import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.finances.document.DocumentConverter;
+import pl.janksiegowy.backend.finances.document.DocumentService;
 import pl.janksiegowy.backend.finances.settlement.dto.EntityReport;
-import pl.janksiegowy.backend.finances.settlement.dto.SettlementListDto;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementReportLine;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.report.Summary;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
-import java.lang.constant.Constable;
 import java.util.*;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
 @TenantController
-@RequestMapping( value= {"/v2/settlement", "/v2/settlement/{accountNumber}"})
+@RequestMapping( "/v2/settlement")
+@AllArgsConstructor
 public class SettlementController extends DocumentConverter {
 
     private final SettlementQueryRepository settlements;
     private final String rowFormat= "%2s %-30s %10s %10s %8s %12s %12s %12s\n";
-    private final String sumFormat= "%64s %12s %12s %12s\n";
-    private final String dashes=  String.format( rowFormat,
-            String.join("", Collections.nCopies(2, "-")),
-            String.join("", Collections.nCopies(30, "-")),
-            String.join("", Collections.nCopies(10, "-")),
-            String.join("", Collections.nCopies(10, "-")),
-            String.join("", Collections.nCopies(8, "-")),
-            String.join("", Collections.nCopies(12, "-")),
-            String.join("", Collections.nCopies(12, "-")),
-            String.join("", Collections.nCopies(12, "-")));
+    private final SettlementService settlementService;
+    private final DocumentService documentService;
 
-    public SettlementController( final SettlementQueryRepository settlements) {
-        this.settlements = settlements;
+    @DeleteMapping( "/{documentId}")
+    public ResponseEntity delete( @PathVariable final UUID documentId) {
+        //settlementService.deleteSettlement( documentId);
+        documentService.deleteDocument( documentId);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
+    @GetMapping( value= {"", "/{accountNumber}"})
     public ResponseEntity settlement( @PathVariable Optional<String> accountNumber,
               @RequestParam( required= false)
               @DateTimeFormat( iso= DateTimeFormat.ISO.DATE) Optional<LocalDate> accountDate,
@@ -102,8 +94,8 @@ public class SettlementController extends DocumentConverter {
                                 return(List<Object>) (List<?>)Arrays.asList(
                                         settlement.getType().accept( SettlementController.this).name(),
                                         settlement.getNumber(),
-                                        settlement.getDate(),
-                                        settlement.getDue(),
+                                        Util.format( settlement.getDate()),
+                                        Util.format( settlement.getDue()),
                                         settlement.getDt(),
                                         settlement.getCt()
                                 );
@@ -194,23 +186,6 @@ public class SettlementController extends DocumentConverter {
 
          */
     }
-
-    private String toPrint( SettlementListDto settlement) {
-
-        var saldo= settlement.getDt().subtract( settlement.getCt());
-
-        return String.format( rowFormat,
-                settlement.getType().accept( this).name(),
-                settlement.getNumber(),
-                Util.toString( settlement.getDate()),
-                Util.toString( settlement.getDue()),
-                saldo.signum()== 0? "-": ChronoUnit.DAYS.between( LocalDate.now(), settlement.getDue()),
-                Util.toString( settlement.getDt()),
-                Util.toString( settlement.getCt()),
-                Util.toString( saldo)
-        );
-    }
-
 
     static class EntityInfo {
         private final EntityType type;

@@ -31,6 +31,11 @@ public class SalesInvoice extends Invoice {
         return getDt();
     }
 
+    @Override
+    public SettlementKind getKind() {
+        return kind;
+    }
+
     @Override public Document setAmount( BigDecimal amount ) {
         this.setDt( amount);
         return this;

@@ -93,7 +93,8 @@ public class DecreeController {
                 .filter( number-> number.startsWith( "860"))
                 .findAny()
                 .ifPresentOrElse( s-> {}, ()-> {
-                    var profit = profitAndLossItems.calculate(startDate, endDate).getVariable("Wynik");
+                    var profit = profitAndLossItems.calculate( startDate, endDate)
+                            .getVariable("ZyskNetto");
                     if( profit.signum()> 0) {
                         dupa.add( DecreeLineDto.create()
                                         .side( AccountSide.C)

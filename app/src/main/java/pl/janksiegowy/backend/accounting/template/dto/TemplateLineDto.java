@@ -1,5 +1,8 @@
 package pl.janksiegowy.backend.accounting.template.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.accounting.account.AccountSide;
@@ -18,18 +21,27 @@ public interface TemplateLineDto {
 
     UUID getId();
     AccountSide getSide();
+    String getAccountNumber();
     AccountDto getAccount();
+
     String getFunction();
     String getDescription();
     SettlementType getSettlementType();
 
     @Setter
     @Accessors( fluent= true, chain= true)
+    //@JsonIgnoreProperties( ignoreUnknown = true)
     class Proxy implements TemplateLineDto {
 
         private UUID id;
         private AccountSide side;
+
+        @JsonProperty( "accountNumber")
+        private String accountNumber;
+
+        @JsonIgnore
         private AccountDto account;
+
         private String function;
         private String description;
         private SettlementType settlementType;
@@ -61,6 +73,12 @@ public interface TemplateLineDto {
         @Override public AccountSide getSide() {
             return side;
         }
+
+        @Override
+        public String getAccountNumber() {
+            return accountNumber;
+        }
+
         @Override public AccountDto getAccount() {
             return account;
         }

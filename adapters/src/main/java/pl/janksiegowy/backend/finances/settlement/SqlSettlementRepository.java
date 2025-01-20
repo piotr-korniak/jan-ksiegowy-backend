@@ -90,13 +90,16 @@ interface SqlSettlementQueryRepository extends SettlementQueryRepository, Reposi
             "      e.name AS entityName, e.type AS entityType " +
             "   FROM Settlement s "+
             "   LEFT JOIN Clearing c " +
-            "   ON ((s.kind= 'D' AND s= c.receivable) " +
-            "   OR (s.kind = 'C' AND s= c.payable)) AND c.date <= :date " +
+            "   ON ((s.kind= 'D' AND s.dt>0 AND s= c.receivable) " +
+            "   OR (s.kind= 'D' AND s.dt<0 AND s= c.payable)" +
+            "   OR (s.kind= 'C' AND s.ct>0 AND s= c.payable)" +
+            "   OR (s.kind= 'C' AND s.ct<0 AND s= c.receivable))" +
+            " AND c.date <= :date " +
             "   JOIN s.entity e "+
             "   WHERE s.date <= :date " +
             "   GROUP BY s.type, s.number, s.kind, s.date, s.due, e.accountNumber, e.name, e.type, s.dt, s.ct "+
             ") AS result " +
-            "WHERE :zeroBalance= true OR result.dt <> result.ct " +
+            "WHERE :zeroBalance= true OR ABS( result.dt) <> ABS( result.ct) " +
             "ORDER BY result.entityAccountNumber ASC, result.date DESC")
     List<SettlementListDto> findByAllAsAtDate( LocalDate date, boolean zeroBalance);
 }
@@ -112,5 +115,10 @@ class SettlementRepositoryImpl implements SettlementRepository {
 
     @Override public Settlement save( Settlement settlement) {
         return repository.save( settlement);
+    }
+
+    @Override
+    public void delete(Settlement settlement) {
+        repository.delete( settlement);
     }
 }

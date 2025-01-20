@@ -17,6 +17,7 @@ public class ProfitAndLossItems {
     private final DecreeLineQueryRepository lines;
 
     public Interpreter calculate( LocalDate beginPeriod, LocalDate endPeriod) {
+        
         return new Interpreter()
                 .setVariable( "703", lines.turnoverCt( "703", beginPeriod, endPeriod))
                 .interpret( "Przychody", "[703]")
@@ -32,8 +33,6 @@ public class ProfitAndLossItems {
                 .setVariable( "765", lines.turnoverDt( "765%", beginPeriod, endPeriod))
                 .interpret( "ZyskOperacyjny", "[ZyskZeSprzedazy]+ [760]- [765]")
                 .setVariable( "750", lines.turnoverDt( "750%", beginPeriod, endPeriod))
-                .setVariable( "760", lines.turnoverDt( "750%", beginPeriod, endPeriod))
-                .setVariable( "765", lines.turnoverDt( "765%", beginPeriod, endPeriod))
                 .setVariable( "755", lines.turnoverDt( "755%", beginPeriod, endPeriod)
                         .subtract( lines.turnoverCt( "755-2", beginPeriod, endPeriod)))
                 .setVariable( "402_2", lines.turnoverDt( "402-2", beginPeriod, endPeriod))

@@ -47,4 +47,8 @@ public class Clearing {
         return this;
     }
 
+    public UUID getOpposite( UUID documentId) {
+        return payableId.equals( documentId)?  receivableId: payableId;
+    }
+
 }

@@ -27,11 +27,6 @@ public enum PaymentFunction {
             return visitor.visitSplataNoty();
         }
     },
-    OplacenieUdzialow {
-        @Override public <T> T accept( PaymentFunctionVisitor<T> visitor) {
-            return visitor.visitOplacenieUdzialow();
-        }
-    },
     SplataVat {
         @Override public <T> T accept( PaymentFunctionVisitor<T> visitor) {
             return visitor.visitSplataVat();
@@ -50,7 +45,6 @@ public enum PaymentFunction {
         T visitSplataZobowiazania();
         T visitWplataNoty();
         T visitSplataNoty();
-        T visitOplacenieUdzialow();
         T visitSplataVat();
         T visitSplataNKUP();
         T visitWartoscRozrachowania();

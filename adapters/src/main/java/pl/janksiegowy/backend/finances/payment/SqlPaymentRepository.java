@@ -25,4 +25,8 @@ class PaymentRepositoryImpl implements PaymentRepository {
     @Override public Payment save( Payment payment) {
         return repository.save( payment);
     }
+
+    @Override public void delete( Payment settlement) {
+        repository.delete( settlement);
+    }
 }

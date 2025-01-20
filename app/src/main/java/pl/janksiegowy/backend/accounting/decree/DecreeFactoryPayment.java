@@ -106,15 +106,6 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType>, S
                                                 .reduce( BigDecimal.ZERO, BigDecimal::add);
                                     }
 
-                                    @Override public BigDecimal visitOplacenieUdzialow() {
-                                        /*return clearings.payableId( payment.getDocumentId()).stream()
-                                                .filter( clearing-> clearing.getReverse( payment.getDocumentId())
-                                                        .getType()== SettlementType.D)
-                                                .map( Clearing::getAmount)
-                                                .reduce( BigDecimal.ZERO, BigDecimal::add);*/
-                                        return BigDecimal.ZERO;
-                                    }
-
                                     @Override public BigDecimal visitSplataVat() {
 /*
                                         var temp= clearings.receivableId( payment.getDocumentId()).stream()

@@ -67,13 +67,15 @@ interface SqlDecreeLineQueryRepository extends DecreeLineQueryRepository, Reposi
             "   subquery.openingCreditTurnover+ subquery.creditTurnover cumulativeCreditTurnover " +
             "FROM (" +
             "    SELECT "+
-                    "SUM( CASE WHEN dl.decree.date < :startDate " +
+                    "SUM( CASE WHEN (dl.decree.number LIKE 'BO%' OR dl.decree.date < :startDate) " +
                     "AND TYPE(dl)= DecreeDtLine THEN dl.value ELSE 0 END) openingDebitTurnover, " +
-                    "SUM( CASE WHEN dl.decree.date < :startDate " +
+                    "SUM( CASE WHEN (dl.decree.number LIKE 'BO%' OR dl.decree.date < :startDate) " +
                     "AND TYPE(dl)= DecreeCtLine THEN dl.value ELSE 0 END) openingCreditTurnover, "+
-                    "SUM( CASE WHEN dl.decree.date BETWEEN :startDate AND :endDate " +
+                    "SUM( CASE WHEN "+
+                    "dl.decree.number NOT LIKE 'BO%' AND dl.decree.date BETWEEN :startDate AND :endDate "+
                     "AND TYPE(dl)= DecreeDtLine THEN dl.value ELSE 0 END) debitTurnover, "+
-                    "SUM( CASE WHEN dl.decree.date BETWEEN :startDate AND :endDate " +
+                    "SUM( CASE WHEN "+
+                    "dl.decree.number NOT LIKE 'BO%' AND dl.decree.date BETWEEN :startDate AND :endDate "+
                     "AND TYPE(dl)= DecreeCtLine THEN dl.value ELSE 0 END) creditTurnover," +
                     "ac.number number," +
                     "ac.name name "+
@@ -82,6 +84,5 @@ interface SqlDecreeLineQueryRepository extends DecreeLineQueryRepository, Reposi
             "   WHERE dl.decree.date BETWEEN DATE_TRUNC( 'YEAR', CAST(:startDate AS DATE)) AND :endDate "+
             "   GROUP BY ac.number, ac.name "+
             ") subquery")
-
     @Override List<DecreeBalanceDto> sum( LocalDate startDate, LocalDate endDate);
 }

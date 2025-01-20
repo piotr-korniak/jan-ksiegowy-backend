@@ -1,10 +1,7 @@
 package pl.janksiegowy.backend.salary.dto;
 
+import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
-import pl.janksiegowy.backend.salary.Payslip;
-import pl.janksiegowy.backend.statement.dto.StatementDto;
-import pl.janksiegowy.backend.statement.dto.StatementLineDto;
-import pl.janksiegowy.backend.statement.dto.StatementMap;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,7 +17,7 @@ public class PayslipMap implements PayslipDto {
 
     private PayslipMap( PayslipDto payslip) {
         this.payslip= payslip;
-        this.lines= Optional.ofNullable( payslip.getPayslipLines()).orElseGet( ArrayList::new);
+        this.lines= Optional.ofNullable( payslip.getLines()).orElseGet( ArrayList::new);
     }
 
     public static PayslipMap create( PayslipDto payslip) {
@@ -33,7 +30,7 @@ public class PayslipMap implements PayslipDto {
 
     @Override
     public String getNumber() {
-        return "";
+        return payslip.getNumber();
     }
 
     @Override public LocalDate getDate() {
@@ -50,7 +47,7 @@ public class PayslipMap implements PayslipDto {
     }
 
     @Override
-    public List<PayslipLineDto> getPayslipLines() {
+    public List<PayslipLineDto> getLines() {
         return lines;
     }
 

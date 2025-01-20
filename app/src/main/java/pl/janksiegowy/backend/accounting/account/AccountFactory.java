@@ -13,20 +13,17 @@ public class AccountFactory implements AccountTypeVisitor<Account> {
     private final AccountRepository accounts;
 
     public Account from( AccountDto source) {
-
-        return update( source, source.getType().accept( this)
-                .setId( UUID.randomUUID()));
-    }
-
-    private Account update( AccountDto source, Account account) {
-        Optional.ofNullable( source.getParent())
-                .ifPresent( numberParent-> account.setParent( accounts.findByNumber( numberParent)
-                        .orElseThrow()));
-
-        return account
+        return source.getType().accept( this)
+                .setId( Optional.ofNullable( source.getId())
+                        .orElseGet( UUID::randomUUID))
+                .setParent( Optional.ofNullable( source.getParent())
+                        .map( parentNumber-> accounts.findByNumber( parentNumber)
+                                .orElseThrow())
+                        .orElseGet(()-> null))
                 .setNumber( source.getNumber())
                 .setName( source.getName());
     }
+
 
     @Override public Account visitBalanceAccount() {
         return new BalanceAccount();

@@ -26,6 +26,12 @@ public class SettlementMap implements SettlementDto {
         return clearing;
     }
 
+    public SettlementMap remove( UUID dokumentId) {
+        clearings.removeIf(clearing ->
+                dokumentId.equals( clearing.getReceivableId()) || dokumentId.equals( clearing.getPayableId()));
+        return this;
+    }
+
     @Override public UUID getSettlementId() {
         return settlement.getSettlementId();
     }

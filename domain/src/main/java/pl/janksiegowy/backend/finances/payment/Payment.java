@@ -41,4 +41,5 @@ public abstract class Payment extends Document {
     public abstract Set<Clearing> getClearings();
 
     public abstract Payment setClearings( Set<Clearing> clearings);
+
 }

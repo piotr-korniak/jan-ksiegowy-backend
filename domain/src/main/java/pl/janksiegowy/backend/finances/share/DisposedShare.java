@@ -26,4 +26,9 @@ public class DisposedShare extends Share {
     public BigDecimal getAmount() {
         return getDt();
     }
+
+    @Override
+    public SettlementKind getKind() {
+        return kind;
+    }
 }

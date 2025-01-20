@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public interface TemplateDto {
     String getCode();
     TemplateType getDocumentType();
     String getRegisterCode();
-    List<TemplateLineDto> getLines();
+    List<? extends TemplateLineDto> getLines();
     String getName();
 
     EntityType getEntityType();
@@ -35,7 +36,7 @@ public interface TemplateDto {
         private String code;
         private TemplateType documentType;
         private EntityType entityType;
-        private List<TemplateLineDto> items;
+        private List<TemplateLineDto.Proxy> lines;
         private String registerCode;
         private String name;
 
@@ -54,8 +55,8 @@ public interface TemplateDto {
         @Override public String getRegisterCode() {
             return registerCode;
         }
-        @Override public List<TemplateLineDto> getLines() {
-            return items;
+        @Override public List<? extends TemplateLineDto> getLines() {
+            return lines;
         }
         @Override public String getName() {
             return name;
@@ -63,8 +64,6 @@ public interface TemplateDto {
         @Override public EntityType getEntityType() {
             return entityType;
         }
-
-
     }
 
 }

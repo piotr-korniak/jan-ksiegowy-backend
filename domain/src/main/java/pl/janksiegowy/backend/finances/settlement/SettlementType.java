@@ -71,12 +71,12 @@ public enum SettlementType {
     }},
 
 
-    /** Acquisition of Shares */
+    /** Acquisition and Sale of Shares */
     A {@Override public <T> T accept( SettlementTypeVisitor<T> visitor) {
         return visitor.visitAcquisition();
     }},
 
-    /** Disposal of Shares */
+    /** Disposal and Decreased of Share */
     D {@Override public <T> T accept( SettlementTypeVisitor<T> visitor) {
         return visitor.visitDisposal();
     }};

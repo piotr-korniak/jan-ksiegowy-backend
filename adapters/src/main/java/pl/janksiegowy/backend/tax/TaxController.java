@@ -16,17 +16,14 @@ import pl.janksiegowy.backend.subdomain.TenantController;
 public class TaxController {
 
     private final PeriodRepository periods;
-    private final TaxCalculatorManager taxCalculatorManager;
+    private final TaxFacade taxFacade;
     private final StatementFacade statementFacade;
 
     @GetMapping
-    public ResponseEntity calculateAllTaxes( @PathVariable String periodId) {
+    public ResponseEntity<String> calculateAllTaxes( @PathVariable String periodId) {
 
         periods.findMonthById( periodId)
-                .ifPresent( monthPeriod-> taxCalculatorManager.calculate( monthPeriod)
-                        .forEach( statementDto->
-                                statementFacade.approve( statementFacade.save( monthPeriod, statementDto))));
-
-        return ResponseEntity.ok( "Calculate All Tax!");
+                .ifPresent( taxFacade::calculate);
+        return ResponseEntity.ok( "Calculated all Taxes for " + periodId);
     }
 }

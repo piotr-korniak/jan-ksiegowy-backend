@@ -74,4 +74,9 @@ public class DecreeMap implements DecreeDto {
         ((DecreeDto.Proxy)decree).number( number);
         return this;
     }
+
+    public DecreeMap setType( DecreeType type) {
+        ((DecreeDto.Proxy)decree).type( type);
+        return this;
+    }
 }

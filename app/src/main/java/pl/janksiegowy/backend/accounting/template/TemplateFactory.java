@@ -19,13 +19,9 @@ public class TemplateFactory {
 
     public Template from( TemplateDto source) {
         return update( source, new Template()
-                .setTemplateId( UUID.randomUUID())
+                .setTemplateId( Optional.ofNullable( source.getTemplateId())
+                        .orElseGet( UUID::randomUUID))
                 .setDate( source.getDate()));
-    }
-
-    public Template update( TemplateDto source) {
-        return update( source, new Template()
-                .setTemplateId( source.getTemplateId()));
     }
 
     public Template update( TemplateDto source, Template template) {
@@ -96,9 +92,6 @@ public class TemplateFactory {
                         }
                     })).setTemplate( template))
                 .collect( Collectors.toList())));
-
-        System.out.println( "Znaleziony: "+ source.getRegisterCode());
-        System.out.println( "Znaleziony: "+ registers.findByCode( source.getRegisterCode()).get().getCode());
 
         return registers.findByCode( source.getRegisterCode())
                 .map( register -> template.setRegister( register))

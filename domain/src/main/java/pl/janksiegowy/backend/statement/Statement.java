@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.accounting.decree.Decree;
 import pl.janksiegowy.backend.accounting.decree.DecreeLine;
+import pl.janksiegowy.backend.metric.Metric;
 import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 
@@ -30,6 +31,8 @@ public abstract class Statement {
    // @UuidGenerator
     private UUID statementId;
 
+    @ManyToOne( fetch= FetchType.LAZY)
+    private Metric metric;
 /*
     @OneToOne( mappedBy= "statement", cascade = CascadeType.ALL)
     protected StatementSettlement settlement;
@@ -49,10 +52,7 @@ public abstract class Statement {
     private LocalDateTime created;
 
     private String xml;
-/*
-    private BigDecimal value_1;
-    private BigDecimal value_2;
-*/
+
     private int no;
 
     @Enumerated( EnumType.STRING)

@@ -28,6 +28,11 @@ public class LevyCharge extends Charge {
     }
 
     @Override
+    public SettlementKind getKind() {
+        return kind;
+    }
+
+    @Override
     public <T> T accept( DocumentVisitor<T> visitor) {
         return visitor.visit( this);
     }

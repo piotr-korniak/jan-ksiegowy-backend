@@ -15,6 +15,7 @@ import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
 import pl.janksiegowy.backend.shared.pattern.PatternId;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
+import pl.janksiegowy.backend.statement.formatter.dto.FormatterDto;
 import pl.janksiegowy.backend.tax.TaxType;
 
 import java.math.BigDecimal;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class Formatter_JPK_V7K_2_1_0e implements TaxDeclarationFormatter {
+public class Formatter_JPK_V7K_2_1_0e implements FormatterStrategy<FormatterDto> {
 
     private final LocalDate dateApplicable= LocalDate.of( 2020, 1, 1);
 
@@ -53,14 +54,12 @@ public class Formatter_JPK_V7K_2_1_0e implements TaxDeclarationFormatter {
     private final InvoiceLineQueryRepository lines;
 
 
-    @Override public String format( Period period, Interpreter result) {
-        return XmlConverter.marshal( prepare( period, result));
+    @Override public FormatterDto format( Period period, Interpreter result) {
+        return FormatterDto.create()
+                .content( XmlConverter.marshal( prepare( period, result)))
+                .version( PatternId.JPK_V7K_2_1_0e);
     }
 
-    @Override
-    public PatternId getPatternId() {
-        return  PatternId.JPK_V7K_2_1_0e;
-    }
 
     private Ewidencja_JPK_V7K_2_1_0e prepare( Period period, Interpreter result) {
         var ewidencja= new Ewidencja_JPK_V7K_2_1_0e();

@@ -4,10 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
-import pl.janksiegowy.backend.entity.EntityRepository;
+import pl.janksiegowy.backend.contract.ContractQueryRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
-import pl.janksiegowy.backend.salary.dto.ContractDto;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
 @TenantController
@@ -30,10 +28,11 @@ public class SalaryController {
     public ResponseEntity calculate( @PathVariable String periodId) {
         return periods.findById( periodId).map( period -> {
             contracts.findAllActive( period.getBegin())
-                    .forEach( contract -> salary.approval(
-                            salary.calculatePayslip( contract, period)));
+                    .forEach( contract ->
+                            salary.approval(
+                                    salary.calculatePayslip( contract, period)));
 
-            return ResponseEntity.ok(  ).build();
+            return ResponseEntity.ok( "Issued Payslips for "+periodId);
         }).orElseThrow();
     }
 }

@@ -42,6 +42,14 @@ public class DecreeFactoryStatement implements StatementTypeVisitor<TemplateType
                                         return lines.getOrDefault( StatementItemCode.VAT_NC, BigDecimal.ZERO);
                                     }
 
+                                    @Override public BigDecimal visitDoPrzeniesienia() {
+                                        return lines.getOrDefault( StatementItemCode.DO_PRZ, BigDecimal.ZERO);
+                                    }
+
+                                    @Override public BigDecimal visitZPrzeniesienia() {
+                                        return lines.getOrDefault( StatementItemCode.Z_PRZ, BigDecimal.ZERO);
+                                    }
+
                                     @Override public BigDecimal visitKorektaNaleznegoPlus() {
                                         return korNz.signum()>0? korNz: BigDecimal.ZERO;
                                     }
@@ -67,6 +75,7 @@ public class DecreeFactoryStatement implements StatementTypeVisitor<TemplateType
                                 });
                     }
                     @Override public Optional<AccountDto> getAccount( TemplateLine line) {
+                        System.err.println( "Konto (numer): "+ line.getAccount().getNumber());
                         return Optional.of(
                                 switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
                                     case "R"-> AccountDto.create()
@@ -80,6 +89,7 @@ public class DecreeFactoryStatement implements StatementTypeVisitor<TemplateType
                                 });
                     }
                 }.build( template, statement.getPeriod().getEnd(), statement.getNumber(), statement.getStatementId()))
+                .map( decreeMap -> decreeMap.setType( DecreeType.S))
                 .map( decreeMap-> Optional.ofNullable( statement.getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
                         .orElseGet(()-> decreeMap))

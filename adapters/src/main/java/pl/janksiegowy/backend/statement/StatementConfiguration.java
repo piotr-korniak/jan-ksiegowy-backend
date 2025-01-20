@@ -17,13 +17,11 @@ public class StatementConfiguration {
     @Bean
     StatementFacade statementFacade(final StatementRepository statements,
                                     final EntityRepository entities,
-                                    final PeriodRepository periods,
-                                    final DecreeFacade decree,
-                                    final List<Factory_JPK_V7> factoriesJpkV7,
-                                    final TaxCalculatorManager taxManager) {
-        return new StatementFacade(
-                new StatementFactory( entities, new StatementLineFactory(), periods),
-                statements, decree, factoriesJpkV7, taxManager);
+                                    final MetricRepository metrics,
+                                    final StatementService statementService,
+                                    final DecreeFacade decree) {
+        return new StatementFacade( new StatementFactory( entities, new StatementLineFactory(), metrics),
+                statements, statementService, decree);
     }
 
 }

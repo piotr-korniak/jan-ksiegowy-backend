@@ -28,6 +28,11 @@ public enum Operation {
         @Override public <T> T accept( OperationVisitor<T> visitor ) {
             return visitor.visitDivision();
         }
+    },
+    MAXIMUM ( '^') {
+        @Override public <T> T accept( OperationVisitor<T> visitor) {
+            return visitor.visitMaximum();
+        }
     };
 
     private final char symbol;
@@ -50,5 +55,6 @@ public enum Operation {
         T visitMultiplication();
         T visitMultiplicationInt();
         T visitDivision();
+        T visitMaximum();
     }
 }

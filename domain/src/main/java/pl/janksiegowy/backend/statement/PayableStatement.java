@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.accounting.decree.DocumentDecree;
+import pl.janksiegowy.backend.accounting.decree.StatementDecree;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 import pl.janksiegowy.backend.finances.settlement.SettlementType;
 import pl.janksiegowy.backend.period.MonthPeriod;
@@ -54,10 +55,7 @@ public class PayableStatement extends Statement {
     @Column( name= "CT", table= TABLE_NAME)
     private BigDecimal liability;
 
-
-
-    @OneToOne //( mappedBy= "settlement", cascade = CascadeType.ALL)
-    @JoinColumn( table= TABLE_NAME, name = "ID", referencedColumnName = "DOCUMENT_ID")
-    protected DocumentDecree decree;
+    @OneToOne( mappedBy= "decree", cascade= CascadeType.ALL, orphanRemoval= true)
+    protected StatementDecree decree;
 
 }

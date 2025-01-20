@@ -70,8 +70,6 @@ public class StatementApproval {
                             .number( jpk.getNumber())
                             .created( LocalDateTime.now())
                             .liability( jpk.getLiability())
-                            .value1( jpk.getOutputCorrection())
-                            .value2( jpk.getInputCorrection())
                             .period( jpk.getPeriod()));
 
                     return null;

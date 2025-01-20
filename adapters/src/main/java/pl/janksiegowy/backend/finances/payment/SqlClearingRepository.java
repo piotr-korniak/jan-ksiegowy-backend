@@ -12,12 +12,12 @@ import pl.janksiegowy.backend.finances.settlement.Settlement;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface SqlClearingRepository extends JpaRepository<Clearing, ClearingId> {
-   // List<Clearing> findByReceivableId( UUID settlementId);
-
-    //List<Clearing> findByPayableId( UUID settlementId);
+   List<Clearing> findByReceivableId( UUID settlementId);
+   List<Clearing> findByPayableId( UUID settlementId);
 }
 
 interface SqlClearingQueryRepository extends ClearingQueryRepository, Repository<Clearing, ClearingId> {
@@ -49,13 +49,22 @@ class ClearingRepositoryImpl implements ClearingRepository {
         return repository.save( clearing);
     }
 
+
     @Override public List<Clearing> receivableId( UUID settlementId ) {
-        // return repository.findByReceivableId( settlementId);
-        return null;
+        return repository.findByReceivableId( settlementId);
+        //return null;
     }
 
     @Override public List<Clearing> payableId( UUID settlementId) {
-        // return repository.findByPayableId( settlementId);
-        return null;
+        return repository.findByPayableId( settlementId);
+        //return null;
     }
+
+    @Override public void delete(Clearing clearing) {
+        System.err.println( "Delete clearing... receivable: "+ clearing.getReceivableId());
+        System.err.println( "Delete clearing...    payable: "+ clearing.getPayableId());
+
+        repository.delete( clearing);
+    }
+
 }

@@ -2,12 +2,11 @@ package pl.janksiegowy.backend.salary.dto;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
-import pl.janksiegowy.backend.period.dto.PeriodDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.chrono.Chronology;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +22,7 @@ public interface PayslipDto {
     EntityDto getEntity();
     ContractDto getContract();
 
-    List<PayslipLineDto> getPayslipLines();
+    List<PayslipLineDto> getLines();
 
     LocalDate getDueDate();
     BigDecimal getAmount();
@@ -40,7 +39,7 @@ public interface PayslipDto {
         private BigDecimal amount;
         private ContractDto contract;
 
-        private List<PayslipLineDto> payslipLines;
+        private List<PayslipLineDto> lines;
 
         @Override public UUID getDocumentId() {
             return documentId;
@@ -61,8 +60,8 @@ public interface PayslipDto {
             return contract;
         }
 
-        @Override public List<PayslipLineDto> getPayslipLines() {
-            return payslipLines;
+        @Override public List<PayslipLineDto> getLines() {
+            return lines;
         }
 
         @Override

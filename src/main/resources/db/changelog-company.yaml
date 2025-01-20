@@ -37,5 +37,8 @@ databaseChangeLog:
       file: db/company/18-payslip_lines.sql
   - include:
       file: db/company/19-updates.sql
+  - include:
+      file: db/company/20-report_schemas.sql
+
 
 

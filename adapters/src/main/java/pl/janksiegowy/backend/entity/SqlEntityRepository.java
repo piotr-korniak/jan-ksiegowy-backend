@@ -24,6 +24,13 @@ public interface SqlEntityRepository extends JpaRepository<Entity, Long> {
 }
 
 interface SqlEntityQueryRepository extends EntityQueryRepository, Repository<Entity, Long> {
+    @Override
+    @Query( value= "SELECT M " +
+            "FROM Entity M " +
+            "LEFT OUTER JOIN Entity P "+
+            "ON M.entityId= P.entityId AND M.date < P.date "+
+            "WHERE M.taxNumber= :taxNumber AND M.country= :country AND M.type IN :types AND P.date IS NULL")
+    List<EntityDto> findByCountryAndTaxNumberAndTypes( Country country, String taxNumber, EntityType... types);
 
     @Override
     @Query( value= "SELECT M " +

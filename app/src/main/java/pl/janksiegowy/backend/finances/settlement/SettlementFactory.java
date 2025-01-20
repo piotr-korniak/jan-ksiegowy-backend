@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementDto;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind.SettlementKindVisitor;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,7 +25,8 @@ public class SettlementFactory implements SettlementKindVisitor<Settlement> {
                 .setEntityId( entity.getId())
                 .setType( source.getType())
                 .setSettlementId( Optional.ofNullable( source.getSettlementId()).orElseGet( UUID::randomUUID))
-                .setClearings( source.getClearings().stream().map( clearings::from).collect( Collectors.toList()))
+                .setClearings( source.getAmount().signum(),
+                        source.getClearings().stream().map( clearings::from).collect( Collectors.toList()))
                 .setDate( source.getDate())
                 .setDue( source.getDue())
                 .setNumber( source.getNumber())

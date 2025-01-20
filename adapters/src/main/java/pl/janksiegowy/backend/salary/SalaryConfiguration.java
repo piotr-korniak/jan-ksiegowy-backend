@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
 import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
+import pl.janksiegowy.backend.salary.strategy.SalaryStrategy;
 
 import java.util.List;
 

@@ -26,6 +26,10 @@ class DecreeRepositoryImpl implements DecreeRepository {
         return repository.save( decree);
     }
 
+    @Override public void delete( Decree decree) {
+        repository.delete( decree);
+    }
+
     @Override public Optional<Decree> findById( UUID id) {
         return repository.findById( id);
     }

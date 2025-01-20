@@ -32,7 +32,12 @@ public class PayslipSettlement extends Settlement {
     }
 
     @Override
-    public Settlement setClearings( List<Clearing> clearings ) {
+    public Settlement setClearings( int sign, List<Clearing> clearings ) {
         return null;
+    }
+
+    @Override
+    public List<Clearing> getClearings() {
+        return List.of();
     }
 }

@@ -31,6 +31,11 @@ public class PaymentExpense extends Payment {
     }
 
     @Override
+    public SettlementKind getKind() {
+        return kind;
+    }
+
+    @Override
     public SettlementKind getSettlementKind() {
         return kind;
     }
@@ -44,6 +49,7 @@ public class PaymentExpense extends Payment {
         this.ct= clearings.stream()
                 .map( Clearing::getAmount)
                 .reduce( BigDecimal.ZERO, BigDecimal::add);
+                //.multiply( dt!=null ? BigDecimal.valueOf( dt.signum()): BigDecimal.ONE);
         return this;
     }
 }

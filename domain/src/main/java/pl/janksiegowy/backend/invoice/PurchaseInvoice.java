@@ -36,4 +36,9 @@ public class PurchaseInvoice extends Invoice {
     @Override public BigDecimal getAmount() {
         return getCt();
     }
+
+    @Override
+    public SettlementKind getKind() {
+        return kind;
+    }
 }

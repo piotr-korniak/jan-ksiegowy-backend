@@ -8,7 +8,8 @@ import pl.janksiegowy.backend.statement.dto.StatementDto;
 import java.util.Optional;
 
 public interface StatementQueryRepository {
-   // Optional<StatementDto> findByPatternIdAndPeriodId( PatternCode patternCode, String periodId);
+   //Optional<StatementDto> findByPatternIdAndPeriodId( PatternCode patternCode, String periodId);
 
-    <T> Optional<T>  findFirstByPatternIdAndPeriodOrderByNoDesc( Class<T> type, PatternId patternId, Period period);
+    <StatementDto> Optional<StatementDto>  findFirstByPatternIdAndPeriodOrderByNoDesc(
+            PatternId patternId, Period period);
 }

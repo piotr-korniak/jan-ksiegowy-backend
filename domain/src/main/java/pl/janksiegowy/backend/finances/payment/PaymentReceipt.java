@@ -33,6 +33,11 @@ public class PaymentReceipt extends Payment {
     }
 
     @Override
+    public SettlementKind getKind() {
+        return kind;
+    }
+
+    @Override
     public SettlementKind getSettlementKind() {
         return kind;
     }
@@ -45,6 +50,7 @@ public class PaymentReceipt extends Payment {
         this.dt= clearings.stream()
                 .map( Clearing::getAmount)
                 .reduce( BigDecimal.ZERO, BigDecimal::add);
+                //.multiply( ct!=null ? BigDecimal.valueOf( ct.signum()): BigDecimal.ONE);
         return this;
     }
 }

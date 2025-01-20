@@ -23,4 +23,7 @@ public class Update {
     private String params;
 
     private LocalDateTime executedAt;
+
+    private String result;
+
 }

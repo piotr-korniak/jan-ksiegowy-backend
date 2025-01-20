@@ -1,6 +1,8 @@
 HELP.md
 .gradle
 .azure
+adapters/.azure
+app/.azure
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

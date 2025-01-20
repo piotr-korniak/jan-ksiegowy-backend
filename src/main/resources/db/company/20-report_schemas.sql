@@ -1,0 +1,16 @@
+--liquibase formatted sql
+--changeset piotrkorniak:20
+
+CREATE TABLE REPORT_SCHEMAS (
+
+    ID UUID PRIMARY KEY,
+    PARENT_ID UUID,
+    TYPE CHAR(1),
+    CODE VARCHAR(48) NOT NULL,
+    NAME VARCHAR(96) NOT NULL,
+    FUNCTION VARCHAR(12) NOT NULL,
+    PARAMETERS VARCHAR(48),
+    NO INT,
+    HIDDEN BOOLEAN
+
+);

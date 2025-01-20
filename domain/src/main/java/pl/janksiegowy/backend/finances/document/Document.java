@@ -7,8 +7,9 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.DiscriminatorOptions;
 import pl.janksiegowy.backend.accounting.decree.DocumentDecree;
 import pl.janksiegowy.backend.finances.charge.Charge;
-import pl.janksiegowy.backend.finances.note.Note;
+import pl.janksiegowy.backend.finances.notice.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
+import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
@@ -55,9 +56,13 @@ public abstract class Document {
  //   @Column( name= "PERIOD_ID")
  //   private String periodId;
 
-
+    /*
     @OneToOne( mappedBy= "settlement", cascade = CascadeType.ALL)
     protected DocumentDecree decree;
+*/
+
+    @OneToOne( mappedBy= "decree", cascade= CascadeType.ALL, orphanRemoval= true)
+    private DocumentDecree decree;
 
     public Document setDates( LocalDate date, LocalDate due) {
         this.issueDate = date;
@@ -67,6 +72,7 @@ public abstract class Document {
 
     public abstract Document setAmount( BigDecimal amount );
     public abstract BigDecimal getAmount();
+    public abstract SettlementKind getKind();
 
     public Document setNumber( String number) {
         this.number= number;

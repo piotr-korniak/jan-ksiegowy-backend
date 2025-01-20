@@ -9,7 +9,7 @@ import pl.janksiegowy.backend.tax.TaxType;
 import java.time.LocalDate;
 
 @Component
-public class Formatter_VAT_7_17_1_0e implements TaxDeclarationFormatter {
+public class Formatter_VAT_7_17_1_0e implements FormatterStrategy<String> {
 
     private final LocalDate dateApplicable= LocalDate.of( 2017, 1, 1);
 
@@ -25,7 +25,8 @@ public class Formatter_VAT_7_17_1_0e implements TaxDeclarationFormatter {
         return "";
     }
 
+    /*
     @Override public PatternId getPatternId() {
         return PatternId.VAT_7_17_1_0e;
-    }
+    }*/
 }

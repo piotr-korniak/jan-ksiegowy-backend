@@ -2,7 +2,6 @@ package pl.janksiegowy.backend.salary;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.entity.EntityRepository;
-import pl.janksiegowy.backend.finances.settlement.PayslipSettlement;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.salary.dto.PayslipDto;
 
@@ -31,7 +30,7 @@ public class SalaryFactory {
                         .setAmount( source.getAmount())
                         .setDocumentId( Optional.ofNullable( source.getDocumentId())
                                 .orElseGet( UUID::randomUUID)))
-                        .map( payslip-> Optional.ofNullable( source.getPayslipLines())
+                        .map( payslip-> Optional.ofNullable( source.getLines())
                                 .map( lines-> payslip.setLines( lines.stream()
                                         .map( statementLineDto -> line.from( statementLineDto).setPayslip( payslip))
                                                 .collect( Collectors.toList())))

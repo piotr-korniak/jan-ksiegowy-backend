@@ -11,6 +11,16 @@ public enum StatementFunction {
             return visitor.visitPodatekNaliczony();
         }
     },
+    DoPrzeniesienia {
+        @Override public <T> T accept( StatementFunctionVisitor<T> visitor) {
+            return visitor.visitDoPrzeniesienia();
+        }
+    },
+    ZPrzeniesienia {
+        @Override public <T> T accept( StatementFunctionVisitor<T> visitor) {
+            return visitor.visitZPrzeniesienia();
+        }
+    },
     KorektaNaleznegoPlus {
         @Override public <T> T accept( StatementFunctionVisitor<T> visitor ) {
             return visitor.visitKorektaNaleznegoPlus();
@@ -47,6 +57,8 @@ public enum StatementFunction {
     public interface StatementFunctionVisitor<T> {
         T visitPodatekNalezny();
         T visitPodatekNaliczony();
+        T visitDoPrzeniesienia();
+        T visitZPrzeniesienia();
         T visitKorektaNaleznegoPlus();
         T visitKorektaNaleznegoMinus();
         T visitKorektaNaliczonegoPlus();

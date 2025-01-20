@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
-import pl.janksiegowy.backend.salary.dto.ContractDto;
+import pl.janksiegowy.backend.contract.ContractQueryRepository;
+import pl.janksiegowy.backend.contract.dto.ContractDto;
 
 import java.time.LocalDate;
 import java.util.List;

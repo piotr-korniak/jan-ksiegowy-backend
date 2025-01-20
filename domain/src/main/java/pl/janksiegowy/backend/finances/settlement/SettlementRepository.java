@@ -8,4 +8,6 @@ public interface SettlementRepository {
     Optional<Settlement> findByDocument( UUID document);
 
     Settlement save( Settlement entity);
+
+    void delete( Settlement settlement);
 }

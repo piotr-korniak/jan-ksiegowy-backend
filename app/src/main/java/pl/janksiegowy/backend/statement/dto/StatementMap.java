@@ -77,14 +77,6 @@ public class StatementMap implements StatementDto {
         return statement.getPeriod();
     }
 
-    @Override public BigDecimal getValue1() {
-        return statement.getValue1();
-    }
-
-    @Override public BigDecimal getValue2() {
-        return statement.getValue2();
-    }
-
     @Override public int getNo() {
         return statement.getNo();
     }

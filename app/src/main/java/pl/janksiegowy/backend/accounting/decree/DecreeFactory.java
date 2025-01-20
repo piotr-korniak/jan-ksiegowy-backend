@@ -11,9 +11,8 @@ import pl.janksiegowy.backend.finances.charge.Charge;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
 import pl.janksiegowy.backend.finances.document.Document;
-import pl.janksiegowy.backend.finances.note.Note;
+import pl.janksiegowy.backend.finances.notice.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
-import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.PeriodFacade;
@@ -68,11 +67,13 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
 
     private Decree create( DecreeDto source) {
         return source.getType().accept( new DecreeTypeVisitor<Decree>() {
-            @Override public Decree visitBookingDecree() {
-                return new BasicDecree();
-            }
+
             @Override public Decree visitDocumentDecree() {
                 return new DocumentDecree();
+            }
+
+            @Override public Decree visitStatementDecree() {
+                return new StatementDecree();
             }
         });
     }
@@ -104,14 +105,14 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
                     Optional.of( getValue( templateItem))
                             .filter(value-> value.signum()!= 0) // Filtrowanie wartości != 0
                             .ifPresent(value-> decree.getLines().stream()
-                                    .filter(line->
+                                    .filter(line-> line.getSide()==( templateItem.getSide())&&
                                             line.getAccount().getNumber().equals( accountDto.getNumber()))
                                     .findFirst().ifPresentOrElse( decreeLineDto->
                                             ((DecreeLineDto.Proxy)decreeLineDto)
                                                     .value( decreeLineDto.getValue().add( value)),
                                             ()-> decree.add( DecreeLineDto.create()
                                                     .account( accountDto)
-                                                    .value( getValue( templateItem))
+                                                    .value( value)
                                                     .side( templateItem.getSide())
                                                     .description( templateItem.getDescription()))))));
             return decree;

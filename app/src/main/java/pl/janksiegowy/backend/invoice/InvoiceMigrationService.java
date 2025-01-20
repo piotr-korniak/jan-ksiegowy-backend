@@ -29,7 +29,6 @@ public class InvoiceMigrationService implements InvoiceRegisterTypeVisitor<Invoi
 
     private final SettlementQueryRepository settlements;
     private final InvoiceRegisterQueryRepository registers;
-    private final PeriodQueryRepository periods;
     private final EntityQueryRepository entities;
     private final PeriodFacade periodFacade;
     private final InvoiceFacade facade;
@@ -80,7 +79,9 @@ public class InvoiceMigrationService implements InvoiceRegisterTypeVisitor<Invoi
                                     .issueDate( Util.toLocalDate( fields[4])) // Date of issue           |Date of sale or receipt
                                     .invoiceDate( Util.toLocalDate( fields[5]))        // Date of sale (purchase) |Date of issue or purchase
                                     .dueDate( Util.toLocalDate( fields[6])))         // Date of due
-                            .map( proxy-> setPaymentMethod( proxy, fields))
+                            .map( proxy-> fields.length> 7?getOrDefaultPaymentMethod( fields[7], proxy): proxy
+
+                            )
                             .orElseThrow( ()-> new NoSuchElementException( "Not found register type: "+ fields[0])))
                     .orElseThrow( ()-> new NoSuchElementException( "Not found contact with tax number: "+ fields[2]));
 /*
@@ -92,12 +93,9 @@ public class InvoiceMigrationService implements InvoiceRegisterTypeVisitor<Invoi
 
 
         }
-        return String.format( "%-40s %16s", "Invoice migration complete, added: ", added+ "/"+ total);
+        return String.format( "%-40s %16s", "Invoices migration complete, added: ", added+ "/"+ total);
     }
 
-    private InvoiceDto.Proxy setPaymentMethod( InvoiceDto.Proxy proxy, String[] fields) {
-        return fields.length> 7? getOrDefaultPaymentMethod( fields[7], proxy): proxy;
-    }
 
     private InvoiceDto.Proxy getOrDefaultPaymentMethod(String value, InvoiceDto.Proxy proxy) {
         try {

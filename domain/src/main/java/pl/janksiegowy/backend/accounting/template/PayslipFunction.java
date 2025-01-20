@@ -1,16 +1,12 @@
 package pl.janksiegowy.backend.accounting.template;
 
 public enum PayslipFunction {
-    SkladkaPracownika {
+    UbezpieczenieEmerytalneZatrudniony {
         @Override public <T> T accept( PayslipFunctionVisitor<T> visitor) {
-            return visitor.visitSkladkaPracownika();
+            return visitor.visitUbezpieczenieEmerytalneZatrudniony();
         }
     },
-    SkladkaPracodawcy {
-        @Override public <T> T accept( PayslipFunctionVisitor<T> visitor ) {
-            return visitor.visitSkladkaPracodawcy();
-        }
-    },
+
     WynagrodzenieBrutto {
         @Override public <T> T accept( PayslipFunctionVisitor<T> visitor ) {
             return visitor.visitWynagrodzenieBrutto();
@@ -18,12 +14,12 @@ public enum PayslipFunction {
     },
     UbezpieczenieZdrowotne {
         @Override public <T> T accept( PayslipFunctionVisitor<T> visitor ) {
-            return visitor.visitUbezpiecznieZdrowotne();
+            return visitor.visitUbezpieczenieZdrowotne();
         }
     },
-    ZaliczkaPIT {
+    KwotaZaliczki {
         @Override public <T> T accept( PayslipFunctionVisitor<T> visitor ) {
-            return visitor.visitZaliczkaPIT();
+            return visitor.visitKwotaZaliczki();
         }
     },
     DoWyplaty {
@@ -35,11 +31,10 @@ public enum PayslipFunction {
     public abstract <T> T accept( PayslipFunctionVisitor<T> visitor);
 
     public interface PayslipFunctionVisitor<T> {
-        T visitSkladkaPracownika();
-        T visitSkladkaPracodawcy();
+        T visitUbezpieczenieEmerytalneZatrudniony();
         T visitWynagrodzenieBrutto();
-        T visitUbezpiecznieZdrowotne();
-        T visitZaliczkaPIT();
+        T visitUbezpieczenieZdrowotne();
+        T visitKwotaZaliczki();
         T visitDoWyplaty();
 
     }
