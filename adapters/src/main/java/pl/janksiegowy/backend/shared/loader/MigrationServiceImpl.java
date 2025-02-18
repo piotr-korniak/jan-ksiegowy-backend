@@ -33,8 +33,7 @@ public class MigrationServiceImpl implements MigrationService {
     }
 
     @Override public List<NoticeDto.Proxy> loadNotices() {
-        return dataLoader.loadCsv("notices.csv", NoticeDto.Proxy.class,
-                row-> !row.getNumber().startsWith( "---"));
+        return dataLoader.loadCsv("notices.csv", NoticeDto.Proxy.class, row-> !row.startsWith( "---"));
     }
 
     @Override public List<AccountDto> loadAccounts() {

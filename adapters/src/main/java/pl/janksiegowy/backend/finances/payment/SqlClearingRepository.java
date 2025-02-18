@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import pl.janksiegowy.backend.declaration.DeclarationType;
 import pl.janksiegowy.backend.finances.clearing.Clearing;
 import pl.janksiegowy.backend.finances.clearing.ClearingId;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
+import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.settlement.Settlement;
+import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +24,18 @@ public interface SqlClearingRepository extends JpaRepository<Clearing, ClearingI
 }
 
 interface SqlClearingQueryRepository extends ClearingQueryRepository, Repository<Clearing, ClearingId> {
+    @Override
+    @Query( value= "SELECT C FROM Clearing C "+
+            "LEFT JOIN PayableDeclaration P ON C.payable.settlementId= P.statementId " +
+            "WHERE P.type= :type ")
+    List<ClearingDto> findByPayable( UUID documentId, DeclarationType type);
+
+    @Override
+    @Query( value= "SELECT C FROM Clearing C "+
+            "LEFT JOIN PayableDeclaration P ON C.payable.settlementId= P.statementId " +
+            "WHERE P.type= :type AND C.date> P.due")
+    List<ClearingDto> findByPayableAfterDue( UUID documentId, DeclarationType type);
+
 
     @Override
     @Query( value= "SELECT COUNT( C) > 0 FROM Clearing C "+

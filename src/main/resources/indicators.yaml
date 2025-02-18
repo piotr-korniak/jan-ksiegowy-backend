@@ -1,0 +1,16 @@
+indicators:
+  UE_ZAT: # Ubezpieczenie emerytalne (zatrudniony)
+    1970-01-01: 0.0976
+  KO_UZP: # Koszty uzyskania przychodu
+    1970-01-01: 111.25
+    2019-10-01: 250.00
+  KW_WLN: # Kwota wolna od podatku
+    1970-01-01: 46.33
+    2019-10-01: 43.76
+  ST_PDZ: # Stawka podatku dochodowego (zatrudniony)
+    1970-01-01: 0.18
+    2019-10-01: 0.17
+    2022-10-01: 0.12
+  CIT_MC: # Stawka CIT Mikroprzedsiębiorstwa
+    2017-01-01: 0.15
+    2019-01-01: 0.09

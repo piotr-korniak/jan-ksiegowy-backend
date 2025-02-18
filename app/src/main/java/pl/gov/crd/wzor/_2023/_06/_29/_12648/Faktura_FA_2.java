@@ -20,7 +20,7 @@ import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import pl.janksiegowy.backend.statement.Invoice_FA;
+import pl.janksiegowy.backend.declaration.Invoice_FA;
 
 
 /**

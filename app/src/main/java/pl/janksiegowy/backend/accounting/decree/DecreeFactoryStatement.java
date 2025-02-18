@@ -4,50 +4,49 @@ import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
-import pl.janksiegowy.backend.statement.PayableStatement;
-import pl.janksiegowy.backend.statement.StatementItemCode;
-import pl.janksiegowy.backend.statement.StatementLine;
-import pl.janksiegowy.backend.statement.StatementType.StatementTypeVisitor;
+import pl.janksiegowy.backend.declaration.PayableDeclaration;
+import pl.janksiegowy.backend.declaration.DeclarationElementCode;
+import pl.janksiegowy.backend.declaration.StatementLine;
+import pl.janksiegowy.backend.declaration.DeclarationType.DeclarationTypeVisitor;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class DecreeFactoryStatement implements StatementTypeVisitor<TemplateType> {
+public class DecreeFactoryStatement implements DeclarationTypeVisitor<TemplateType> {
 
     private final TemplateRepository templates;
 
-    public DecreeDto to( PayableStatement statement ) {
+    public DecreeDto to( PayableDeclaration declaration ) {
 
-        var lines= statement.getLines().stream()
-                .collect( Collectors.toMap( StatementLine::getItemCode, StatementLine::getAmount));
+        var lines= declaration.getElements();
 
-        return templates.findByDocumentTypeAndDate( statement.getType().accept( this), statement.getDate())
+        return templates.findByDocumentTypeAndDate( declaration.getType().accept( this), declaration.getDate())
                 .map( template-> new DecreeFactory.Builder() {
                     @Override public BigDecimal getValue( TemplateLine line) {
                         return ((StatementTemplateLine)line).getFunction()
                                 .accept( new StatementFunction.StatementFunctionVisitor<BigDecimal>() {
 
                                     private final BigDecimal korNz= lines
-                                            .getOrDefault( StatementItemCode.KOR_NZ, BigDecimal.ZERO);
+                                            .getOrDefault( DeclarationElementCode.KOR_NZ, BigDecimal.ZERO);
                                     private final BigDecimal korNc= lines
-                                            .getOrDefault( StatementItemCode.KOR_NC, BigDecimal.ZERO);
+                                            .getOrDefault( DeclarationElementCode.KOR_NC, BigDecimal.ZERO);
 
                                     @Override public BigDecimal visitPodatekNalezny() {
-                                        return lines.getOrDefault( StatementItemCode.VAT_NZ, BigDecimal.ZERO);
+                                        return lines.getOrDefault( DeclarationElementCode.VAT_NZ, BigDecimal.ZERO);
                                     }
 
                                     @Override public BigDecimal visitPodatekNaliczony() {
-                                        return lines.getOrDefault( StatementItemCode.VAT_NC, BigDecimal.ZERO);
+                                        return lines.getOrDefault( DeclarationElementCode.VAT_NC, BigDecimal.ZERO);
                                     }
 
                                     @Override public BigDecimal visitDoPrzeniesienia() {
-                                        return lines.getOrDefault( StatementItemCode.DO_PRZ, BigDecimal.ZERO);
+                                        return lines.getOrDefault( DeclarationElementCode.DO_PRZ, BigDecimal.ZERO);
                                     }
 
                                     @Override public BigDecimal visitZPrzeniesienia() {
-                                        return lines.getOrDefault( StatementItemCode.Z_PRZ, BigDecimal.ZERO);
+                                        return lines.getOrDefault( DeclarationElementCode.Z_PRZ, BigDecimal.ZERO);
                                     }
 
                                     @Override public BigDecimal visitKorektaNaleznegoPlus() {
@@ -64,13 +63,41 @@ public class DecreeFactoryStatement implements StatementTypeVisitor<TemplateType
                                         return korNc.signum()<0? korNc.negate(): BigDecimal.ZERO;
                                     }
 
+                                    @Override public BigDecimal visitUbezpieczenieEmerytalne() {
+                                        return lines.getOrDefault( DeclarationElementCode.UB_EME, BigDecimal.ZERO);
+                                    }
+
+                                    @Override public BigDecimal visitUbezpieczenieRentowe() {
+                                        return lines.getOrDefault( DeclarationElementCode.UB_REN, BigDecimal.ZERO);
+                                    }
+
+                                    @Override public BigDecimal visitUbezpieczenieChorobowe() {
+                                        return lines.getOrDefault( DeclarationElementCode.UC_ZAT, BigDecimal.ZERO);
+                                    }
+
+                                    @Override public BigDecimal visitUbezpieczenieWypadkowe() {
+                                        return lines.getOrDefault( DeclarationElementCode.UW_PRA, BigDecimal.ZERO);
+                                    }
+
+                                    @Override public BigDecimal visitUbezpieczenieZdrowotne() {
+                                        return lines.getOrDefault( DeclarationElementCode.UB_ZDR, BigDecimal.ZERO);
+                                    }
+
+                                    @Override public BigDecimal visitFunduszFGSP() {
+                                        return lines.getOrDefault( DeclarationElementCode.F_FGSP, BigDecimal.ZERO);
+                                    }
+
+                                    @Override public BigDecimal visitFunduszFPFS() {
+                                        return lines.getOrDefault( DeclarationElementCode.F_FPFS, BigDecimal.ZERO);
+                                    }
+
                                     @Override public BigDecimal visitZobowiazanie() {
-                                        return statement.getLiability();
+                                        return declaration.getLiability();
                                     }
 
                                     @Override
                                     public BigDecimal visitZaliczkaCIT() {
-                                        return statement.getLiability();
+                                        return declaration.getLiability();
                                     }
                                 });
                     }
@@ -79,24 +106,24 @@ public class DecreeFactoryStatement implements StatementTypeVisitor<TemplateType
                         return Optional.of(
                                 switch( line.getAccount().getNumber().replaceAll("[^A-Z]+", "")) {
                                     case "R"-> AccountDto.create()
-                                            .name( statement.getEntity().getName())
+                                            .name( declaration.getEntity().getName())
                                             .parent( line.getAccount().getNumber())
                                             .number( line.getAccount().getNumber().replaceAll( "\\[R\\]",
-                                                    statement.getEntity().getAccountNumber()));
+                                                    declaration.getEntity().getAccountNumber()));
                                     default -> AccountDto.create()
                                             .name( line.getAccount().getName())
                                             .number( line.getAccount().getNumber());
                                 });
                     }
-                }.build( template, statement.getPeriod().getEnd(), statement.getNumber(), statement.getStatementId()))
+                }.build( template, declaration.getPeriod().getEnd(), declaration.getNumber(), declaration.getStatementId()))
                 .map( decreeMap -> decreeMap.setType( DecreeType.S))
-                .map( decreeMap-> Optional.ofNullable( statement.getDecree())
+                .map( decreeMap-> Optional.ofNullable( declaration.getDecree())
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
                         .orElseGet(()-> decreeMap))
                 .orElseThrow();
     }
 
-    @Override public TemplateType visitVatStatement() {
+    @Override public TemplateType visitVatDeclaration() {
         return TemplateType.SV;
     }
 
@@ -112,7 +139,7 @@ public class DecreeFactoryStatement implements StatementTypeVisitor<TemplateType
         return TemplateType.SP;
     }
 
-    @Override public TemplateType visitZusStatement() {
+    @Override public TemplateType visitDraStatement() {
         return TemplateType.SN;
     }
 }

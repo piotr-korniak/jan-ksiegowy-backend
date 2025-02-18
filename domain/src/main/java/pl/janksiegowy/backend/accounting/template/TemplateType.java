@@ -92,7 +92,15 @@ public enum TemplateType {
      */
     SN {
         @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
-            return null;
+            return visitor.visitDraStatement();
+        }
+    },
+    /**
+     * Month Close
+     */
+    MC {
+        @Override public <T> T accept( DocumentTypeVisitor<T> visitor ) {
+            return visitor.visitMonthClose();
         }
     }
     ;
@@ -109,6 +117,7 @@ public enum TemplateType {
         T visitVatStatement();
         T visitCitStatement();
         T visitPitStatement();
+        T visitDraStatement();
 
         T visitEmployeePayslip();
 
@@ -119,5 +128,7 @@ public enum TemplateType {
 
         T visitAcquiredShare();
         T visitDisposedShare();
+
+        T visitMonthClose();
     }
 }

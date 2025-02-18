@@ -11,9 +11,5 @@ public interface DataLoader {
     public <T> List<T> loadYml( String filePath, Class<? extends T> clazz);
 
     public <T> List<T> loadCsv( String filePath, Class<? extends T> clazz);
-    default public <T> List<T> loadCsv( String filePath, Class<? extends T> clazz, Predicate<T> filter){
-        return loadCsv( filePath, clazz).stream()
-                .filter( filter)
-                .collect( Collectors.toList());
-    }
+    public <T> List<T> loadCsv( String filePath, Class<? extends T> clazz, Predicate<String> filter);
 }

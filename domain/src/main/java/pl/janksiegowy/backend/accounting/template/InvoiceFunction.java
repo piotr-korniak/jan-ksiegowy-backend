@@ -23,6 +23,12 @@ public enum InvoiceFunction {
         }
     },
 
+    OdliczenieVAT {
+        @Override public <T> T accept(InvoiceFunctionVisitor<T> visitor) {
+            return visitor.visitOdliczenieVAT();
+        }
+    },
+
     KwotaMaterialowKUP {
         @Override public <T> T accept( InvoiceFunctionVisitor<T> visitor ) {
             return visitor.visitKwotaMaterialowKUP();
@@ -47,6 +53,7 @@ public enum InvoiceFunction {
         T visitKwotaUslugNUP();
         T visitKwotaBrutto();
         T visitKwotaVAT();
+        T visitOdliczenieVAT();
         T visitKwotaMaterialowKUP();
         T visitKwotaMaterialowNUP();
         T visitKwotaPozostaleKup();

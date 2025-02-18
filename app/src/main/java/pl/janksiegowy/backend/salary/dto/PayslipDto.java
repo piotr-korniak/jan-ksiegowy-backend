@@ -4,10 +4,12 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
+import pl.janksiegowy.backend.salary.WageIndicatorCode;
+import pl.janksiegowy.backend.salary.contract.ContractType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface PayslipDto {
@@ -20,12 +22,17 @@ public interface PayslipDto {
     String getNumber();
     LocalDate getDate();
     EntityDto getEntity();
-    ContractDto getContract();
+    UUID getEntityEntityId();
 
-    List<PayslipLineDto> getLines();
+    ContractDto getContract();
+    UUID getContractContractId();
+
+    Map<WageIndicatorCode, BigDecimal> getElements();
 
     LocalDate getDueDate();
     BigDecimal getAmount();
+
+    ContractType getType();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -36,10 +43,13 @@ public interface PayslipDto {
         private LocalDate date;
         private LocalDate dueDate;
         private EntityDto entity;
+        private UUID entityId;
         private BigDecimal amount;
         private ContractDto contract;
+        private UUID contractId;
+        private ContractType type;
 
-        private List<PayslipLineDto> lines;
+        private Map<WageIndicatorCode, BigDecimal> elements;
 
         @Override public UUID getDocumentId() {
             return documentId;
@@ -55,13 +65,22 @@ public interface PayslipDto {
             return entity;
         }
 
+        @Override public UUID getEntityEntityId() {
+            return entityId;
+        }
+
         @Override
         public ContractDto getContract() {
             return contract;
         }
 
-        @Override public List<PayslipLineDto> getLines() {
-            return lines;
+        @Override
+        public UUID getContractContractId() {
+            return contractId;
+        }
+
+        @Override public Map<WageIndicatorCode, BigDecimal> getElements() {
+            return elements;
         }
 
         @Override
@@ -72,6 +91,10 @@ public interface PayslipDto {
         @Override
         public BigDecimal getAmount() {
             return amount;
+        }
+
+        @Override public ContractType getType() {
+            return type;
         }
 
 

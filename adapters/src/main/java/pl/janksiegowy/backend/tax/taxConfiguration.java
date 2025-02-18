@@ -2,8 +2,7 @@ package pl.janksiegowy.backend.tax;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.janksiegowy.backend.statement.StatementFacade;
-import pl.janksiegowy.backend.statement.StatementService;
+import pl.janksiegowy.backend.declaration.StatementFacade;
 
 import java.util.List;
 

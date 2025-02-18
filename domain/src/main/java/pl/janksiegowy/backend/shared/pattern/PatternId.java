@@ -59,6 +59,17 @@ public enum PatternId {
         public <T> T accept(PatternCitVisitor<T> visitor) {
             return null;
         }
+    },
+    KEDU_4_0_0 {
+        @Override
+        public <T> T accept(PatternJpkVisitor<T> visitor) {
+            return null;
+        }
+
+        @Override
+        public <T> T accept(PatternCitVisitor<T> visitor) {
+            return null;
+        }
     };
 
     public abstract <T> T accept( PatternJpkVisitor<T> visitor);

@@ -37,7 +37,7 @@ import pl.gov.crd.xml.schematy.dziedzinowe.mf._2024._02._05.ed.citpd.ZalacznikCI
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2024._02._05.ed.citpm.ZalacznikCITPM;
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2024._02._05.ed.citww.ZalacznikCITWW;
 import pl.gov.crd.xml.schematy.dziedzinowe.mf._2024._02._05.ed.sser.ZalacznikSSER;
-import pl.janksiegowy.backend.statement.Statement_CIT_8;
+import pl.janksiegowy.backend.declaration.Statement_CIT_8;
 
 
 /**

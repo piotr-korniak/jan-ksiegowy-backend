@@ -10,4 +10,9 @@ public interface EntityRepository {
     Optional<Entity> findByEntityIdAndDate( UUID entityId, LocalDate date);
 
     Optional<Entity> findEntityByEntityIdAndDate( UUID entityId, LocalDate date);
+
+    Optional<Entity> findByCountryAndTaxNumberAndTypesAndDate(
+            Country entityCountry, String entityTaxNumber, LocalDate date, EntityType... types);
+
+
 }

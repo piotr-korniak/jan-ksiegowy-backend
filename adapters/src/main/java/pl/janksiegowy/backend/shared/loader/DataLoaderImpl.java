@@ -14,6 +14,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class DataLoaderImpl implements DataLoader {
 
@@ -54,21 +55,35 @@ public class DataLoaderImpl implements DataLoader {
 
     @SneakyThrows
     public <T> List<T> loadCsv( String filePath, Class<? extends T> clazz) {
+        return loadCsv( filePath, clazz, filter-> true);
+    }
+
+    @SneakyThrows
+    @Override
+    public <T> List<T> loadCsv(String filePath, Class<? extends T> clazz, Predicate<String> filter) {
         MappingIterator<T> iterator= csvMapper
                 .readerFor( clazz)
                 .with( CsvSchema.emptySchema().withHeader())
-                .readValues( getReader( filePath));
+                .readValues( getReader( filePath, filter));
         return iterator.readAll();
     }
 
     @SneakyThrows
-    private BufferedReader getReader( String resource) {
-        return new BufferedReader(
-                new InputStreamReader( loader.getResource( resource).getInputStream(), StandardCharsets.UTF_8)) {
-            @Override public String readLine() throws IOException {
-                var line = super.readLine();
-                return line== null? null:
-                        line.replaceAll(",\\s*(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", ",");
-            }};
+    private Reader getReader( String resource) {
+        return getReader( resource, filter-> true);
     }
+
+    @SneakyThrows
+    public Reader getReader( String resource, Predicate<String> filter) {
+        return new StringReader( new BufferedReader( new InputStreamReader(
+                loader.getResource(resource).getInputStream(), StandardCharsets.UTF_8))
+                .lines()
+                .filter( filter)
+                .map(line-> line.replaceAll(",\\s*(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", ","))
+                .reduce((l1, l2) -> l1 + "\n" + l2)
+                .orElse(""));
+    }
+
+
+
 }

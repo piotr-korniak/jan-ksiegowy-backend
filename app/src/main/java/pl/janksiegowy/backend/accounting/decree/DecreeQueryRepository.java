@@ -1,9 +1,10 @@
 package pl.janksiegowy.backend.accounting.decree;
 
-import java.util.UUID;
+import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
+
+import java.util.Optional;
 
 public interface DecreeQueryRepository {
 
-    boolean existsByDocument( String document);
-    Decree findById( UUID decreeId);
+    Optional<DecreeDto> findByDocument( final String name);
 }

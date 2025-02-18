@@ -37,6 +37,8 @@ public abstract class TemplateLine {
     @ManyToOne
     private Account account;
 
+    private String parameter;
+
     private String description;
 
 }

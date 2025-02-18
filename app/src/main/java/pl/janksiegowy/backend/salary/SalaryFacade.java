@@ -1,57 +1,29 @@
 package pl.janksiegowy.backend.salary;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.accounting.decree.DecreeFacade;
-import pl.janksiegowy.backend.period.Period;
-import pl.janksiegowy.backend.contract.dto.ContractDto;
-import pl.janksiegowy.backend.salary.dto.PayslipDto;
-import pl.janksiegowy.backend.salary.strategy.SalaryStrategy;
-
-import java.time.LocalDate;
-import java.util.List;
+import pl.janksiegowy.backend.accounting.decree.DecreeService;
+import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.salary.payslip.Payslip;
 
 @AllArgsConstructor
 public class SalaryFacade {
 
-    private final PayslipRepository payslips;
-    private final SalaryFactory payslip;
-    private final DecreeFacade decree;
-    private final List<SalaryStrategy> strategies;
+    private final ContractRepository contractRepository;
+    private final SalaryService salaryService;
+    private final DecreeService decreeService;
 
-
-    public Payslip save( PayslipDto source) {
-        return payslips.save( payslip.from( source));
-        //return payslip.from( source);
-    }
 
     public Payslip approval( Payslip payslip) {
-        System.err.println( "Księgujemy płace!!!");
-        decree.book( payslip);
+        decreeService.save( decreeService.book( payslip));
         return payslip;
     }
 
-    public Payslip calculatePayslip( ContractDto contract, Period period) {
-        SalaryStrategy strategy = strategies.stream()
-                .filter( s-> s.isApplicable( contract.getType())&&
-                             !period.getEnd().isBefore( s.getStartDate()))
-                .sorted( (s1, s2)-> s2.getStartDate().compareTo( s1.getStartDate()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException( "Brak strategii dla umowy i daty rozliczenia"));
-
-        return save( strategy.calculateSalary( contract, period));
-
+    public String calculatePayslips( MonthPeriod period) {
+        contractRepository.findAllActive( period.getBegin())
+                .forEach( contract->
+                        approval( salaryService.save( salaryService.calculatePayslip( contract, period))));
+        return "Issued Payslips for "+ period.getId();
     }
-
-    Payslip calculate( ContractDto contractDto, LocalDate date) {
-
-
-        return save( PayslipDto.create()
-                .number( contractDto.getNumber())
-                .entity( contractDto.getEntity())
-                .date( date));
-
-    }
-
 
 
 }

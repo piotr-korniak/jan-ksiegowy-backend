@@ -39,6 +39,12 @@ databaseChangeLog:
       file: db/company/19-updates.sql
   - include:
       file: db/company/20-report_schemas.sql
+  - include:
+      file: db/company/21-templates_lines_upgrade.sql
+  - include:
+      file: db/company/22-payslip_lines_upgrade.sql
+  - include:
+      file: db/company/23-declarations.sql
 
 
 

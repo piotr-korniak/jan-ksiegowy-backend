@@ -1,6 +1,7 @@
 package pl.janksiegowy.backend.accounting.decree;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import pl.janksiegowy.backend.accounting.account.Account;
 import pl.janksiegowy.backend.accounting.account.AccountFacade;
 import pl.janksiegowy.backend.accounting.account.AccountRepository;
@@ -8,6 +9,7 @@ import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
 import pl.janksiegowy.backend.accounting.account.AccountSide.AccountPageVisitor;
 
+@Component
 @AllArgsConstructor
 public class DecreeLineFactory implements AccountPageVisitor<DecreeLine>{
 

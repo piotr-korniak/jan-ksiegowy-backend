@@ -34,19 +34,15 @@ public class NoticeFacade {
         int[] counters= { 0, 0};
 
         migrationService.loadNotices()
-            .forEach( noticeDto-> {
-                var entity= Util.parseTaxNumber( noticeDto.getTaxNumber(), "PL");
-                counters[0]++;
+                .forEach( noticeDto-> {
+                    counters[0]++;
 
-                if( !settlements.existsByNumberAndEntityTaxNumber( noticeDto.getNumber(), entity.getTaxNumber())){
-                    entities.findByCountryAndTaxNumberAndTypes( entity.getCountry(), entity.getTaxNumber(),
-                            EntityType.C,EntityType.R, EntityType.B).stream().findFirst()
-                            .ifPresent( entityDto -> {
-                                approval( save( noticeDto.entity( entityDto)));
-                                counters[1]++;
-                            });
-                }
-            });
+                    if (!settlements.existsByNumberAndEntityTaxNumber(
+                            noticeDto.getNumber(), noticeDto.getEntityTaxNumber())) {
+                        approval(save(noticeDto));
+                        counters[1]++;
+                    }
+                });
         log.warn( "Notices migration complete!");
         return String.format( "%-40s %16s", "Notices migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }

@@ -13,7 +13,7 @@ import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
-import pl.janksiegowy.backend.statement.Factory_FA;
+import pl.janksiegowy.backend.declaration.Factory_FA;
 
 
 import java.time.LocalDate;

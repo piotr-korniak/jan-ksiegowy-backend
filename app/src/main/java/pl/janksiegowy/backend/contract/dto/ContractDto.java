@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
-import pl.janksiegowy.backend.salary.ContractType;
+import pl.janksiegowy.backend.salary.contract.ContractType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

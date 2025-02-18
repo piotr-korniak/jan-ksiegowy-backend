@@ -25,6 +25,7 @@ public interface TemplateLineDto {
     AccountDto getAccount();
 
     String getFunction();
+    String getParameter();
     String getDescription();
     SettlementType getSettlementType();
 
@@ -36,13 +37,12 @@ public interface TemplateLineDto {
         private UUID id;
         private AccountSide side;
 
-        @JsonProperty( "accountNumber")
-        private String accountNumber;
-
         @JsonIgnore
         private AccountDto account;
+        private String accountNumber;
 
         private String function;
+        private String parameter;
         private String description;
         private SettlementType settlementType;
 
@@ -85,6 +85,11 @@ public interface TemplateLineDto {
         @Override public String getFunction() {
             return function;
         }
+
+        @Override public String getParameter() {
+            return parameter;
+        }
+
         @Override public String getDescription() {
             return description;
         }

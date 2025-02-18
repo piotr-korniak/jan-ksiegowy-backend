@@ -1,26 +1,23 @@
 package pl.janksiegowy.backend.accounting.decree;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.accounting.account.Account;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
-import pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.accounting.template.PaymentFunction.PaymentFunctionVisitor;
-import pl.janksiegowy.backend.entity.EntityType;
+import pl.janksiegowy.backend.declaration.DeclarationType;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
 import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.payment.PaymentType.PaymentTypeVisitor;
 import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind.SettlementKindVisitor;
+import pl.janksiegowy.backend.salary.PayslipRepository;
+import pl.janksiegowy.backend.salary.payslip.EmploymentPayslip;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandEntityAccount;
 import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandPaymentRegisterAccount;
@@ -31,6 +28,7 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType>, S
     private final TemplateRepository templates;
     protected final ClearingRepository clearings;
     private final ClearingQueryRepository clearingQuery;
+    private final PayslipRepository payslipRepository;
 
     public DecreeDto to( Payment payment) {
         var documentType= payment.getType().accept( this);
@@ -106,6 +104,42 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType>, S
                                                 .reduce( BigDecimal.ZERO, BigDecimal::add);
                                     }
 
+                                    @Override public BigDecimal visitWartoscRozrachowaniaPublicznego() {
+                                        try {
+                                            return clearingQuery.   findByPayable( payment.getDocumentId(),
+                                                            DeclarationType.valueOf( line.getParameter()))
+                                                    .stream()
+                                                    .map( ClearingDto::getAmount)
+                                                    .reduce( BigDecimal.ZERO, BigDecimal::add);
+                                        } catch (IllegalArgumentException | NullPointerException e) {
+                                            return BigDecimal.ZERO;
+                                        }
+                                    }
+
+                                    @Override public BigDecimal visitWartoscRozrachowaniaPoTerminie() {
+                                        try {
+                                            return clearingQuery.findByPayable( payment.getDocumentId(),
+                                                            DeclarationType.valueOf( line.getParameter()))
+                                                    .stream()
+                                                    .map( ClearingDto::getAmount)
+                                                    .reduce( BigDecimal.ZERO, BigDecimal::add);
+                                        } catch (IllegalArgumentException | NullPointerException e) {
+                                            return BigDecimal.ZERO;
+                                        }
+                                    }
+
+                                    @Override public BigDecimal visitWynagrodzenieNetto() {
+                                        if( line.getSettlementType()== null)
+                                            return payment.getAmount();
+                                        return clearingQuery.findByReverse( payment.getDocumentId(),
+                                                        payment.getSettlementKind(),
+                                                        line.getSettlementType())
+                                                .stream()
+                                                .filter( DecreeFactoryPayment.this::isIncluded)
+                                                .map( ClearingDto::getAmount)
+                                                .reduce( BigDecimal.ZERO, BigDecimal::add);
+                                    }
+
                                     @Override public BigDecimal visitSplataVat() {
 /*
                                         var temp= clearings.receivableId( payment.getDocumentId()).stream()
@@ -140,6 +174,13 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType>, S
                         .map( decree-> decreeMap.setNumer( decree.getNumber()))
                         .orElseGet(()-> decreeMap))
                 .orElseThrow( ()-> new NoSuchElementException( "No found template"));
+    }
+
+    private boolean isIncluded( ClearingDto clearing) {
+        return !payslipRepository.findById( clearing.getPayableId())
+                .map( payslip -> payslip instanceof EmploymentPayslip&&
+                        !clearing.getDate().isAfter( payslip.getSettlementDue()))
+                .orElseGet(()-> false);
     }
 
     @Override public TemplateType visitPaymentReceipt() {

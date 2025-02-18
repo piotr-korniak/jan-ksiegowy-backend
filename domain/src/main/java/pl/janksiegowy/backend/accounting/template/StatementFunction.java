@@ -41,6 +41,49 @@ public enum StatementFunction {
             return visitor.visitKorektaNaliczonegoMinus();
         }
     },
+
+    UbezpieczenieEmerytalne {
+        @Override public <T> T accept(StatementFunctionVisitor<T> visitor) {
+            return visitor.visitUbezpieczenieEmerytalne();
+        }
+    },
+
+    UbezpieczenieRentowe {
+        @Override public <T> T accept(StatementFunctionVisitor<T> visitor) {
+            return visitor.visitUbezpieczenieRentowe();
+        }
+    },
+
+    UbezpieczenieChorobowe {
+        @Override public <T> T accept(StatementFunctionVisitor<T> visitor) {
+            return visitor.visitUbezpieczenieChorobowe();
+        }
+    },
+
+    UbezpieczenieWypadkowe {
+        @Override public <T> T accept(StatementFunctionVisitor<T> visitor) {
+            return visitor.visitUbezpieczenieWypadkowe();
+        }
+    },
+
+    UbezpieczenieZdrowotne {
+        @Override public <T> T accept(StatementFunctionVisitor<T> visitor) {
+            return visitor.visitUbezpieczenieZdrowotne();
+        }
+    },
+
+    FunduszFGSP {
+        @Override public <T> T accept( StatementFunctionVisitor<T> visitor) {
+            return visitor.visitFunduszFGSP();
+        }
+    },
+
+    FunduszFPFS {
+        @Override public <T> T accept( StatementFunctionVisitor<T> visitor) {
+            return visitor.visitFunduszFPFS();
+        }
+    },
+
     Zobowiazanie {
         @Override public <T> T accept( StatementFunctionVisitor<T> visitor ) {
             return visitor.visitZobowiazanie();
@@ -63,6 +106,13 @@ public enum StatementFunction {
         T visitKorektaNaleznegoMinus();
         T visitKorektaNaliczonegoPlus();
         T visitKorektaNaliczonegoMinus();
+        T visitUbezpieczenieEmerytalne();
+        T visitUbezpieczenieRentowe();
+        T visitUbezpieczenieChorobowe();
+        T visitUbezpieczenieWypadkowe();
+        T visitUbezpieczenieZdrowotne();
+        T visitFunduszFGSP();
+        T visitFunduszFPFS();
         T visitZobowiazanie();
         T visitZaliczkaCIT();
     }

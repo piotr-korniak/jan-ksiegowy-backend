@@ -34,23 +34,23 @@ public enum SettlementType {
         return visitor.visitReceiveNote();
     }},
 
-    /** VAT Statement */
+    /** fixMe VAT Statement */
     V { @Override public <T> T accept( SettlementTypeVisitor<T> visitor ) {
             return visitor.visitVatStatement();
     }},
 
-    /** CIT Statement */
+    /** fixMe CIT Statement */
     C { @Override public <T> T accept( SettlementTypeVisitor<T> visitor ) {
         return visitor.visitCitStatement();
     }},
 
-    /** PIT Statement */
+    /** Tax Declaration */
     T { @Override public <T> T accept( SettlementTypeVisitor<T> visitor ) {
         return visitor.visitPitStatement();
     }},
 
-    /** DRA Statement */
-    Z { @Override public <T> T accept( SettlementTypeVisitor<T> visitor ) {
+    /** fixMe DRA Statement */
+    K { @Override public <T> T accept(SettlementTypeVisitor<T> visitor ) {
         return visitor.visitDraStatement();
     }},
 

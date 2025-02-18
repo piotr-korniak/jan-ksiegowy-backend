@@ -1,13 +1,13 @@
 package pl.janksiegowy.backend.contract;
 
 import lombok.AllArgsConstructor;
-import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
-import pl.janksiegowy.backend.salary.Contract;
-import pl.janksiegowy.backend.salary.ContractType.ContractTypeVisitor;
-import pl.janksiegowy.backend.salary.EmploymentContract;
-import pl.janksiegowy.backend.salary.ServiceContract;
+import pl.janksiegowy.backend.salary.contract.Contract;
+import pl.janksiegowy.backend.salary.contract.ContractType.ContractTypeVisitor;
+import pl.janksiegowy.backend.salary.contract.EmploymentContract;
+import pl.janksiegowy.backend.salary.contract.MandateContract;
+import pl.janksiegowy.backend.salary.contract.WorkContract;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -36,7 +36,11 @@ public class ContractFactory implements ContractTypeVisitor<Contract>{
         return new EmploymentContract();
     }
 
-    @Override public Contract visitServicesContract() {
-        return new ServiceContract();
+    @Override public Contract visitMandateContract() {
+        return new MandateContract();
+    }
+
+    @Override public Contract visitWorkContract() {
+        return new WorkContract();
     }
 }

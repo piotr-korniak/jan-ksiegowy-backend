@@ -1,0 +1,6 @@
+--liquibase formatted sql
+--changeset piotrkorniak:21
+
+ALTER TABLE TEMPLATES_LINES
+    ALTER COLUMN FUNCTION TYPE VARCHAR(48),
+    ADD COLUMN PARAMETER VARCHAR(10);

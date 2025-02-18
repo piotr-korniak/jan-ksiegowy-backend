@@ -34,9 +34,10 @@ public class TemplateFacade {
             .forEach( templateDto-> {
                 counters[0]++;
 
-                if( templates.findByCode(templateDto.getCode())
-                        .filter(i -> i.getDate().isBefore(templateDto.getDate())).isPresent()) {
-                    save(templateDto);
+                if( templates.findByCode( templateDto.getCode())
+                        .map( i-> i.getDate().isBefore( templateDto.getDate()))
+                        .orElseGet( ()->true)) {
+                    save( templateDto);
                     counters[1]++;
                 }
             });

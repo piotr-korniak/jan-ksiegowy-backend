@@ -23,7 +23,7 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import pl.janksiegowy.backend.statement.Statement_JPK_V7;
+import pl.janksiegowy.backend.declaration.Statement_JPK_V7;
 
 
 /**

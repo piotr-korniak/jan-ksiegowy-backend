@@ -1,5 +1,6 @@
 package pl.janksiegowy.backend.finances.clearing;
 
+import pl.janksiegowy.backend.declaration.DeclarationType;
 import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind.SettlementKindVisitor;
@@ -29,4 +30,7 @@ public interface ClearingQueryRepository   {
             }
         });
     };
+
+    List<ClearingDto> findByPayable( UUID documentId, DeclarationType declarationType);
+    List<ClearingDto> findByPayableAfterDue( UUID documentId, DeclarationType declarationType);
 }

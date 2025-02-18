@@ -18,7 +18,6 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
-import java.util.Locale;
 import java.util.Map;
 
 @Configuration
@@ -32,7 +31,7 @@ import java.util.Map;
                         "pl.janksiegowy.backend.period",
                         "pl.janksiegowy.backend.item",
                         "pl.janksiegowy.backend.invoice_line",
-                        "pl.janksiegowy.backend.statement",
+                        "pl.janksiegowy.backend.declaration",
                         "pl.janksiegowy.backend.shared",
                         "pl.janksiegowy.backend.salary",
                         "pl.janksiegowy.backend.report"},
@@ -69,7 +68,7 @@ public class CompanyPersistenceConfig {
                                "pl.janksiegowy.backend.period",
                                "pl.janksiegowy.backend.item",
                                "pl.janksiegowy.backend.invoice_line",
-                               "pl.janksiegowy.backend.statement",
+                               "pl.janksiegowy.backend.declaration",
                                "pl.janksiegowy.backend.shared",
                                "pl.janksiegowy.backend.salary",
                                 "pl.janksiegowy.backend.report");

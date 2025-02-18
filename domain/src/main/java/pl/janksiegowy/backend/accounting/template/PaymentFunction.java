@@ -1,5 +1,7 @@
 package pl.janksiegowy.backend.accounting.template;
 
+import java.math.BigDecimal;
+
 public enum PaymentFunction {
 
     WplataNaleznosci {
@@ -15,6 +17,16 @@ public enum PaymentFunction {
     WartoscRozrachowania {
         @Override public <T> T accept( PaymentFunctionVisitor<T> visitor) {
             return visitor.visitWartoscRozrachowania();
+        }
+    },
+    WartoscRozrachowaniaPublicznego {
+        @Override public <T> T accept( PaymentFunctionVisitor<T> visitor) {
+            return visitor.visitWartoscRozrachowaniaPublicznego();
+        }
+    },
+    WartoscRozrachowaniaPoTerminie {
+        @Override public <T> T accept( PaymentFunctionVisitor<T> visitor) {
+            return visitor.visitWartoscRozrachowaniaPoTerminie();
         }
     },
     WplataNoty {
@@ -36,7 +48,13 @@ public enum PaymentFunction {
         @Override public <T> T accept(PaymentFunctionVisitor<T> visitor) {
             return visitor.visitSplataNKUP();
         }
-    };
+    },
+    WynagrodzenieNetto {
+        @Override public <T> T accept( PaymentFunctionVisitor<T> visitor ) {
+            return visitor.visitWynagrodzenieNetto();
+        }
+    }
+    ;
 
     public abstract <T> T accept( PaymentFunctionVisitor<T> visitor);
 
@@ -48,5 +66,8 @@ public enum PaymentFunction {
         T visitSplataVat();
         T visitSplataNKUP();
         T visitWartoscRozrachowania();
+        T visitWartoscRozrachowaniaPublicznego();
+        T visitWartoscRozrachowaniaPoTerminie();
+        T visitWynagrodzenieNetto();
     }
 }

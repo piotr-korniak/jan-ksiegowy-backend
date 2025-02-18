@@ -3,12 +3,12 @@ package pl.janksiegowy.backend.accounting.decree;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.finances.document.Document;
-import pl.janksiegowy.backend.finances.charge.Charge;
+import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.register.accounting.AccountingRegister;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterFactory;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
-import pl.janksiegowy.backend.statement.PayableStatement;
+import pl.janksiegowy.backend.declaration.PayableDeclaration;
 
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public class DecreeFacade {
         return save( decree.to( document));
     }
 
-    public void book( PayableStatement statement) {
+    public void book( PayableDeclaration statement) {
         save( decree.to( statement));
     }
 
@@ -39,5 +39,7 @@ public class DecreeFacade {
     }
 
 
-
+    public Decree book( MonthPeriod month) {
+        return save( decree.to( month));
+    }
 }

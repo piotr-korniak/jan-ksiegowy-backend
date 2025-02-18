@@ -13,15 +13,16 @@ public class TemplateLineFactory {
 
     public TemplateLine from( TemplateLineDto source, TemplateLine line) {
 
-        return accounts.findByNumber( source.getAccount().getNumber())
+        return accounts.findByNumber( source.getAccountNumber())
                 .map( account-> Optional.ofNullable( source.getId())
                     .map( line::setId)
                     .orElseGet(()-> line)
                         .setSide( source.getSide())
                         .setAccount( account)
                         .setSettlementType( source.getSettlementType())
+                        .setParameter( source.getParameter())
                         .setDescription( source.getDescription()))
-                .orElseThrow();
+                .orElseThrow(()-> new IllegalStateException( "Account not found: "+ source.getAccountNumber()));
     }
 
 }

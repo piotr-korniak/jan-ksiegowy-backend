@@ -14,10 +14,10 @@ import java.util.UUID;
 public interface SqlDocumentRepository extends JpaRepository<Document, UUID> {
 }
 
-/*
-interface SqlDocumentQueryRepository extends DocumentQueryRepository, Repository<Clearing, ClearingId> {
 
-}*/
+interface SqlDocumentQueryRepository extends DocumentQueryRepository, Repository<Document, UUID> {
+
+}
 
 @org.springframework.stereotype.Repository
 @AllArgsConstructor

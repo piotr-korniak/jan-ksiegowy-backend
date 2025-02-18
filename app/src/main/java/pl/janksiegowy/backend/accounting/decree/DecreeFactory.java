@@ -1,28 +1,35 @@
 package pl.janksiegowy.backend.accounting.decree;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeMap;
 import pl.janksiegowy.backend.accounting.decree.DecreeType.DecreeTypeVisitor;
+import pl.janksiegowy.backend.accounting.decree.factory.CloseMonthFactory;
+import pl.janksiegowy.backend.accounting.decree.factory.PayslipSubFactory;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.finances.charge.Charge;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
 import pl.janksiegowy.backend.finances.document.Document;
+import pl.janksiegowy.backend.finances.document.DocumentQueryRepository;
 import pl.janksiegowy.backend.finances.notice.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
+import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
-import pl.janksiegowy.backend.salary.Payslip;
+import pl.janksiegowy.backend.salary.PayslipRepository;
+import pl.janksiegowy.backend.salary.payslip.PayslipDocument;
+import pl.janksiegowy.backend.salary.payslip.Payslip;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.finances.document.Document.DocumentVisitor;
-import pl.janksiegowy.backend.statement.PayableStatement;
+import pl.janksiegowy.backend.declaration.PayableDeclaration;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,8 +37,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Component
 @AllArgsConstructor
-public class DecreeFactory implements DocumentVisitor<DecreeDto> {
+public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisitor<Decree> {
 
     protected final TemplateRepository templates;
     protected final AccountingRegisterRepository registers;
@@ -40,12 +48,15 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
     protected final NumeratorFacade numerators;
     protected final ClearingRepository clearings;
     private final ClearingQueryRepository clearingQuery;
-
+    private final PayslipSubFactory payslipSubFactory;
+    private final CloseMonthFactory closeMonthFactory;
+    private final PayslipRepository payslipRepository;
 
     public Decree from( DecreeDto source) {
-        return update( source, Optional.ofNullable( source.getDecreeId())
-                .map( id-> create( source).setDecreeId( id))
-                .orElse( create( source).setDecreeId( UUID.randomUUID())));
+        System.err.println( "Type: "+ source.getType());
+        return update( source, source.getType().accept( this)
+                .setDecreeId( Optional.ofNullable( source.getDecreeId())
+                        .orElseGet( UUID::randomUUID)));
     }
 
     public Decree update( DecreeDto source, Decree decree) {
@@ -65,25 +76,29 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
                 .orElseThrow();
     }
 
-    private Decree create( DecreeDto source) {
-        return source.getType().accept( new DecreeTypeVisitor<Decree>() {
-
-            @Override public Decree visitDocumentDecree() {
-                return new DocumentDecree();
-            }
-
-            @Override public Decree visitStatementDecree() {
-                return new StatementDecree();
-            }
-        });
-    }
 
     public DecreeDto to( Document document) {
         return document.accept( this);
     }
 
-    public DecreeDto to( PayableStatement statement) {
+    public DecreeDto to( PayableDeclaration statement) {
         return new DecreeFactoryStatement( templates).to( statement);
+    }
+
+    public DecreeDto to( Payslip payslip) {
+        return payslipSubFactory.create( payslip);
+    }
+
+    public DecreeDto to(MonthPeriod month) {
+        return closeMonthFactory.create( month);
+    }
+
+    @Override public Decree visitDocumentDecree() {
+        return new DocumentDecree();
+    }
+
+    @Override public Decree visitStatementDecree() {
+        return new StatementDecree();
     }
 
     protected abstract static class Builder {
@@ -125,7 +140,7 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
     }
 
     @Override public DecreeDto visit( Payment payment) {
-        return new DecreeFactoryPayment( templates, clearings, clearingQuery).to( payment);
+        return new DecreeFactoryPayment( templates, clearings, clearingQuery, payslipRepository).to( payment);
     }
 
     @Override public DecreeDto visit( Note note) {
@@ -140,7 +155,7 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto> {
         return DecreeFactoryShare.create( templates).to( share);
     }
 
-    @Override public DecreeDto visit( Payslip payslip) {
-        return new DecreeFactoryPayslip( templates).to( payslip);
+    @Override public DecreeDto visit( PayslipDocument payslip) {
+        return null;// new FactoryPayslip( templates).to( payslip);
     }
 }

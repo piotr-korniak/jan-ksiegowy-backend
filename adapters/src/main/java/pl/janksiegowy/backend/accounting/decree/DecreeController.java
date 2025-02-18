@@ -1,6 +1,7 @@
 package pl.janksiegowy.backend.accounting.decree;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +12,12 @@ import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeMap;
 import pl.janksiegowy.backend.finances.payment.PaymentRepository;
+import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
+import pl.janksiegowy.backend.salary.payslip.EmploymentPayslip;
+import pl.janksiegowy.backend.salary.payslip.PayslipQueryRepository;
+import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.subdomain.TenantController;
 import pl.janksiegowy.backend.tax.vat.ProfitAndLossItems;
 
@@ -28,19 +33,22 @@ public class DecreeController {
     private final AccountQueryRepository accountQueryRepository;
     private final DecreeLineQueryRepository decreeLines;
     private final ProfitAndLossItems profitAndLossItems;
+    private final PeriodRepository periodRepository;
 
     public DecreeController(final PaymentRepository payments,
                             final DecreeFacade decreeFacade,
                             final AccountingRegisterRepository registers,
                             final AccountQueryRepository accountQueryRepository,
                             final DecreeLineQueryRepository decreeLines,
-                            final ProfitAndLossItems profitAndLossItems) {
+                            final ProfitAndLossItems profitAndLossItems,
+                            final PeriodRepository periodRepository) {
         this.decrees= new DecreeInitializer( payments);
         this.decreeFacade = decreeFacade;
         this.registers = registers;
         this.accountQueryRepository = accountQueryRepository;
         this.decreeLines = decreeLines;
         this.profitAndLossItems = profitAndLossItems;
+        this.periodRepository= periodRepository;
     }
 
     @PostMapping
@@ -49,6 +57,16 @@ public class DecreeController {
         decrees.init();
 
         return ResponseEntity.ok(  "Migrate Decree complete!");
+    }
+
+    @PostMapping( "/closePeriods/{periodId}")
+    public ResponseEntity<String> closePeriods( @PathVariable String periodId) {
+        return ResponseEntity.ok( periodRepository.findMonthById( periodId)
+                .map( monthPeriod-> {
+                    decreeFacade.book( monthPeriod);
+                    return "Month "+ periodId+ " closed.";
+                })
+                .orElseGet(()-> "Period "+ periodId+ " not found!"));
     }
 
     @PostMapping( "/openingBalance")

@@ -6,8 +6,8 @@ import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
-import pl.janksiegowy.backend.statement.*;
-import pl.janksiegowy.backend.statement.dto.StatementDto;
+import pl.janksiegowy.backend.declaration.*;
+import pl.janksiegowy.backend.declaration.dto.StatementDto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,8 +28,9 @@ public class TaxCalculatorBundleJPK implements TaxBundle {
 
     @Override
     public List<TaxType> taxesToProcess( MonthPeriod monthPeriod ) {
-        //return List.of( TaxType.PM);
-        return List.of( TaxType.CM, TaxType.PM);
+
+        //return List.of( TaxType.CM, TaxType.PM);
+        return List.of( TaxType.ZD);
     }
 
     //@Override

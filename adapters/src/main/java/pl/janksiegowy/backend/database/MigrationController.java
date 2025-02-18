@@ -59,7 +59,10 @@ public class MigrationController extends MigrationConfiguration {
                 .end( LocalDate.of( 2023, 12, 31)),
             PeriodDto.create().type( PeriodType.A)
                 .begin( LocalDate.of( 2024, 1, 1))
-                .end( LocalDate.of( 2024, 12, 31))
+                .end( LocalDate.of( 2024, 12, 31)),
+            PeriodDto.create().type( PeriodType.A)
+                    .begin( LocalDate.of( 2025, 1, 1))
+                    .end( LocalDate.of( 2025, 12, 31))
     };
 
     private final ReportFacade reportFacade;

@@ -6,12 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import pl.janksiegowy.backend.contract.ContractQueryRepository;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
+import pl.janksiegowy.backend.salary.contract.Contract;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public interface SqlContractRepository extends JpaRepository<Contract, UUID> {
+
+    List<Contract> findByBeginLessThanEqualAndEndGreaterThanEqualOrEndIsNull( LocalDate date1, LocalDate date2);
+
 }
 
 interface SqlContractQueryRepository extends ContractQueryRepository, Repository<Contract, UUID> {
@@ -34,6 +38,6 @@ class ContractRepositoryImpl implements ContractRepository {
 
     @Override
     public List<Contract> findAllActive( LocalDate begin ) {
-        return repository.findAll();
+        return repository.findByBeginLessThanEqualAndEndGreaterThanEqualOrEndIsNull( begin, begin);
     }
 }

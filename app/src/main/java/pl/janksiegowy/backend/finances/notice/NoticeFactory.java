@@ -2,6 +2,7 @@ package pl.janksiegowy.backend.finances.notice;
 
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.entity.EntityRepository;
+import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
 import pl.janksiegowy.backend.finances.notice.NoteType.NoteTypeVisitor;
 import pl.janksiegowy.backend.period.PeriodFacade;
@@ -16,16 +17,20 @@ public class NoticeFactory implements NoteTypeVisitor<Note> {
     private final PeriodFacade periods;
 
     public Note from( NoticeDto source) {
-        return entityRepository.findByEntityIdAndDate( source.getEntity().getEntityId(), source.getDate())
+        return entityRepository.findByCountryAndTaxNumberAndTypesAndDate(
+                        source.getEntityCountry(),
+                        source.getEntityTaxNumber(),
+                        source.getDate(),
+                        EntityType.C, EntityType.R, EntityType.B)
                 .map(entity-> (Note) source.getType().accept( this)
-                        .setNumber( source.getNumber())
-                        .setIssueDate( source.getDate())
-                        .setDueDate( source.getDue())
-                        .setAmount( source.getAmount())
-                        .setDocumentId( Optional.ofNullable( source.getNoticeId())
-                                .orElseGet( UUID::randomUUID))
-                        .setPeriod( periods.findMonthPeriodOrAdd( source.getDate()))
-                        .setEntity( entity))
+                    .setNumber( source.getNumber())
+                    .setIssueDate( source.getDate())
+                    .setDueDate( source.getDue())
+                    .setAmount( source.getAmount())
+                    .setDocumentId( Optional.ofNullable( source.getNoticeId())
+                            .orElseGet( UUID::randomUUID))
+                    .setPeriod( periods.findMonthPeriodOrAdd( source.getDate()))
+                    .setEntity( entity))
                 .orElseThrow();
     }
 

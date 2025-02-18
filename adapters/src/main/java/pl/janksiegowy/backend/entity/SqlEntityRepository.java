@@ -1,6 +1,8 @@
 package pl.janksiegowy.backend.entity;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -21,6 +23,14 @@ public interface SqlEntityRepository extends JpaRepository<Entity, Long> {
 
     public Optional<Entity> findEntityByEntityIdAndDate( UUID entityId, LocalDate date);
 
+    @Query( value= "FROM Entity M " +
+            "LEFT OUTER JOIN Entity P "+
+            "ON M.entityId= P.entityId AND (P.date <= :date AND M.date < P.date) "+
+            "WHERE M.date <= :date AND P.date IS NULL AND "+
+            "M.taxNumber= :taxNumber AND M.country= :country AND M.type IN :types ")
+
+    Optional<Entity> findByCountryAndTaxNumberAndTypesAndDate(
+            Country country, String taxNumber, LocalDate date, EntityType... types);
 }
 
 interface SqlEntityQueryRepository extends EntityQueryRepository, Repository<Entity, Long> {
@@ -76,5 +86,12 @@ class EntityRepositoryImpl implements EntityRepository {
     @Override
     public Optional<Entity> findEntityByEntityIdAndDate( UUID entityId, LocalDate date) {
         return repository.findEntityByEntityIdAndDate( entityId, date);
+    }
+
+    @Override
+    public Optional<Entity> findByCountryAndTaxNumberAndTypesAndDate(
+            Country entityCountry, String entityTaxNumber, LocalDate date, EntityType... types) {
+        return repository.findByCountryAndTaxNumberAndTypesAndDate( entityCountry, entityTaxNumber, date, types)
+                .stream().findFirst();
     }
 }

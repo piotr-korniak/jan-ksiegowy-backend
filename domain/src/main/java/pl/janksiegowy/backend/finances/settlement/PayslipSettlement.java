@@ -2,7 +2,7 @@ package pl.janksiegowy.backend.finances.settlement;
 
 import jakarta.persistence.*;
 import pl.janksiegowy.backend.finances.clearing.Clearing;
-import pl.janksiegowy.backend.salary.Payslip;
+import pl.janksiegowy.backend.salary.payslip.PayslipDocument;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,7 +14,7 @@ public class PayslipSettlement extends Settlement {
     @OneToOne( cascade = CascadeType.ALL)
     @JoinColumn( name= "DOCUMENT_ID")
     @MapsId
-    protected Payslip payslip;
+    protected PayslipDocument payslip;
 
 
     @Override public <T> T accept( SettlementVisitor<T> visitor) {

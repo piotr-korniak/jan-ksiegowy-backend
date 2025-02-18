@@ -56,7 +56,14 @@ public class TemplateFactory {
                                     StatementFunction.valueOf( templateLineDto.getFunction()));
                         }
                         @Override public TemplateLine visitPitStatement() {
-                            return null;
+                            return new StatementTemplateLine().setFunction(
+                                    StatementFunction.valueOf( templateLineDto.getFunction()));
+                        }
+
+                        @Override
+                        public TemplateLine visitDraStatement() {
+                            return new StatementTemplateLine().setFunction(
+                                    StatementFunction.valueOf( templateLineDto.getFunction()));
                         }
 
                         @Override public TemplateLine visitEmployeePayslip() {
@@ -89,6 +96,11 @@ public class TemplateFactory {
                         @Override public TemplateLine visitDisposedShare() {
                             return new FinanceTemplateLine().setFunction(
                                     SettlementFunction.valueOf( templateLineDto.getFunction()));
+                        }
+
+                        @Override public TemplateLine visitMonthClose() {
+                            return new CloseMonthTemplateLine().setFunction(
+                                    CloseMonthFunction.valueOf( templateLineDto.getFunction()));
                         }
                     })).setTemplate( template))
                 .collect( Collectors.toList())));

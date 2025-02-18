@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import pl.janksiegowy.backend.entity.EntityQueryRepository;
 import pl.janksiegowy.backend.entity.EntityType;
-import pl.janksiegowy.backend.salary.Contract;
+import pl.janksiegowy.backend.salary.contract.Contract;
 import pl.janksiegowy.backend.salary.ContractRepository;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.shared.MigrationService;

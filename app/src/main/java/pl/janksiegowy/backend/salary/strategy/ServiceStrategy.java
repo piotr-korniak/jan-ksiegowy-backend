@@ -4,12 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.period.PeriodQueryRepository;
-import pl.janksiegowy.backend.salary.ContractType;
-import pl.janksiegowy.backend.salary.PayslipItemCode;
+import pl.janksiegowy.backend.salary.contract.ContractType;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.salary.dto.PayslipDto;
-import pl.janksiegowy.backend.salary.dto.PayslipLineDto;
-import pl.janksiegowy.backend.salary.dto.PayslipMap;
 import pl.janksiegowy.backend.salary.payslip.PayslipQueryRepository;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
 
@@ -18,18 +15,18 @@ import java.time.LocalDate;
 
 @Component
 @AllArgsConstructor
-public class ServiceStrategy implements SalaryStrategy {
+public class ServiceStrategy implements SalaryStrategy<ContractDto, Interpreter, PayslipDto> {
 
     private final PeriodQueryRepository periodQueryRepository;
     private final PayslipQueryRepository payslips;
 
     @Override
     public boolean isApplicable( ContractType contractType) {
-        return contractType== ContractType.S;
+        return contractType== ContractType.W;
     }
 
     @Override
-    public PayslipDto calculateSalary( ContractDto contract, Period period) {
+    public Interpreter calculate(ContractDto contract, Period period) {
         System.err.println( "Liczymy zlecenie!!!");
         var inter= config();
         inter.setVariable( "brutto", contract.getSalary());
@@ -46,7 +43,7 @@ public class ServiceStrategy implements SalaryStrategy {
                 .orElseGet( PayslipDto::create);
 
         System.err.println( "PayslipDto: "+payslip.getDocumentId());
-
+/*
         return PayslipMap.create(
                         payslips.findByContractIdAndPeriod( contract.getContractId(), period)
                                 .map( payslipId-> PayslipDto.create().documentId( payslipId))
@@ -58,14 +55,20 @@ public class ServiceStrategy implements SalaryStrategy {
                         .entity( contract.getEntity())
                         .contract( contract))
                 .addLine( PayslipLineDto.create()
-                        .itemCode( PayslipItemCode.KW_ZAL)
+                        .itemCode( WageIndicatorCode.KW_ZAL)
                         .amount( inter.getVariable("podatek")))
                 .addLine( PayslipLineDto.create()
-                        .itemCode( PayslipItemCode.KW_BRT)
+                        .itemCode( WageIndicatorCode.KW_BRT)
                         .amount( inter.getVariable("brutto")))
                 .addLine( PayslipLineDto.create()
-                        .itemCode( PayslipItemCode.KW_NET)
-                        .amount( inter.getVariable("netto")));
+                        .itemCode( WageIndicatorCode.KW_NET)
+                        .amount( inter.getVariable("netto")));*/
+        return inter;
+    }
+
+    @Override
+    public PayslipDto factory(ContractDto contract, Period period, Interpreter calculation) {
+        return null;
     }
 
     @Override
