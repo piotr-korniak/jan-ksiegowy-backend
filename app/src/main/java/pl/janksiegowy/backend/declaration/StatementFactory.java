@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.declaration.dto.StatementDto;
 import pl.janksiegowy.backend.declaration.DeclarationType.DeclarationTypeVisitor;
 import pl.janksiegowy.backend.period.Period;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,10 +25,10 @@ public class StatementFactory {
                         return update( new Declaration_VAT(), source, settlementPeriod);
                     }
                     @Override public Declaration visitJpkStatement() {
-                        return new RegisterStatement();
+                        return new Declaration_JPK();
                     }
                     @Override public Declaration visitCitStatement() {
-                        return null;
+                        return update( new Declaration_CIT(), source, settlementPeriod);
                     }
                     @Override public Declaration visitPitStatement() {
                         return null;
@@ -44,7 +45,9 @@ public class StatementFactory {
                     .setPeriod( source.getPeriod())
                     .setNo( source.getNo())
                     .setXML( source.getXml())
-                    .setElements( source.getElements()))
+                    .setElements( source.getElements().entrySet().stream()
+                            .filter(entry-> entry.getValue().signum()!= 0)
+                            .collect( Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue))))
             .orElseThrow();
     }
 

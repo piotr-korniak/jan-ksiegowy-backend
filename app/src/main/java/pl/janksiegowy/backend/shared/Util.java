@@ -150,4 +150,7 @@ public class Util {
         return INVALID_FILENAME_CHARS.matcher(input).replaceAll("_");
     }
 
+    public static LocalDate previousMonthEnd( LocalDate date) {
+        return date.withDayOfMonth(1).minusDays(1);
+    }
 }

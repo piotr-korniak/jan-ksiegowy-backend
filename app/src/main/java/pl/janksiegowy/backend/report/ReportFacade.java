@@ -33,7 +33,7 @@ public class ReportFacade {
                                   LocalDate startDate, LocalDate endDate) {
         return reportRepository.findByTypeAndCode( type, reportCode)
                 .map(report-> calculate( interpreter, report, startDate, endDate))
-                .orElseThrow();
+                .orElseThrow( );
     }
 
     private Interpreter calculate( Interpreter interpreter, ReportSchema report, LocalDate begin, LocalDate end) {

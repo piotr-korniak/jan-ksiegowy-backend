@@ -16,6 +16,7 @@ import pl.janksiegowy.backend.tax.TaxType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Component
 @AllArgsConstructor
@@ -29,7 +30,7 @@ public class Factory_CIT implements FactoryStrategy<StatementDto, Interpreter, F
     private final EntityQueryRepository entities;
 
     @Override public StatementDto create( MonthPeriod period, Interpreter calculation, FormatterDto formatted) {
-        return metricRepository.findByDate( period.getBegin())
+        var temp= metricRepository.findByDate( period.getBegin())
                 .map( metric-> statements.findFirstByPatternLikeAndPeriodOrderByNoDesc( "CIT%", period)
                         .filter( statement-> StatementStatus.S != statement.getStatus())
                         .map( statement-> StatementDto.create()
@@ -47,12 +48,12 @@ public class Factory_CIT implements FactoryStrategy<StatementDto, Interpreter, F
                         .number( "CIT-8 "+ period.getEnd().getYear()+
                                 "M"+ String.format( "%02d", period.getEnd().getMonthValue()))
                         .due( period.getEnd().plusDays( 20))
-                        .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode()).orElseThrow()))
-/*                .map( proxy-> StatementMap.create( proxy)
-                        .addLineIfNotZero( StatementLineDto.create()
-                                .itemCode( DeclarationElementCode.CIT8_Z)
-                                .amount( calculation.getVariable( "CIT", BigDecimal.ZERO))))*/
+                        .revenue( entities.findByTypeAndTaxNumber( EntityType.R, metric.getRcCode()).orElseThrow())
+                        .elements( Map.of(
+                                DeclarationElementCode.CIT8_Z, calculation.getVariable( "CIT", BigDecimal.ZERO))))
                 .orElseThrow();
+        System.err.println( "Declaration: "+ temp.getElements().getOrDefault( DeclarationElementCode.CIT8_Z,BigDecimal.ZERO));
+        return temp;
     }
 
     @Override public boolean isApplicable(TaxType taxType) {

@@ -12,6 +12,7 @@ import pl.janksiegowy.backend.declaration.DeclarationType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -57,7 +58,7 @@ public interface StatementDto {
         private Period period;
         private int no;
         private StatementStatus status;
-        private Map<DeclarationElementCode, BigDecimal> elements;
+        private Map<DeclarationElementCode, BigDecimal> elements= new HashMap<>();
 
         @Override public UUID getStatementId() {
             return statementId;

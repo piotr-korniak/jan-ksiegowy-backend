@@ -71,7 +71,9 @@ public class CloseMonthFactory extends DecreeBuilder<Map<WageIndicatorCode, BigD
                 .accept( new CloseMonthFunction.CloseMonthFunctionVisitor<>() {
 
                     @Override public BigDecimal visitWynagrodzenieNetto() {
-                        return indicators.getOrDefault( WageIndicatorCode.KW_NET, BigDecimal.ZERO);
+                        return "-".equals( line.getParameter())
+                                ? indicators.getOrDefault( WageIndicatorCode.KW_NET, BigDecimal.ZERO).negate()
+                                : indicators.getOrDefault( WageIndicatorCode.KW_NET, BigDecimal.ZERO);
                     }
 
                     @Override public BigDecimal visitUbezpieczeniaZUS() {

@@ -6,6 +6,7 @@ import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.report.ReportFacade;
 import pl.janksiegowy.backend.report.ReportType;
+import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.indicator.IndicatorsProperties;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
 import pl.janksiegowy.backend.declaration.CitIndicatorCode;
@@ -27,12 +28,19 @@ public class Calculate_CIT implements CalculateStrategy<Interpreter> {
     @Override public Interpreter calculate(MonthPeriod period) {
         var result= new Interpreter();
 
+        var test= periods.findAnnualByDate( period.getBegin())
+                .map( annualPeriod-> reportFacade.calculate( ReportType.P, "Podatek",
+                        annualPeriod.getBegin(), Util.previousMonthEnd( period.getEnd()))
+                .getVariable( "Podatek"));
+
+        System.out.println( "Podatek -1: "+ Util.toString( test.get()));
+
         return periods.findAnnualByDate( period.getBegin())
             .map( annualPeriod->
                 reportFacade.calculate( ReportType.C, "CIT",
                     result.setVariable( "Stawka", properties.getCitIndicator( CitIndicatorCode.CIT_MC, period.getEnd()))
                             .setVariable( "Zaliczki", reportFacade.calculate( ReportType.P, "Podatek",
-                                            annualPeriod.getBegin(), period.getEnd().minusMonths(1))
+                                            annualPeriod.getBegin(), Util.previousMonthEnd( period.getEnd()))
                                     .getVariable( "Podatek")),
                                 annualPeriod.getBegin(), period.getEnd()))
             .orElseGet( Interpreter::new);

@@ -37,8 +37,8 @@ public class SalaryFactory implements ContractTypeVisitor<Payslip> {
                         .setPayslipId( Optional.ofNullable( source.getDocumentId())
                                 .orElseGet( UUID::randomUUID))
                         .setElements( source.getElements().entrySet().stream()
-                                .filter(entry-> entry.getValue().signum() != 0)
-                                .collect(Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue)))
+                                .filter(entry-> entry.getValue().signum()!= 0)
+                                .collect( Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue)))
                     ).orElseThrow())
                 .orElseThrow();
 //        return null;

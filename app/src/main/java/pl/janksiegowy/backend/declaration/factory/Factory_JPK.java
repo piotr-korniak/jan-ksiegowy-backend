@@ -81,7 +81,7 @@ public class Factory_JPK implements FactoryStrategy<StatementDto, Interpreter, F
                 .due( period.getEnd().plusDays( 25 ))
                 .created( LocalDateTime.now())
                 .period( period)
-                .type( DeclarationType.V);    // VAT
+                .type( DeclarationType.J);    // VAT
     }
 
     private StatementDto.Proxy getVatStatementMap( Interpreter result, StatementDto.Proxy statementDto) {

@@ -94,19 +94,21 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType>, S
                                     }
 
                                     @Override public BigDecimal visitWartoscRozrachowania() {
-                                        if( line.getSettlementType()== null)
-                                            return payment.getAmount();
-                                        return clearingQuery.findByReverse( payment.getDocumentId(),
-                                                                            payment.getSettlementKind(),
-                                                                            line.getSettlementType())
-                                                .stream()
-                                                .map( ClearingDto::getAmount)
-                                                .reduce( BigDecimal.ZERO, BigDecimal::add);
+                                        var result = Optional.ofNullable( line.getSettlementType())
+                                                .map(settlementType-> clearingQuery.findByReverse(
+                                                                payment.getDocumentId(),
+                                                                payment.getSettlementKind(),
+                                                                settlementType)
+                                                        .stream()
+                                                        .map( ClearingDto::getAmount)
+                                                        .reduce( BigDecimal.ZERO, BigDecimal::add))
+                                                .orElseGet( payment::getAmount);
+                                        return "-".equals( line.getParameter()) ? result.negate() : result;
                                     }
 
                                     @Override public BigDecimal visitWartoscRozrachowaniaPublicznego() {
                                         try {
-                                            return clearingQuery.   findByPayable( payment.getDocumentId(),
+                                            return clearingQuery.findByPayable( payment.getDocumentId(),
                                                             DeclarationType.valueOf( line.getParameter()))
                                                     .stream()
                                                     .map( ClearingDto::getAmount)
