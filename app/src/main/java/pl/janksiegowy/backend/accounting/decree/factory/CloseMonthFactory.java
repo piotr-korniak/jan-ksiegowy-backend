@@ -46,15 +46,6 @@ public class CloseMonthFactory extends DecreeBuilder<Map<WageIndicatorCode, BigD
                 statements.sumByTypeAndPeriodAndDueDate(
                         Declaration_DRA.class, month, month.getEnd().plusDays( 15)));
 
-
-        /*
-        var temp= payslips.sumByTypeAndPeriodAndDueDate( EmploymentPayslip.class, month, month.getEnd()
-                        .plusDays( 10));
-
-        var dra= statements.sumByTypeAndPeriodAndDueDate(Declaration_DRA.class, month, month.getEnd().plusDays( 15));
-        System.err.println( "DRA sum: "+ dra);
-        System.err.println( "DRA sum: "+ Util.toString( dra));
-*/
         return build( null, indicators, decrees.findByDocument( "ZM "+ month.getId())
                 .map( decreeDto -> DecreeDto.create()
                         .degreeId( decreeDto.getDecreeId()))
