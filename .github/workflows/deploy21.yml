@@ -1,0 +1,46 @@
+name: Deploy to AWS Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: jan-ksiegowy
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew bootJar
+
+      - name: Rename JAR file
+        run: mv build/libs/jan-ksiegowy-0.0.1.jar application.jar
+
+      - name: Get current date
+        run: echo "DEPLOY_DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV
+
+      - name: Deploy to AWS Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v19
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: "Jan Ksiegowy"
+          environment_name: "jan-ksiegowy-env"
+          region: "eu-central-1"
+          version_label: "jan-ksiegowy_${{ env.DEPLOY_DATE }}"
+          deployment_package: "application.jar"
+        env:
+          SPRING_PROFILES_ACTIVE: aws
+          JAVA_TOOL_OPTIONS: "-Xms512m -Xmx2g"
