@@ -39,7 +39,7 @@ bootJar {
 allprojects {
 	group= 'pl.janksiegowy'
 	version= '0.0.1'
-	sourceCompatibility = '17'
+	sourceCompatibility = '21'
 }
 
 subprojects {
