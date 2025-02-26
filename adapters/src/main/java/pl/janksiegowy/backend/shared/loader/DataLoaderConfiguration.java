@@ -31,12 +31,12 @@ public class DataLoaderConfiguration  {
 
     @Bean
     @Profile( "aws")
-    public ResourceLoaderFake awsTenantResourceLoader( @Value( "${s3.bucked_name}") String buckedName) {
+    public ResourceLoaderFake awsTenantResourceLoader( @Value( "${s3.bucket.name}") String buckedName) {
         return new AwsTenantResourceLoader( buckedName);
     }
 
     @Bean
-    public DataLoader dataLoader(ResourceLoaderFake loader, CsvMapper csvMapper, YAMLMapper yamlMapper) {
+    public DataLoader dataLoader( ResourceLoaderFake loader, CsvMapper csvMapper, YAMLMapper yamlMapper) {
         return new DataLoaderImpl( loader, csvMapper, yamlMapper);
     }
 }

@@ -38,4 +38,5 @@ databases:
       changelog: classpath:db/changelog-company.yaml
 
 s3:
-  bucket-name: elasticbeanstalk-eu-central-1-816069151609
+  bucket:
+    name: elasticbeanstalk-eu-central-1-816069151609
