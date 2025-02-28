@@ -20,7 +20,6 @@ import pl.janksiegowy.backend.item.ItemQueryRepository;
 import pl.janksiegowy.backend.metric.MetricFacade;
 import pl.janksiegowy.backend.finances.payment.PaymentMigrationService;
 import pl.janksiegowy.backend.period.*;
-import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.register.RegisterMigrationService;
 import pl.janksiegowy.backend.report.ReportFacade;
 import pl.janksiegowy.backend.contract.ContractFacade;
@@ -28,7 +27,6 @@ import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.numerator.*;
 import pl.janksiegowy.backend.subdomain.TenantController;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Log4j2
@@ -36,34 +34,7 @@ import java.util.List;
 @TenantController
 public class MigrationController extends MigrationConfiguration {
 
-    private final PeriodInitializer periods;
     private final ItemInitializer items;
-
-    private final NumeratorInitializer numerators;
-
-    private final PeriodDto[] initialPeriods= {
-            PeriodDto.create().type( PeriodType.A)
-                .begin( LocalDate.of( 2017, 1, 1))
-                .end( LocalDate.of( 2017, 12, 31)),
-            PeriodDto.create().type( PeriodType.A)
-                    .begin( LocalDate.of( 2018, 1, 1))
-                    .end( LocalDate.of( 2018, 12, 31)),
-            PeriodDto.create().type( PeriodType.A)
-                    .begin( LocalDate.of( 2021, 1, 1))
-                    .end( LocalDate.of( 2021, 12, 31)),
-            PeriodDto.create().type( PeriodType.A)
-                    .begin( LocalDate.of( 2022, 1, 1))
-                    .end( LocalDate.of( 2022, 12, 31)),
-            PeriodDto.create().type( PeriodType.A)
-                .begin( LocalDate.of( 2023, 1, 1))
-                .end( LocalDate.of( 2023, 12, 31)),
-            PeriodDto.create().type( PeriodType.A)
-                .begin( LocalDate.of( 2024, 1, 1))
-                .end( LocalDate.of( 2024, 12, 31)),
-            PeriodDto.create().type( PeriodType.A)
-                    .begin( LocalDate.of( 2025, 1, 1))
-                    .end( LocalDate.of( 2025, 12, 31))
-    };
 
     private final ReportFacade reportFacade;
     private final NoticeFacade noticeFacade;
@@ -72,6 +43,8 @@ public class MigrationController extends MigrationConfiguration {
     private final DataLoader dataLoader;
     private final AccountFacade accountFacade;
     private final TemplateFacade templateFacade;
+    private final PeriodFacade periodFacade;
+    private final NumeratorFacade numeratorFacade;
 
     public MigrationController(final PeriodFacade period,
                                final ItemQueryRepository items,
@@ -93,13 +66,13 @@ public class MigrationController extends MigrationConfiguration {
                                final MetricFacade metricFacade,
                                final DataLoader dataLoader,
                                final AccountFacade accountFacade,
-                               final TemplateFacade templateFacade) {
+                               final TemplateFacade templateFacade,
+                               final PeriodFacade periodFacade,
+                               final NumeratorFacade numeratorFacade) {
         this.invoiceMigration = migrationService;
         this.migrationExecutor= migrationExecutor;
 
-        this.periods= new PeriodInitializer( period);
         this.items= new ItemInitializer( items, item, dataLoader);
-        this.numerators= new NumeratorInitializer( numerators, numerator);
         this.shareMigration= shareMigration;
         this.invoiceLinesMigration= invoiceLinesMigration;
         this.chargesMigration= chargesMigration;
@@ -114,6 +87,8 @@ public class MigrationController extends MigrationConfiguration {
         this.dataLoader= dataLoader;
         this.accountFacade = accountFacade;
         this.templateFacade= templateFacade;
+        this.periodFacade= periodFacade;
+        this.numeratorFacade= numeratorFacade;
     }
 
     private final MigrationExecutor migrationExecutor;
@@ -200,6 +175,16 @@ public class MigrationController extends MigrationConfiguration {
         return ResponseEntity.ok( accountFacade.migrate());
     }
 
+    @PostMapping( "/v2/migrate/period")
+    public ResponseEntity<String> accountPeriod() {
+        return ResponseEntity.ok( periodFacade.migrate());
+    }
+
+    @PostMapping( "/v2/migrate/numerator")
+    public ResponseEntity<String> accountNumerator() {
+        return ResponseEntity.ok( numeratorFacade.migrate());
+    }
+
     @PostMapping("/v2/update")
     public ResponseEntity<List<String>> migrate( @RequestParam String from) {
         return ResponseEntity.ok( dataLoader
@@ -208,29 +193,8 @@ public class MigrationController extends MigrationConfiguration {
                 .toList());
     }
 
-    @PostMapping( "/v2/migrate")
-    public ResponseEntity<String> migrate() {
-
-        StringBuilder response= new StringBuilder();
-
-        log.warn( "Migration start...");
-
-        numerators.init( getInitialNumerators());
-        log.warn( "Numerators migration complete!");
-
-
-        periods.init( initialPeriods);
-        log.warn( "Periods migration complete!");
-
+/*
         items.init();
         log.warn( "Items migration complete!");
-
-/*
-        response.append( settlements.init());
-        log.warn( "Settlements migration complete!");
 */
-
-        //responses.add( response.toString()));
-        return ResponseEntity.ok( response.toString());
-    }
 }

@@ -21,6 +21,16 @@ public class PeriodFactory implements PeriodTypeVisitor<Period>{
         return null;
     }
 
+    public String createId( PeriodDto source) {
+        var begin= source.getBegin();
+
+        return switch (source.getType()) {
+            case A -> String.format( "%dA00", begin.getYear());
+            case Q -> String.format( "%dQ%02d", begin.getYear(), begin.get( IsoFields.QUARTER_OF_YEAR));
+            case M -> String.format( "%dM%02d", begin.getYear(), begin.getMonthValue());
+        };
+    }
+
     public Period from( PeriodDto source, PeriodDecorator decorator) {
 
         var periodType= source.getType();
@@ -30,26 +40,23 @@ public class PeriodFactory implements PeriodTypeVisitor<Period>{
         return periodType.accept( decorator.setVisitor( new PeriodTypeVisitor<Period>() {
             @Override public Period visitAnnualPeriod() {
                 return new AnnualPeriod()
-                        .setId( source.getBegin().getYear()+ "A00")
+                        .setId( createId( source))
                         .setBegin( source.getBegin().with( TemporalAdjusters.firstDayOfYear()))
                         .setEnd( source.getEnd());
             }
 
             @Override public Period visitQuarterPeriod() {
                 LocalDate begin= source.getBegin();
-                begin= begin.with( begin.getMonth().firstMonthOfQuarter())
-                        .with( TemporalAdjusters.firstDayOfMonth());
+                begin= begin.with( begin.getMonth().firstMonthOfQuarter()).with( firstDayOfMonth());
                 return new QuarterPeriod()
-                        .setId( String.format( "%dQ%02d", begin.getYear(), begin.get( IsoFields.QUARTER_OF_YEAR)))
+                        .setId( createId( source))
                         .setBegin( begin)
-                        .setEnd( begin.plusMonths( 2)
-                                .with( TemporalAdjusters.lastDayOfMonth()));
+                        .setEnd( begin.plusMonths( 2).with( lastDayOfMonth()));
             }
 
             @Override public Period visitMonthPeriod() {
-                LocalDate begin= source.getBegin();
                 return new MonthPeriod()
-                        .setId( String.format( "%dM%02d", begin.getYear(), begin.getMonthValue()))
+                        .setId( createId( source))
                         .setBegin( source.getBegin().with( firstDayOfMonth()))
                         .setEnd( source.getBegin().with( lastDayOfMonth()));
             }

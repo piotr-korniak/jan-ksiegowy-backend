@@ -7,10 +7,12 @@ import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateMap;
 import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
 import pl.janksiegowy.backend.metric.dto.MetricDto;
+import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.report.dto.ReportSchemaDto;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.MigrationService;
+import pl.janksiegowy.backend.shared.numerator.dto.NumeratorDto;
 
 import java.util.List;
 
@@ -40,8 +42,17 @@ public class MigrationServiceImpl implements MigrationService {
         return dataLoader.loadCsv("accounts.csv", AccountDto.Proxy.class);
     }
 
+    @Override public List<PeriodDto> loadPeriods() {
+        return dataLoader.loadCsv("periods.csv", PeriodDto.Proxy.class);
+    }
+
+    @Override public List<NumeratorDto> loadNumerators() {
+        return dataLoader.loadCsv("numerators.csv", NumeratorDto.Proxy.class);
+    }
+
     @Override
     public List<TemplateDto> loadTemplates() {
         return dataLoader.loadYml( "templates.yaml", TemplateDto.Proxy.class);
     }
+
 }

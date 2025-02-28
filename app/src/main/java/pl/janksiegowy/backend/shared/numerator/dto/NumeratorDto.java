@@ -1,5 +1,6 @@
 package pl.janksiegowy.backend.shared.numerator.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
@@ -22,10 +23,20 @@ public interface NumeratorDto {
     @Accessors( fluent= true, chain= true)
     class Proxy implements NumeratorDto {
         private UUID numeratorId;
+
+        @JsonProperty( "Code")
         private NumeratorCode code;
+
+        @JsonProperty( "Name")
         private String name;
+
+        @JsonProperty( "Mask")
         private String mask;
+
+        @JsonProperty( "Type")
         private NumeratorType type;
+
+        @JsonProperty( "Typed")
         private boolean typed;
 
         @Override public UUID getNumeratorId() {

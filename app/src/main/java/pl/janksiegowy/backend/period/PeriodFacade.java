@@ -1,15 +1,18 @@
 package pl.janksiegowy.backend.period;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.period.tax.CIT;
 import pl.janksiegowy.backend.period.tax.JPK;
 import pl.janksiegowy.backend.period.tax.PIT;
 import pl.janksiegowy.backend.period.tax.VAT;
+import pl.janksiegowy.backend.shared.MigrationService;
 
 import java.time.LocalDate;
 import java.util.Optional;
+@Log4j2
 
 @AllArgsConstructor
 public class PeriodFacade {
@@ -17,6 +20,24 @@ public class PeriodFacade {
     private final PeriodFactory factory;
     private final PeriodRepository periods;
     private final MetricRepository metrics;
+    private final MigrationService migrationService;
+
+    public String migrate() {
+        int[] counters= { 0, 0};
+
+        migrationService.loadPeriods()
+                .forEach( period -> {
+                    counters[0]++;
+
+                    if( !periods.existById( factory.createId( period))) {
+                        save( period);
+                        counters[1]++;
+                    }
+                });
+
+        log.warn( "Periods migration complete!");
+        return String.format( "%-50s %13s", "Periods migration complete, added: ", counters[1]+ "/"+ counters[0]);
+    }
 
     public MonthPeriod findMonthPeriodOrAdd( LocalDate date){
         return periods.findMonthByDate( date)

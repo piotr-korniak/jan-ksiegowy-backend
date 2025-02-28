@@ -1,16 +1,20 @@
 package pl.janksiegowy.backend.shared.numerator;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import pl.janksiegowy.backend.shared.MigrationService;
 import pl.janksiegowy.backend.shared.numerator.dto.NumeratorDto;
 
 import java.time.LocalDate;
 import java.util.Optional;
+@Log4j2
 
 @AllArgsConstructor
 public class NumeratorFacade {
 
     private final NumeratorRepository numerators;
     private final NumeratorFactory factory;
+    private final MigrationService migrationService;
 
     private final CounterRepository counters;
     public Numerator save( NumeratorDto source) {
@@ -52,5 +56,22 @@ public class NumeratorFacade {
                 }
             }).increment( result)).orElseThrow());
         return result.toString();
+    }
+
+    public String migrate() {
+        int[] counters= { 0, 0};
+
+        migrationService.loadNumerators()
+                .forEach(numerator->{
+                    counters[0]++;
+
+                    numerators.findByCode( numerator.getCode())
+                            .orElseGet(()-> {
+                                counters[1]++;
+                                return save( numerator);
+                            });
+                });
+        log.warn( "Counters migration complete!");
+        return String.format( "%-50s %13s", "Counters migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }
 }

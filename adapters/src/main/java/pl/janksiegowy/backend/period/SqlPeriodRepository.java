@@ -50,4 +50,8 @@ class PeriodRepositoryImpl implements PeriodRepository {
         return repository.findById( periodId);
     }
 
+    @Override public boolean existById( String id) {
+        return repository.existsById( id);
+    }
+
 }

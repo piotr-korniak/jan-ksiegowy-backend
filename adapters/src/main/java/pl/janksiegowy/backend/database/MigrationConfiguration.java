@@ -20,29 +20,6 @@ import java.util.List;
 
 public class MigrationConfiguration {
 
-    protected NumeratorDto[] getInitialNumerators() {
-        return new NumeratorDto[] {
-            NumeratorDto.create().code( NumeratorCode.BR)   // Bank Receipt
-                .type( NumeratorType.M).typed( true).mask( "BP %T/%2Y/%M/%3N").name( "Bank Przyjmie"),
-            NumeratorDto.create().code( NumeratorCode.BS)   // Bank Spend
-                .type( NumeratorType.M).typed( true).mask( "BW %T/%2Y/%M/%3N").name( "Bank Wyda"),
-            NumeratorDto.create().code( NumeratorCode.CR)   // Cash Receipt
-                .type( NumeratorType.M).typed( false).mask( "KP %2Y/%M/%3N").name( "Kasa Przyjmie"),
-            NumeratorDto.create().code( NumeratorCode.CS)   // Cash Spend
-                .type( NumeratorType.M).typed( false).mask( "KW %2Y/%M/%3N").name( "Kasa Wyda"),
-            NumeratorDto.create().code( NumeratorCode.SI)   // Sales Invoice
-                .type( NumeratorType.Y).typed( false).mask( "FS %N/%4Y").name( "Faktura Sprzedaży"),
-            NumeratorDto.create().code( NumeratorCode.EN)   // Entity
-                .type( NumeratorType.E).typed( true).mask( "%5N").name( "Podmioty"),
-            NumeratorDto.create().code( NumeratorCode.AC)   // Accounting Registers
-                .type( NumeratorType.M).typed( true).mask( "%T %2Y/%M/%3N").name( "Rejestry Księgowe"),
-            NumeratorDto.create().code( NumeratorCode.RE)   // Accounting Registers
-                .type( NumeratorType.E).typed( true).mask( "%2N").name( "Rejestry"),
-            NumeratorDto.create().code( NumeratorCode.ST)   // Statement
-                .type( NumeratorType.M).typed( true).mask( "%3N").name( "Deklaracje")
-        };
-    }
-
     protected List<RegisterDto> getAccountingRegister() {
         return List.of(
             RegisterDto.create().code( "FS")

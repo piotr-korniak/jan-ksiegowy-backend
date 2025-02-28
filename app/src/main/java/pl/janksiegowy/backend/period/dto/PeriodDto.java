@@ -1,5 +1,6 @@
 package pl.janksiegowy.backend.period.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.period.PeriodType;
@@ -21,9 +22,16 @@ public interface PeriodDto {
     class Proxy implements PeriodDto {
 
         private String id;
-        private LocalDate begin;
-        private LocalDate end;
+
+        @JsonProperty( "Type")
         private PeriodType type;
+
+        @JsonProperty( "Begin Date")
+        private LocalDate begin;
+
+        @JsonProperty( "End Date")
+        private LocalDate end;
+
         private String parent;
 
         @Override public String getId() {

@@ -6,4 +6,5 @@ public interface NumeratorRepository {
 
     Numerator save( Numerator numerator);
     Optional<Numerator> findByCode( NumeratorCode code);
+
 }
