@@ -26,13 +26,13 @@ public class PeriodFacade {
         int[] counters= { 0, 0};
 
         migrationService.loadPeriods()
-                .forEach( period -> {
+                .forEach( period-> {
                     counters[0]++;
 
-                    if( !periods.existById( factory.createId( period))) {
-                        save( period);
+                    periods.findById( factory.createId( period)).orElseGet(()-> {
                         counters[1]++;
-                    }
+                        return save( period);
+                    });
                 });
 
         log.warn( "Periods migration complete!");

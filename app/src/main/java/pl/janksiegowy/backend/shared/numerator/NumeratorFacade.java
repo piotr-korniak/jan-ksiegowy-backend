@@ -61,16 +61,14 @@ public class NumeratorFacade {
     public String migrate() {
         int[] counters= { 0, 0};
 
-        migrationService.loadNumerators()
-                .forEach(numerator->{
-                    counters[0]++;
+        migrationService.loadNumerators().forEach(numerator-> {
+            counters[0]++;
 
-                    numerators.findByCode( numerator.getCode())
-                            .orElseGet(()-> {
-                                counters[1]++;
-                                return save( numerator);
-                            });
-                });
+            numerators.findByCode( numerator.getCode()).orElseGet(()-> {
+                counters[1]++;
+                return save( numerator);
+            });
+        });
         log.warn( "Counters migration complete!");
         return String.format( "%-50s %13s", "Counters migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }

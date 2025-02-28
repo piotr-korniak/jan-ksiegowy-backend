@@ -18,6 +18,8 @@ public interface SqlItemRepository extends JpaRepository<Item, Long> {
             "WHERE M.itemId= :itemId AND M.date <= :date AND P.date IS NULL")
     Optional<Item> findByItemIdAndDate( UUID itemId, LocalDate date);
     Optional<Item> findItemByItemIdAndDate( UUID itemId, LocalDate date);
+
+    Optional<Item> findItemByCodeAndDate( String code, LocalDate date);
 }
 
 interface ItemQueryRepositoryImpl extends ItemQueryRepository, Repository<Item, Long> {
@@ -47,5 +49,9 @@ class ItemRepositoryImpl implements ItemRepository {
     @Override
     public Optional<Item> findItemByItemIdAndDate( UUID itemId, LocalDate date) {
         return repository.findItemByItemIdAndDate( itemId, date);
+    }
+
+    @Override public Optional<Item> findItemByItemCodeAndDate( String code, LocalDate date) {
+        return repository.findItemByCodeAndDate( code, date);
     }
 }

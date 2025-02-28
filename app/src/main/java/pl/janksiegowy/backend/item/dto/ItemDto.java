@@ -1,5 +1,6 @@
 package pl.janksiegowy.backend.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.shared.financial.TaxMethod;
@@ -30,14 +31,26 @@ public interface ItemDto {
     class Proxy implements ItemDto {
 
         private UUID itemId;
+
+        @JsonProperty( "Date")
         private LocalDate date;
+
+        @JsonProperty( "Type")
         private ItemType type;
 
+        @JsonProperty( "Code")
         private String code;
+
+        @JsonProperty( "Name")
         private String name;
 
+        @JsonProperty( "Tax Rate")
         private TaxRate taxRate;
+
+        @JsonProperty( "Tax Metod")
         private TaxMethod taxMetod;
+
+        @JsonProperty( "Measure")
         private String measure;
 
         private boolean sold;

@@ -45,6 +45,7 @@ public class MigrationController extends MigrationConfiguration {
     private final TemplateFacade templateFacade;
     private final PeriodFacade periodFacade;
     private final NumeratorFacade numeratorFacade;
+    private final ItemFacade itemFacade;
 
     public MigrationController(final PeriodFacade period,
                                final ItemQueryRepository items,
@@ -68,7 +69,7 @@ public class MigrationController extends MigrationConfiguration {
                                final AccountFacade accountFacade,
                                final TemplateFacade templateFacade,
                                final PeriodFacade periodFacade,
-                               final NumeratorFacade numeratorFacade) {
+                               final NumeratorFacade numeratorFacade, ItemFacade itemFacade) {
         this.invoiceMigration = migrationService;
         this.migrationExecutor= migrationExecutor;
 
@@ -89,6 +90,7 @@ public class MigrationController extends MigrationConfiguration {
         this.templateFacade= templateFacade;
         this.periodFacade= periodFacade;
         this.numeratorFacade= numeratorFacade;
+        this.itemFacade = itemFacade;
     }
 
     private final MigrationExecutor migrationExecutor;
@@ -176,13 +178,18 @@ public class MigrationController extends MigrationConfiguration {
     }
 
     @PostMapping( "/v2/migrate/period")
-    public ResponseEntity<String> accountPeriod() {
+    public ResponseEntity<String> periodMigrate() {
         return ResponseEntity.ok( periodFacade.migrate());
     }
 
     @PostMapping( "/v2/migrate/numerator")
-    public ResponseEntity<String> accountNumerator() {
+    public ResponseEntity<String> numeratorMigrate() {
         return ResponseEntity.ok( numeratorFacade.migrate());
+    }
+
+    @PostMapping( "/v2/migrate/item")
+    public ResponseEntity<String> itemMigrate() {
+        return ResponseEntity.ok( itemFacade.migrate());
     }
 
     @PostMapping("/v2/update")
@@ -192,9 +199,4 @@ public class MigrationController extends MigrationConfiguration {
                 .map( migrationExecutor::executeMigration)
                 .toList());
     }
-
-/*
-        items.init();
-        log.warn( "Items migration complete!");
-*/
 }

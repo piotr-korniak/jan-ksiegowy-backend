@@ -14,5 +14,4 @@ public interface PeriodRepository {
     Period save( Period period);
     Optional<Period> findById( String periodId);
 
-    boolean existById( String id);
 }

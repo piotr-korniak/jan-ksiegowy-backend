@@ -3,6 +3,7 @@ package pl.janksiegowy.backend.shared;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
 import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
+import pl.janksiegowy.backend.item.dto.ItemDto;
 import pl.janksiegowy.backend.metric.dto.MetricDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.report.dto.ReportSchemaDto;
@@ -23,4 +24,6 @@ public interface MigrationService {
     List<TemplateDto> loadTemplates();
 
     List<NumeratorDto> loadNumerators();
+
+    List<ItemDto> loadItems();
 }
