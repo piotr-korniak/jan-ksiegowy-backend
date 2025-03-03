@@ -9,6 +9,7 @@ import pl.janksiegowy.backend.item.dto.ItemDto;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public interface SqlItemRepository extends JpaRepository<Item, Long> {
 
@@ -19,6 +20,10 @@ public interface SqlItemRepository extends JpaRepository<Item, Long> {
     Optional<Item> findByItemIdAndDate( UUID itemId, LocalDate date);
     Optional<Item> findItemByItemIdAndDate( UUID itemId, LocalDate date);
 
+    @Query( value= "FROM Item M " +
+            "LEFT OUTER JOIN Item P "+
+            "ON M.itemId= P.itemId AND (P.date <= :date AND M.date < P.date)"+
+            "WHERE M.code= :code AND M.date <= :date AND P.date IS NULL")
     Optional<Item> findItemByCodeAndDate( String code, LocalDate date);
 }
 
@@ -51,7 +56,7 @@ class ItemRepositoryImpl implements ItemRepository {
         return repository.findItemByItemIdAndDate( itemId, date);
     }
 
-    @Override public Optional<Item> findItemByItemCodeAndDate( String code, LocalDate date) {
+    @Override public Optional<Item> findItemByCodeAndDate( String code, LocalDate date) {
         return repository.findItemByCodeAndDate( code, date);
     }
 }

@@ -29,10 +29,17 @@ public class ItemFacade {
         migrationService.loadItems().forEach( item-> {
             counters[0]++;
 
-            repository.findItemByItemCodeAndDate( item.getCode(), item.getDate()).orElseGet(()-> {
-                counters[1]++;
-                return save( item);
-            });
+            repository.findItemByCodeAndDate( item.getCode(), item.getDate())
+                    .ifPresentOrElse(existing-> {
+                        if( !existing.getDate().equals( item.getDate())) {
+                            counters[1]++;
+                            save( ((ItemDto.Proxy)item).itemId( existing.getItemId()));
+                        }
+                    }, ()-> {
+                        counters[1]++;
+                        save( item);
+                    });
+
         });
         log.warn( "Items migration complete!");
         return "%-50s %13s".formatted("Items migration complete, added: ", counters[1]+ "/"+ counters[0]);
