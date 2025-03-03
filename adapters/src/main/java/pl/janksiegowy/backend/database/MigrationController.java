@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.janksiegowy.backend.accounting.account.AccountFacade;
 import pl.janksiegowy.backend.accounting.template.TemplateFacade;
-import pl.janksiegowy.backend.accounting.template.TemplateMiagrationService;
 import pl.janksiegowy.backend.entity.EntityMigrationService;
 import pl.janksiegowy.backend.finances.charge.ChargeMigrationService;
 import pl.janksiegowy.backend.finances.notice.NoticeFacade;
@@ -15,8 +14,6 @@ import pl.janksiegowy.backend.finances.share.ShareMigrationService;
 import pl.janksiegowy.backend.invoice.InvoiceMigrationService;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineMigration;
 import pl.janksiegowy.backend.item.ItemFacade;
-import pl.janksiegowy.backend.item.ItemInitializer;
-import pl.janksiegowy.backend.item.ItemQueryRepository;
 import pl.janksiegowy.backend.metric.MetricFacade;
 import pl.janksiegowy.backend.finances.payment.PaymentMigrationService;
 import pl.janksiegowy.backend.period.*;
@@ -34,8 +31,6 @@ import java.util.List;
 @TenantController
 public class MigrationController extends MigrationConfiguration {
 
-    private final ItemInitializer items;
-
     private final ReportFacade reportFacade;
     private final NoticeFacade noticeFacade;
     private final ContractFacade contractFacade;
@@ -47,12 +42,7 @@ public class MigrationController extends MigrationConfiguration {
     private final NumeratorFacade numeratorFacade;
     private final ItemFacade itemFacade;
 
-    public MigrationController(final PeriodFacade period,
-                               final ItemQueryRepository items,
-                               final ItemFacade item,
-                               final NumeratorQueryRepository numerators,
-                               final NumeratorFacade numerator,
-                               final NoticeFacade noticeFacade,
+    public MigrationController( final NoticeFacade noticeFacade,
                                final InvoiceMigrationService migrationService,
                                final MigrationExecutor migrationExecutor,
                                final ShareMigrationService shareMigration,
@@ -60,7 +50,6 @@ public class MigrationController extends MigrationConfiguration {
                                final ChargeMigrationService chargesMigration,
                                final RegisterMigrationService registersMigration,
                                final PaymentMigrationService paymentsMigration,
-                               final TemplateMiagrationService templatesMigration,
                                final EntityMigrationService entityMigrationService,
                                final ReportFacade reportFacade,
                                final ContractFacade contractFacade,
@@ -73,13 +62,11 @@ public class MigrationController extends MigrationConfiguration {
         this.invoiceMigration = migrationService;
         this.migrationExecutor= migrationExecutor;
 
-        this.items= new ItemInitializer( items, item, dataLoader);
         this.shareMigration= shareMigration;
         this.invoiceLinesMigration= invoiceLinesMigration;
         this.chargesMigration= chargesMigration;
         this.registersMigration= registersMigration;
         this.paymentsMigration= paymentsMigration;
-        this.templatesMigration= templatesMigration;
         this.entityMigrationService= entityMigrationService;
         this.reportFacade = reportFacade;
         this.noticeFacade= noticeFacade;
@@ -100,7 +87,6 @@ public class MigrationController extends MigrationConfiguration {
     private final ChargeMigrationService chargesMigration;
     private final RegisterMigrationService registersMigration;
     private final PaymentMigrationService paymentsMigration;
-    private final TemplateMiagrationService templatesMigration;
     private final EntityMigrationService entityMigrationService;
 
 

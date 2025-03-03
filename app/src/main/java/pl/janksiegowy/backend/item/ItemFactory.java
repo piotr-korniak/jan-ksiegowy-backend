@@ -4,6 +4,7 @@ import pl.janksiegowy.backend.item.dto.ItemDto;
 import pl.janksiegowy.backend.item.ItemType.ItemTypeVisitor;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 public class ItemFactory implements ItemTypeVisitor<Item> {
@@ -11,17 +12,9 @@ public class ItemFactory implements ItemTypeVisitor<Item> {
     public Item from( ItemDto source) {
         return update( source, source.getType()
                 .accept(this))
-                    .setItemId( UUID.randomUUID())
-                    .setDate( LocalDate.EPOCH.plusDays(3));
+                    .setItemId( Optional.ofNullable( source.getItemId()).orElseGet( UUID::randomUUID))
+                    .setDate( Optional.ofNullable( source.getDate()).orElseGet(()->LocalDate.EPOCH));
     }
-
-    public Item update( ItemDto source) {
-        return update( source, source.getType()
-                .accept( this))
-                    .setItemId( source.getItemId())
-                    .setDate( source.getDate());
-    }
-
 
     Item update( ItemDto source, Item item) {
         return item.setCode( source.getCode())
@@ -32,7 +25,6 @@ public class ItemFactory implements ItemTypeVisitor<Item> {
                 .setSold( source.getSold())
                 .setPurchased( source.getPurchased());
     }
-
 
     @Override public Item visitAsset() {
         return null;

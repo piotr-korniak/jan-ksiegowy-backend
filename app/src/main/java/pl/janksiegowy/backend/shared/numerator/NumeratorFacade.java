@@ -15,12 +15,10 @@ public class NumeratorFacade {
     private final NumeratorRepository numerators;
     private final NumeratorFactory factory;
     private final MigrationService migrationService;
-
     private final CounterRepository counters;
+
     public Numerator save( NumeratorDto source) {
-        return numerators.save( Optional.ofNullable( source.getNumeratorId())
-                            .map( uuid-> factory.update( source) )
-                            .orElse( factory.from( source)));
+        return numerators.save( factory.from( source));
     }
 
     public String increment( NumeratorCode code, String type, LocalDate... date) {
@@ -70,6 +68,6 @@ public class NumeratorFacade {
             });
         });
         log.warn( "Counters migration complete!");
-        return String.format( "%-50s %13s", "Counters migration complete, added: ", counters[1]+ "/"+ counters[0]);
+        return "%-50s %13s".formatted( "Counters migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }
 }

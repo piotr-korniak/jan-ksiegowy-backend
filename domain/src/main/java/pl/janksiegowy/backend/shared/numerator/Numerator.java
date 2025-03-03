@@ -17,7 +17,6 @@ import java.util.UUID;
 public class Numerator {
 
     @Id
-    @UuidGenerator
     @Column( name= "ID")
     private UUID numeratorId;
 

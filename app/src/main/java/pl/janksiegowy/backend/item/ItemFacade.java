@@ -16,11 +16,12 @@ public class ItemFacade {
     private final MigrationService migrationService;
 
     public Item save( ItemDto source) {
-        return repository.save( Optional.ofNullable( source.getItemId())
-                .map( itemId-> repository.findItemByItemIdAndDate( itemId, source.getDate())
-                        .map( item-> factory.update( source, item))
-                        .orElse( factory.update( source)))
-                .orElse( factory.from( source)));
+        return repository.save(
+                Optional.ofNullable( source.getItemId())
+                        .map( itemId-> repository.findItemByItemIdAndDate( itemId, source.getDate())
+                                .map( item-> factory.update( source, item))
+                                .orElseGet(()-> factory.from( source)))
+                        .orElseGet(()-> factory.from( source)));
     }
 
     public String migrate() {
@@ -33,15 +34,23 @@ public class ItemFacade {
                     .ifPresentOrElse(existing-> {
                         if( !existing.getDate().equals( item.getDate())) {
                             counters[1]++;
-                            save( ((ItemDto.Proxy)item).itemId( existing.getItemId()));
+                            repository.save( factory.from( updateSold( (ItemDto.Proxy)item)
+                                    .itemId( existing.getItemId())));
                         }
                     }, ()-> {
                         counters[1]++;
-                        save( item);
+                        repository.save( factory.from(( updateSold( (ItemDto.Proxy)item))));
                     });
 
         });
         log.warn( "Items migration complete!");
         return "%-50s %13s".formatted("Items migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }
+
+    private ItemDto.Proxy updateSold( ItemDto.Proxy source) {
+        var isSold= source.getCode().startsWith( "ZL")
+                || source.getCode().startsWith( "US");
+        return source.sold( isSold).purchased( !isSold);
+    }
+
 }
