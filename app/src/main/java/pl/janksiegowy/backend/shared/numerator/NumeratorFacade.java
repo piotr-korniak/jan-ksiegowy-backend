@@ -67,7 +67,7 @@ public class NumeratorFacade {
                 return save( numerator);
             });
         });
-        log.warn( "Counters migration complete!");
-        return "%-50s %13s".formatted( "Counters migration complete, added: ", counters[1]+ "/"+ counters[0]);
+        log.warn( "Numerators migration complete!");
+        return "%-50s %13s".formatted( "Numerators migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }
 }

@@ -5,6 +5,7 @@ import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.invoice.Invoice;
+import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.item.ItemType;
@@ -13,19 +14,29 @@ import pl.janksiegowy.backend.shared.Util;
 
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandEntityAccount;
 
 @AllArgsConstructor
-public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
+public class DecreeFactoryInvoice {
 
     private final TemplateRepository templates;
 
+    private static final Map<InvoiceType, TemplateType> TEMPLATE_MAP= Map.of(
+            InvoiceType.S, TemplateType.IS,
+            InvoiceType.P, TemplateType.IP
+    );
+
+    private TemplateType getTemplateType( InvoiceType type) {
+        return TEMPLATE_MAP.get( type);
+    }
+
     public DecreeDto to( Invoice invoice) {
 
-        return templates.findByDocumentTypeAndDate( invoice.getType().accept( this), invoice.getInvoiceDate())
+        return templates.findByDocumentTypeAndDate( getTemplateType( invoice.getType()), invoice.getInvoiceDate())
             .map( template-> new DecreeFactory.Builder() {
                 @Override public BigDecimal getValue( TemplateLine line) {
                     return ((InvoiceTemplateLine)line).getFunction()
@@ -43,7 +54,8 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
                                             .reduce( BigDecimal.ZERO, BigDecimal::add);
                                 }
                                 @Override public BigDecimal visitKwotaBrutto() {
-                                    return invoice.getRegisterKind().accept( new VatRegisterTypeVisitor<BigDecimal>() {
+                                    return BigDecimal.ZERO;
+                                    /*    return invoice.getRegisterKind().accept( new VatRegisterTypeVisitor<BigDecimal>() {
                                         @Override public BigDecimal visitDomestic() {
                                             return invoice.getSubTotal().add( invoice.getTaxTotal());
                                         }
@@ -53,14 +65,17 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
                                         @Override public BigDecimal visitWorld() {
                                             return invoice.getSubTotal();
                                         }});
+                                */
                                 }
+
                                 @Override public BigDecimal visitKwotaVAT() {
                                     return invoice.getLineItems().stream()
                                             .map( InvoiceLine::getVat)
                                             .reduce( BigDecimal.ZERO, BigDecimal::add);
                                 }
                                 @Override public BigDecimal visitOdliczenieVAT() {
-                                    return invoice.getRegisterKind().accept( new VatRegisterTypeVisitor<BigDecimal>() {
+                                    return BigDecimal.ZERO;
+                                /*    return invoice.getRegisterKind().accept( new VatRegisterTypeVisitor<BigDecimal>() {
                                         @Override public BigDecimal visitDomestic() {
                                             return BigDecimal.ZERO;
                                         }
@@ -69,7 +84,7 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
                                         }
                                         @Override public BigDecimal visitWorld() {
                                             return visitKwotaVAT();
-                                        }});
+                                        }});*/
                                 }
                                 @Override public BigDecimal visitKwotaMaterialowKUP() {
                                     return invoice.getLineItems().stream()
@@ -112,10 +127,4 @@ public class DecreeFactoryInvoice implements InvoiceTypeVisitor<TemplateType> {
             .orElseThrow();
     }
 
-    @Override public TemplateType visitSalesInvoice() {
-        return TemplateType.IS;
-    }
-    @Override public TemplateType visitPurchaseInvoice() {
-        return TemplateType.IP;
-    }
 }

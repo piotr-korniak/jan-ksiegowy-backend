@@ -25,9 +25,9 @@ public class PeriodFactory implements PeriodTypeVisitor<Period>{
         var begin= source.getBegin();
 
         return switch (source.getType()) {
-            case A -> String.format( "%dA00", begin.getYear());
-            case Q -> String.format( "%dQ%02d", begin.getYear(), begin.get( IsoFields.QUARTER_OF_YEAR));
-            case M -> String.format( "%dM%02d", begin.getYear(), begin.getMonthValue());
+            case A -> "%dA00".formatted( begin.getYear());
+            case Q -> "%dQ%02d".formatted( begin.getYear(), begin.get( IsoFields.QUARTER_OF_YEAR));
+            case M -> "%dM%02d".formatted( begin.getYear(), begin.getMonthValue());
         };
     }
 

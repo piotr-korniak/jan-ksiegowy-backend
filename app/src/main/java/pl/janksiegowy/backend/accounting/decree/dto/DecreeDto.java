@@ -20,6 +20,7 @@ public interface DecreeDto {
     LocalDate getDate();
     String getNumber();
     RegisterDto getRegister();
+    String getRegisterCode();
     List<DecreeLineDto> getLines();
     DecreeType getType();
     String getDocument();
@@ -33,6 +34,7 @@ public interface DecreeDto {
         private String number;
         private LocalDate date;
         private RegisterDto register;
+        private String registerCode;
         private List<DecreeLineDto> lines;
         private DecreeType type;
         private String document;
@@ -48,6 +50,9 @@ public interface DecreeDto {
         }
         @Override public RegisterDto getRegister() {
             return register;
+        }
+        @Override public String getRegisterCode() {
+            return registerCode;
         }
         @Override public List<DecreeLineDto> getLines() {
             return lines;

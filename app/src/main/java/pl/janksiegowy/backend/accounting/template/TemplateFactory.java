@@ -3,10 +3,9 @@ package pl.janksiegowy.backend.accounting.template;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
 import pl.janksiegowy.backend.accounting.template.TemplateType.DocumentTypeVisitor;
-import pl.janksiegowy.backend.accounting.template.dto.TemplateLineDto;
-import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
-import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
+import pl.janksiegowy.backend.register.RegisterRepository;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class TemplateFactory {
 
-    private final AccountingRegisterRepository registers;
+    private final RegisterRepository registerRepository;
     private final TemplateLineFactory line;
 
     public Template from( TemplateDto source) {
@@ -105,9 +104,9 @@ public class TemplateFactory {
                     })).setTemplate( template))
                 .collect( Collectors.toList())));
 
-        return registers.findByCode( source.getRegisterCode())
-                .map( register -> template.setRegister( register))
-                .orElseThrow()
+        return registerRepository.findAccountRegisterByCode( source.getRegisterCode())
+                .map( template::setRegister)
+                .orElseThrow(()-> new NoSuchElementException( "Register not found: "+ source.getRegisterCode()))
                 .setDocumentType( source.getDocumentType())
                 .setCode( source.getCode())
                 .setName( source.getName())

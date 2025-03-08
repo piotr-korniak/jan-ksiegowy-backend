@@ -7,8 +7,6 @@ import java.util.Optional;
 
 public interface InvoiceRegisterRepository {
 
-    Optional<SalesRegister> findSalesRegisterByCode( String code);
-    Optional<PurchaseRegister> findPurchaseRegisterByCode( String code);
     public InvoiceRegister save( InvoiceRegister register);
 
 

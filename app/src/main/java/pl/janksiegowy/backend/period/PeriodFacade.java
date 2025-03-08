@@ -36,7 +36,7 @@ public class PeriodFacade {
                 });
 
         log.warn( "Periods migration complete!");
-        return String.format( "%-50s %13s", "Periods migration complete, added: ", counters[1]+ "/"+ counters[0]);
+        return "%-50s %13s".formatted("Periods migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }
 
     public MonthPeriod findMonthPeriodOrAdd( LocalDate date){

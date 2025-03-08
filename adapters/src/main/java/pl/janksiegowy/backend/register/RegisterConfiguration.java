@@ -2,14 +2,16 @@ package pl.janksiegowy.backend.register;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.janksiegowy.backend.register.invoice.InvoiceRegisterFactory;
+import pl.janksiegowy.backend.shared.MigrationService;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 
 @Configuration
 public class RegisterConfiguration {
 
     @Bean
-    InvoiceRegisterFactory registerFactory( final NumeratorFacade numerators) {
-        return new InvoiceRegisterFactory( numerators);
+    RegisterFacade registerFacade( final RegisterRepository registerRepository,
+                                   final NumeratorFacade numeratorFacade,
+                                   final MigrationService migrationService) {
+        return new RegisterFacade( registerRepository, new RegisterFactory( numeratorFacade), migrationService);
     }
 }

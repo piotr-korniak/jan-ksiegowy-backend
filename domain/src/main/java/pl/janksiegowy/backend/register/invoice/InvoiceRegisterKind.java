@@ -1,6 +1,6 @@
 package pl.janksiegowy.backend.register.invoice;
 
-import pl.janksiegowy.backend.entity.EntityType;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum InvoiceRegisterKind {
     D { // Domestic
@@ -20,6 +20,14 @@ public enum InvoiceRegisterKind {
     };
 
     public abstract <T> T accept( VatRegisterTypeVisitor<T> visitor);
+
+    @JsonCreator
+    public static InvoiceRegisterKind fromString( String value) {
+        if( value==null || value.isEmpty()) {
+            return null;
+        }
+        return InvoiceRegisterKind.valueOf( value);
+    }
 
     public interface VatRegisterTypeVisitor<T> {
         T visitDomestic();

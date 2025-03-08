@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.UuidGenerator;
+import pl.janksiegowy.backend.invoice.InvoiceType;
 
 import java.util.UUID;
 
@@ -26,6 +27,13 @@ public abstract class Register {
     private String code;
     private String name;
 
-    private String accountNumber= "";
+    @Column( name = "ACCOUNT_NUMBER")
+    private String ledgerAccountNumber= "";
+
+    @Column( insertable= false, updatable= false)
+    @Enumerated( EnumType.STRING)
+    private RegisterType type;
+
+    public abstract RegisterType getType();
 
 }

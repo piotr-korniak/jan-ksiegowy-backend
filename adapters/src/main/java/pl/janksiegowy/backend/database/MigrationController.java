@@ -17,7 +17,7 @@ import pl.janksiegowy.backend.item.ItemFacade;
 import pl.janksiegowy.backend.metric.MetricFacade;
 import pl.janksiegowy.backend.finances.payment.PaymentMigrationService;
 import pl.janksiegowy.backend.period.*;
-import pl.janksiegowy.backend.register.RegisterMigrationService;
+import pl.janksiegowy.backend.register.RegisterFacade;
 import pl.janksiegowy.backend.report.ReportFacade;
 import pl.janksiegowy.backend.contract.ContractFacade;
 import pl.janksiegowy.backend.shared.DataLoader;
@@ -29,7 +29,7 @@ import java.util.List;
 @Log4j2
 
 @TenantController
-public class MigrationController extends MigrationConfiguration {
+public class MigrationController {
 
     private final ReportFacade reportFacade;
     private final NoticeFacade noticeFacade;
@@ -41,6 +41,7 @@ public class MigrationController extends MigrationConfiguration {
     private final PeriodFacade periodFacade;
     private final NumeratorFacade numeratorFacade;
     private final ItemFacade itemFacade;
+    private final RegisterFacade registerFacade;
 
     public MigrationController( final NoticeFacade noticeFacade,
                                final InvoiceMigrationService migrationService,
@@ -48,7 +49,6 @@ public class MigrationController extends MigrationConfiguration {
                                final ShareMigrationService shareMigration,
                                final InvoiceLineMigration invoiceLinesMigration,
                                final ChargeMigrationService chargesMigration,
-                               final RegisterMigrationService registersMigration,
                                final PaymentMigrationService paymentsMigration,
                                final EntityMigrationService entityMigrationService,
                                final ReportFacade reportFacade,
@@ -58,14 +58,15 @@ public class MigrationController extends MigrationConfiguration {
                                final AccountFacade accountFacade,
                                final TemplateFacade templateFacade,
                                final PeriodFacade periodFacade,
-                               final NumeratorFacade numeratorFacade, ItemFacade itemFacade) {
+                               final NumeratorFacade numeratorFacade,
+                                final ItemFacade itemFacade,
+                                final RegisterFacade registerFacade) {
         this.invoiceMigration = migrationService;
         this.migrationExecutor= migrationExecutor;
 
         this.shareMigration= shareMigration;
         this.invoiceLinesMigration= invoiceLinesMigration;
         this.chargesMigration= chargesMigration;
-        this.registersMigration= registersMigration;
         this.paymentsMigration= paymentsMigration;
         this.entityMigrationService= entityMigrationService;
         this.reportFacade = reportFacade;
@@ -78,6 +79,7 @@ public class MigrationController extends MigrationConfiguration {
         this.periodFacade= periodFacade;
         this.numeratorFacade= numeratorFacade;
         this.itemFacade = itemFacade;
+        this.registerFacade= registerFacade;
     }
 
     private final MigrationExecutor migrationExecutor;
@@ -85,7 +87,6 @@ public class MigrationController extends MigrationConfiguration {
     private final ShareMigrationService shareMigration;
     private final InvoiceLineMigration invoiceLinesMigration;
     private final ChargeMigrationService chargesMigration;
-    private final RegisterMigrationService registersMigration;
     private final PaymentMigrationService paymentsMigration;
     private final EntityMigrationService entityMigrationService;
 
@@ -132,10 +133,10 @@ public class MigrationController extends MigrationConfiguration {
 
     @PostMapping( "/v2/migrate/register")
     public ResponseEntity<String> registerMigrate() {
-        //    registers.initInvoiceRegisters();
+        //registers.initInvoiceRegisters();
         //registers.initAccountingRegisters( getAccountingRegister());
         log.warn( "Registers configuration complete!");
-        return ResponseEntity.ok( registersMigration.initPaymentRegisters());
+        return ResponseEntity.ok( registerFacade.migrate());
     }
 
     @PostMapping( "/v2/migrate/payment")

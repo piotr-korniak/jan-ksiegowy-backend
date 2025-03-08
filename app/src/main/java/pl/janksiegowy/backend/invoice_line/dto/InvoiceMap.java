@@ -39,6 +39,11 @@ public class InvoiceMap implements InvoiceDto {
     }
 
     @Override
+    public String getRegisterCode() {
+        return invoice.getRegisterCode();
+    }
+
+    @Override
     public PeriodDto getPeriod() {
         return invoice.getPeriod();
     }

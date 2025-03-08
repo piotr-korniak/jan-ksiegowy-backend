@@ -9,7 +9,7 @@ public interface PaymentRegisterRepository {
 
     PaymentRegister save( PaymentRegister register);
 
-    Optional<PaymentRegister> findByCode( String code);
+    Optional<Register> findByCode( String code);
 
     List<BankAccount> findBankAccounts();
 }

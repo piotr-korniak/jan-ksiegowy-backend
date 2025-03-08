@@ -10,14 +10,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-public interface SqlPaymentRegisterRepository extends JpaRepository<PaymentRegister, UUID> {
-    Optional<PaymentRegister> findByCode( String code);
+public interface SqlPaymentRegisterRepository extends JpaRepository<Register, UUID> {
+    Optional<Register> findByCode( String code);
 
     List<BankAccount> findByType( PaymentRegisterType paymentRegisterType);
 }
 
 interface SqlPaymentRegisterQueryRepository extends PaymentRegisterQueryRepository,
-                                                    Repository<PaymentRegister, UUID> {}
+                                                    Repository<Register, UUID> {}
 
 @org.springframework.stereotype.Repository
 @AllArgsConstructor
@@ -30,7 +30,7 @@ class PaymentRegisterRepositoryImpl implements PaymentRegisterRepository {
     }
 
     @Override
-    public Optional<PaymentRegister> findByCode( String code) {
+    public Optional<Register> findByCode( String code) {
         return repository.findByCode( code);
     }
 

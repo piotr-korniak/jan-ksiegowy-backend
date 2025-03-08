@@ -58,6 +58,10 @@ public class DecreeMap implements DecreeDto {
         return decree.getRegister();
     }
 
+    @Override public String getRegisterCode() {
+        return decree.getRegisterCode();
+    }
+
     @Override public DecreeType getType() {
         return decree.getType();
     }

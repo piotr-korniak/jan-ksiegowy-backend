@@ -9,6 +9,7 @@ import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
 import pl.janksiegowy.backend.item.dto.ItemDto;
 import pl.janksiegowy.backend.metric.dto.MetricDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
+import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.report.dto.ReportSchemaDto;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.shared.DataLoader;
@@ -53,6 +54,11 @@ public class MigrationServiceImpl implements MigrationService {
 
     @Override public List<ItemDto> loadItems() {
         return dataLoader.loadCsv("items.csv", ItemDto.Proxy.class);
+    }
+
+    @Override
+    public List<RegisterDto> loadRegisters() {
+        return dataLoader.loadCsv("registers.csv", RegisterDto.Proxy.class);
     }
 
     @Override

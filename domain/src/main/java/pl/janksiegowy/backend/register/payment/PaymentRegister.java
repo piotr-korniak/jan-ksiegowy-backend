@@ -8,12 +8,12 @@ import pl.janksiegowy.backend.register.Register;
 
 @Entity
 public abstract class PaymentRegister extends Register {
-
+/*
     @Column( insertable= false, updatable= false)
     @Enumerated( EnumType.STRING)
     private PaymentRegisterType type;
 
     @Enumerated( EnumType.STRING)
     private PaymentRegisterKind kind= PaymentRegisterKind.P;
-
+*/
 }

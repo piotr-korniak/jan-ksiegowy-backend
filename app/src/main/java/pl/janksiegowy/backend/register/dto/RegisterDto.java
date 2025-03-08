@@ -1,9 +1,14 @@
 package pl.janksiegowy.backend.register.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.register.RegisterType;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterType;
+import pl.janksiegowy.backend.shared.financial.Currency;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface RegisterDto {
@@ -13,21 +18,45 @@ public interface RegisterDto {
 
     UUID getRegisterId();
     String getCode();
-    String getType();
-    String getKind();
+    RegisterType getType();
+    default InvoiceRegisterKind getKind(){
+        return null;
+    };
+
     String getName();
-    String getAccountNumber();
+    String getLedgerAccountNumber();
+    default String getBankAccountNumber() {
+        return null;
+    };
+    default Currency getCurrency() {
+        return null;
+    }
 
     @Setter
     @Accessors( fluent= true, chain= true)
     class Proxy implements RegisterDto {
 
         private UUID registerId;
+
+        @JsonProperty( "Code")
         private String code;
-        private String type;
-        private String kind;
+
+        @JsonProperty( "Type")
+        private RegisterType type;
+
+        @JsonProperty( "Kind")
+        private InvoiceRegisterKind kind;
+
+        @JsonProperty( "Name")
         private String name;
-        private String accountNumber;
+
+        private String ledgerAccountNumber;
+
+        @JsonProperty( "Account Number")
+        private String bankAccountNumber;
+
+        @JsonProperty( "Currency")
+        private Currency currency;
 
         @Override public UUID getRegisterId() {
             return registerId;
@@ -37,11 +66,11 @@ public interface RegisterDto {
             return code;
         }
 
-        @Override public String getType() {
+        @Override public RegisterType getType() {
             return type;
         }
 
-        @Override public String getKind() {
+        @Override public InvoiceRegisterKind getKind() {
             return kind;
         }
 
@@ -49,8 +78,18 @@ public interface RegisterDto {
             return name;
         }
 
-        @Override public String getAccountNumber() {
-            return accountNumber;
+        @Override public String getLedgerAccountNumber() {
+            return ledgerAccountNumber;
         }
+
+        @Override
+        public String getBankAccountNumber() {
+            return bankAccountNumber;
+        }
+
+        @Override public Currency getCurrency() {
+            return currency;
+        }
+
     }
 }

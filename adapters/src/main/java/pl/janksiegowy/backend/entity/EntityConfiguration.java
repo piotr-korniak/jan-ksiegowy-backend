@@ -8,7 +8,7 @@ import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 public class EntityConfiguration {
     @Bean
     EntityFacade entityFacade( final EntityRepository entities,
-                                final NumeratorFacade numerator) {
+                               final NumeratorFacade numerator) {
         return new EntityFacade( new EntityFactory( numerator), entities);
     }
 }

@@ -9,7 +9,10 @@ import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodFacade;
+import pl.janksiegowy.backend.register.RegisterRepository;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
+import pl.janksiegowy.backend.register.invoice.PurchaseRegister;
+import pl.janksiegowy.backend.register.invoice.SalesRegister;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
@@ -24,47 +27,39 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @AllArgsConstructor
-public class InvoiceFactory {
+public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
 
     private final EntityRepository entities;
     private final MetricRepository metrics;
     private final PeriodFacade periods;
-    private final InvoiceRegisterRepository registers;
     private final PaymentRegisterRepository bankAccounts;
     private final InvoiceLineFactory line;
+    private final RegisterRepository registerRepository;
 
     public Invoice from( InvoiceDto source) {
+        return source.getType().accept( this, source);
+    }
 
-        return source.getType().accept( new InvoiceTypeVisitor<Invoice>() {
+    @Override public Invoice visitSalesInvoice( InvoiceDto source) {
+        var invoice= update( source, registerRepository.findSalesRegisterByCode( source.getRegisterCode())
+                .map( register-> new SalesInvoice()
+                        .setRegister( register))
+                .orElseThrow());
 
-            @Override public Invoice visitSalesInvoice() {
-                var invoice= update( source, registers.findSalesRegisterByCode( source.getRegister().getCode())
-                        .map( register-> new SalesInvoice()
-                                .setRegister( register)
-                           //     .setSettlement( (InvoiceSettlement)
-                           //             new InvoiceSettlement().setKind( SettlementKind.D)))
-                        ).orElseThrow());
+        var x= Factory_FA.create().prepare( (SalesInvoice) invoice);
+        if( PaymentMetod.TRANSFER== source.getPaymentMetod()) {
+            bankAccounts.findBankAccounts().forEach( bankAccount-> {
+                x.addBankAccount( bankAccount.getName(), bankAccount.getBankNumber());
+            });
+        }
+        return invoice.setXml( XmlConverter.marshal( x));
+    }
 
-                var x= Factory_FA.create().prepare( (SalesInvoice) invoice);
-                if( PaymentMetod.TRANSFER== source.getPaymentMetod()) {
-                    bankAccounts.findBankAccounts().forEach( bankAccount-> {
-                        x.addBankAccount( bankAccount.getName(), bankAccount.getNumber());
-                    });
-                }
-                return invoice.setXml( XmlConverter.marshal( x));
-            }
-
-            @Override public Invoice visitPurchaseInvoice() {
-                return update( source, registers.findPurchaseRegisterByCode( source.getRegister().getCode())
-                        .map( register-> new PurchaseInvoice()
-                                .setRegister( register)
-                         //       .setSettlement( (InvoiceSettlement)
-                         //               new InvoiceSettlement().setKind( SettlementKind.C)))
-                        ).orElseThrow());
-            }
-
-
-        });
+    @Override public Invoice visitPurchaseInvoice( InvoiceDto source) {
+        return update( source, registerRepository.findPurchaseRegisterByCode( source.getRegisterCode())
+                .map( register-> new PurchaseInvoice()
+                                .setRegister( register))
+                .orElseThrow());
     }
 
     public Invoice update( InvoiceDto source, Invoice invoice) {
@@ -99,9 +94,8 @@ public class InvoiceFactory {
     public Invoice update( List<InvoiceLineDto> lines, Invoice invoice, LocalDate invoiceDate) {
 
         return invoice.setLineItems( lines.stream().map( invoiceLineDto->
-                line.from( invoiceLineDto, Optional.ofNullable( invoiceDate).orElse( LocalDate.now()))
-                        .setInvoice( invoice))
+                        line.from( invoiceLineDto, Optional.ofNullable( invoiceDate).orElse( LocalDate.now()))
+                                .setInvoice( invoice))
                 .collect( Collectors.toList()));
     }
-
 }

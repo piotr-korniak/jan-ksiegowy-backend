@@ -69,7 +69,7 @@ public class InvoiceMigrationService implements InvoiceRegisterTypeVisitor<Invoi
 
             var invoice= entities.findByCountryAndTypeAndTaxNumber( country, EntityType.C, taxNumber)
                     .map( entity-> registers.findByCode( fields[0])
-                            .map( register-> InvoiceRegisterType.valueOf( register.getType())
+                            .map( register-> InvoiceRegisterType.valueOf( register.getType().name())
                                 .accept(this)
                                     .entity( entity)
                                     .register( register)

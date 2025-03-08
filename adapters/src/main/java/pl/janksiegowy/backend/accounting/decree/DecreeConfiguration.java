@@ -9,12 +9,8 @@ import pl.janksiegowy.backend.accounting.decree.factory.PayslipSubFactory;
 import pl.janksiegowy.backend.accounting.template.TemplateRepository;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
-import pl.janksiegowy.backend.finances.document.DocumentQueryRepository;
-import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
-import pl.janksiegowy.backend.finances.settlement.SettlementRepository;
 import pl.janksiegowy.backend.period.PeriodFacade;
-import pl.janksiegowy.backend.register.accounting.AccountingRegisterFactory;
-import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
+import pl.janksiegowy.backend.register.RegisterRepository;
 import pl.janksiegowy.backend.salary.PayslipRepository;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 
@@ -22,7 +18,7 @@ import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 public class DecreeConfiguration {
 
     @Bean
-    DecreeFacade decreeFacade(final AccountingRegisterRepository registers,
+    DecreeFacade decreeFacade(final RegisterRepository registerRepository,
                               final TemplateRepository templates,
                               final DecreeRepository decrees,
                               final AccountRepository accounts,
@@ -34,8 +30,7 @@ public class DecreeConfiguration {
                               final PayslipSubFactory payslipSubFactory,
                               final CloseMonthFactory closeMonthFactory,
                               final PayslipRepository payslipRepository) {
-        return new DecreeFacade( new AccountingRegisterFactory(), registers,
-                new DecreeFactory( templates, registers,
+        return new DecreeFacade( new DecreeFactory( templates, registerRepository,
                         new DecreeLineFactory( accounts, account),
                         period, numerators, clearings, clearingsQuery, payslipSubFactory, closeMonthFactory, payslipRepository),
                 decrees);

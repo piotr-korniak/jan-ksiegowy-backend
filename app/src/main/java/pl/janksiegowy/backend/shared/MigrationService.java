@@ -6,6 +6,7 @@ import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
 import pl.janksiegowy.backend.item.dto.ItemDto;
 import pl.janksiegowy.backend.metric.dto.MetricDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
+import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.report.dto.ReportSchemaDto;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.shared.numerator.dto.NumeratorDto;
@@ -26,4 +27,6 @@ public interface MigrationService {
     List<NumeratorDto> loadNumerators();
 
     List<ItemDto> loadItems();
+
+    List<RegisterDto> loadRegisters();
 }

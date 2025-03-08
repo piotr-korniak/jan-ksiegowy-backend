@@ -4,6 +4,7 @@ import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.template.TemplateLine;
 import pl.janksiegowy.backend.entity.Entity;
 import pl.janksiegowy.backend.entity.EntityType;
+import pl.janksiegowy.backend.register.RegisterType;
 import pl.janksiegowy.backend.register.payment.PaymentRegister;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
 
@@ -28,12 +29,12 @@ public class DecreeFacadeTools {
 
     public static Optional<AccountDto> expandPaymentRegisterAccount( String account, PaymentRegister register ) {
         try {
-            if( PaymentRegisterType.valueOf( account.replaceAll("[^A-Z]", ""))!= register.getType())
+            if( RegisterType.valueOf( account.replaceAll("[^A-Z]", ""))!= register.getType())
                 return Optional.empty();
             return Optional.of( AccountDto.create()
                     .name( register.getName())
                     .parent( account)
-                    .number( account.replaceAll( "\\[[A-Z]]+", register.getAccountNumber())));
+                    .number( account.replaceAll( "\\[[A-Z]]+", register.getLedgerAccountNumber())));
         } catch (IllegalArgumentException e) {
             return Optional.empty();
         }

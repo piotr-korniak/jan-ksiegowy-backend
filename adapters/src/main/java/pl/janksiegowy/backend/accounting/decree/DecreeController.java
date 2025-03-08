@@ -13,11 +13,7 @@ import pl.janksiegowy.backend.accounting.decree.dto.DecreeLineDto;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeMap;
 import pl.janksiegowy.backend.finances.payment.PaymentRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
-import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
-import pl.janksiegowy.backend.register.dto.RegisterDto;
-import pl.janksiegowy.backend.salary.payslip.EmploymentPayslip;
-import pl.janksiegowy.backend.salary.payslip.PayslipQueryRepository;
-import pl.janksiegowy.backend.shared.Util;
+import pl.janksiegowy.backend.register.RegisterRepository;
 import pl.janksiegowy.backend.subdomain.TenantController;
 import pl.janksiegowy.backend.tax.vat.ProfitAndLossItems;
 
@@ -29,7 +25,7 @@ public class DecreeController {
 
     private final DecreeInitializer decrees;
     private final DecreeFacade decreeFacade;
-    protected final AccountingRegisterRepository registers;
+    private final RegisterRepository registerRepository;
     private final AccountQueryRepository accountQueryRepository;
     private final DecreeLineQueryRepository decreeLines;
     private final ProfitAndLossItems profitAndLossItems;
@@ -37,14 +33,14 @@ public class DecreeController {
 
     public DecreeController(final PaymentRepository payments,
                             final DecreeFacade decreeFacade,
-                            final AccountingRegisterRepository registers,
+                            final RegisterRepository registerRepository,
                             final AccountQueryRepository accountQueryRepository,
                             final DecreeLineQueryRepository decreeLines,
                             final ProfitAndLossItems profitAndLossItems,
                             final PeriodRepository periodRepository) {
         this.decrees= new DecreeInitializer( payments);
         this.decreeFacade = decreeFacade;
-        this.registers = registers;
+        this.registerRepository = registerRepository;
         this.accountQueryRepository = accountQueryRepository;
         this.decreeLines = decreeLines;
         this.profitAndLossItems = profitAndLossItems;
@@ -74,13 +70,12 @@ public class DecreeController {
         LocalDate startDate = LocalDate.of( 2017, 1, 1);
         LocalDate endDate = LocalDate.of( 2017, 12, 31);
 
-        var dupa= registers.findByCode( "PK")
-                .map( register -> new DecreeMap( DecreeDto.create()
+        var dupa= registerRepository.findAccountRegisterByCode( "PK")
+                .map( register-> new DecreeMap( DecreeDto.create()
                         .type( DecreeType.D)
                         .number( "BO")
                         .date( endDate.plusDays( 1))
-                        .register( RegisterDto.create()
-                                .registerId( register.getRegisterId()))))
+                        .registerCode( register.getCode())))
                 .orElseThrow();
 
 

@@ -14,14 +14,13 @@ import pl.janksiegowy.backend.finances.charge.Charge;
 import pl.janksiegowy.backend.finances.clearing.ClearingQueryRepository;
 import pl.janksiegowy.backend.finances.clearing.ClearingRepository;
 import pl.janksiegowy.backend.finances.document.Document;
-import pl.janksiegowy.backend.finances.document.DocumentQueryRepository;
 import pl.janksiegowy.backend.finances.notice.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.PeriodFacade;
-import pl.janksiegowy.backend.register.accounting.AccountingRegisterRepository;
+import pl.janksiegowy.backend.register.RegisterRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.salary.PayslipRepository;
 import pl.janksiegowy.backend.salary.payslip.PayslipDocument;
@@ -33,6 +32,7 @@ import pl.janksiegowy.backend.declaration.PayableDeclaration;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisitor<Decree> {
 
     protected final TemplateRepository templates;
-    protected final AccountingRegisterRepository registers;
+    protected final RegisterRepository registerRepository;
     protected final DecreeLineFactory line;
     protected final PeriodFacade period;
     protected final NumeratorFacade numerators;
@@ -65,15 +65,15 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisi
                         .map( decreeLineDto-> line.from( decreeLineDto).setDecree( decree))
                         .collect( Collectors.toList())));
 
-        return registers.findById( source.getRegister().getRegisterId())
-                .map( register-> decree.setDate( source.getDate())
-                        .setRegister( register)
+        return registerRepository.findAccountRegisterByCode( source.getRegisterCode())
+                .map( register-> decree.setRegister( register)
+                        .setDate( source.getDate())
                         .setDocument( source.getDocument())
                         .setNumber( Optional.ofNullable( source.getNumber())
                                 .orElseGet(()-> numerators.increment( NumeratorCode.AC,
-                                                            register.getCode(), source.getDate())))
+                                        register.getCode(), source.getDate())))
                         .setPeriod( period.findMonthPeriodOrAdd( source.getDate())))
-                .orElseThrow();
+                .orElseThrow(()-> new NoSuchElementException( "Register not found: " + source.getRegisterCode()));
     }
 
 

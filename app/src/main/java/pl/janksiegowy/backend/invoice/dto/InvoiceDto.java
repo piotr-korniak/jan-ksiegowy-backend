@@ -27,7 +27,9 @@ public interface InvoiceDto {
     UUID getDocumentId();
 
     InvoiceType getType();
+
     RegisterDto getRegister();
+    String getRegisterCode();
 
     PeriodDto getPeriod();
     PeriodDto getInvoicePeriod();
@@ -58,7 +60,10 @@ public interface InvoiceDto {
 
         private UUID invoiceId;
         private InvoiceType type;
+
         private RegisterDto register;
+        private String registerCode;
+
         private PeriodDto period;
         private PeriodDto invoicePeriod;
         private String number;
@@ -81,6 +86,11 @@ public interface InvoiceDto {
         @Override public RegisterDto getRegister() {
             return register;
         }
+
+        @Override public String getRegisterCode() {
+            return registerCode;
+        }
+
         @Override public PeriodDto getPeriod() {
             return period;
         }

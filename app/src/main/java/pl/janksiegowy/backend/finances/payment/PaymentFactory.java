@@ -7,6 +7,7 @@ import pl.janksiegowy.backend.finances.clearing.ClearingFactory;
 import pl.janksiegowy.backend.finances.payment.PaymentType.PaymentTypeVisitor;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
 import pl.janksiegowy.backend.period.PeriodFacade;
+import pl.janksiegowy.backend.register.payment.PaymentRegister;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
@@ -34,21 +35,27 @@ public class PaymentFactory {
                             .setNumber( Optional.ofNullable( source.getNumber())
                                     .orElseGet( ()-> numerators.increment(
                                             switch ( register.getType()) {
-                                                case A -> NumeratorCode.BR;
-                                                case D -> NumeratorCode.CR;},
+                                                case B -> NumeratorCode.BR;
+                                                case C -> NumeratorCode.CR;
+                                                default ->
+                                                        throw new IllegalStateException("Unexpected value: " + register.getType());
+                                            },
                                             register.getCode(), source.getIssueDate())));
                     }
                     @Override public Payment visitPaymentExpense() {
                         var number= Optional.ofNullable( source.getNumber())
                                 .orElseGet( ()-> numerators.increment(
                                         switch ( register.getType()) {
-                                            case A -> NumeratorCode.BS;
-                                            case D -> NumeratorCode.CS;},
+                                            case B -> NumeratorCode.BS;
+                                            case C -> NumeratorCode.CS;
+                                            default ->
+                                                    throw new IllegalStateException("Unexpected value: " + register.getType());
+                                        },
                                         register.getCode(), source.getIssueDate()));
                         return (Payment) new PaymentExpense()
                             .setNumber( number);
                     }
-                }).setRegister( register)
+                }).setRegister( (PaymentRegister) register)
                         .setClearings( source.getClearings().stream().map( clearing::from).collect( Collectors.toSet()))
                         .setDocumentId( Optional.ofNullable( source.getDocumentId()).orElseGet( UUID::randomUUID))
                         .setDates( source.getIssueDate(), source.getIssueDate())
