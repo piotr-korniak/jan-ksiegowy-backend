@@ -9,10 +9,9 @@ import pl.janksiegowy.backend.finances.payment.dto.PaymentDto;
 import pl.janksiegowy.backend.finances.payment.dto.PaymentMap;
 import pl.janksiegowy.backend.finances.settlement.Settlement;
 import pl.janksiegowy.backend.finances.settlement.SettlementFacade;
-import pl.janksiegowy.backend.finances.settlement.SettlementFactory;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementMap;
 import pl.janksiegowy.backend.period.PeriodFacade;
-import pl.janksiegowy.backend.register.payment.PaymentRegisterQueryRepository;
+import pl.janksiegowy.backend.register.RegisterQueryRepository;
 import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
@@ -27,7 +26,7 @@ public class PaymentMigrationService {
 
     private final ClearingQueryRepository clearings;
     private final SettlementQueryRepository settlements;
-    private final PaymentRegisterQueryRepository registers;
+    private final RegisterQueryRepository registers;
     private final PaymentFacade payment;
     private final SettlementFacade settlement;
     private final PaymentQueryRepository payments;
@@ -65,7 +64,7 @@ public class PaymentMigrationService {
                     settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
                             .ifPresent( settlementDto -> {
                                 System.err.println( "Znaleziony 2: "+ settlementDto.getNumber());
-                                registers.findByCode( clearing[0]).ifPresent( register -> {
+                                registers.findPaymentRegisterByCode( clearing[0]).ifPresent( register -> {
 
                                     var receivable= new SettlementMap( settlementDto);
                                     var pay= new PaymentMap(
@@ -95,7 +94,7 @@ public class PaymentMigrationService {
                     System.err.println( "Znaleziony 1: "+ clearing[2]);
                     settlements.findByNumberAndEntityTaxNumber( clearing[2], taxNumber)
                             .ifPresent( settlementDto -> {
-                                registers.findByCode(clearing[0]).ifPresent(register -> {
+                                registers.findPaymentRegisterByCode( clearing[0]).ifPresent(register -> {
                                     System.err.println( "Znaleziony 2: "+ settlementDto.getNumber());
                                     var payable= new SettlementMap( settlementDto);
                                     var pay= new PaymentMap(

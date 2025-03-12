@@ -5,23 +5,25 @@ import pl.janksiegowy.backend.register.invoice.PurchaseRegister;
 import pl.janksiegowy.backend.register.invoice.SalesRegister;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface RegisterRepository {
 
     Optional<Register> findByCode( String code);
-    Optional<Register> findByTypeAndCode( RegisterType type, String code);
+    Optional<Register> findByTypeAndRegisterId( RegisterType type, UUID registerId);
 
-    default Optional<AccountingRegister> findAccountRegisterByCode(String code) {
-        return findByTypeAndCode( RegisterType.A, code).map( r-> (AccountingRegister) r);
+    default Optional<SalesRegister> findSalesRegisterByRegisterId(UUID registerId) {
+        return findByTypeAndRegisterId( RegisterType.S, registerId).map( r-> (SalesRegister) r);
     }
 
-    default Optional<SalesRegister> findSalesRegisterByCode( String code) {
-        return findByTypeAndCode( RegisterType.S, code).map( r-> (SalesRegister) r);
-    }
+    default Optional<AccountingRegister> findAccountRegisterByRegisterId( UUID registerId) {
+        return findByTypeAndRegisterId( RegisterType.A, registerId).map( r-> (AccountingRegister) r);
+    };
 
-    default Optional<PurchaseRegister> findPurchaseRegisterByCode( String code) {
-        return findByTypeAndCode( RegisterType.P, code).map( r-> (PurchaseRegister) r);
+    default Optional<PurchaseRegister> findPurchaseRegisterById( UUID registerId) {
+        return findByTypeAndRegisterId( RegisterType.P, registerId).map( r-> (PurchaseRegister) r);
     }
 
     Register save( Register register);
+
 }

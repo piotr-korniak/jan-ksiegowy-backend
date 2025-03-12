@@ -104,9 +104,9 @@ public class TemplateFactory {
                     })).setTemplate( template))
                 .collect( Collectors.toList())));
 
-        return registerRepository.findAccountRegisterByCode( source.getRegisterCode())
+        return registerRepository.findAccountRegisterByRegisterId( source.getRegisterRegisterId())
                 .map( template::setRegister)
-                .orElseThrow(()-> new NoSuchElementException( "Register not found: "+ source.getRegisterCode()))
+                .orElseThrow(()-> new NoSuchElementException( "Register not found: "+ source.getRegisterRegisterId()))
                 .setDocumentType( source.getDocumentType())
                 .setCode( source.getCode())
                 .setName( source.getName())

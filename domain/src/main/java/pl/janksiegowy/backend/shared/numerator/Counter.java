@@ -52,10 +52,10 @@ public class Counter {
 
     private String generate( char key, int n) {
         return switch (key) {
-            case 'Y'-> (year!= -1)? (n== 2? String.format( "%2d", year% 100): String.format( "%4d", year)): "";
-            case 'M'-> (month!= -1)? String.format( "%02d", month): "";
-            case 'T'-> (n> 0)? String.format( "%"+ n+ "." +n +"s", type): type;
-            case 'N'-> (n> 0)? String.format( "%0"+ n+ "d", values): values.toString();
+            case 'Y'-> (year!= -1)? (n== 2? "%2d".formatted( year% 100): "%4d".formatted( year)): "";
+            case 'M'-> (month!= -1)? "%02d".formatted( month): "";
+            case 'T'-> (n> 0)? ("%"+ n+ "." +n +"s").formatted( type): type;
+            case 'N'-> (n> 0)? ("%0"+ n+ "d").formatted( values): values.toString();
             default-> "";
         };
     }

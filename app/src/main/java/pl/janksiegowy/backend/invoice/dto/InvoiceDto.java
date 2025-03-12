@@ -1,14 +1,16 @@
 package pl.janksiegowy.backend.invoice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.beans.factory.annotation.Value;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
 import java.math.BigDecimal;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @JsonDeserialize( as= InvoiceDto.Proxy.class)
+@JsonNaming( PropertyNamingStrategies.SnakeCaseStrategy.class)
 //@JsonPropertyOrder({ "invoice_id", "invoice_number", "invoice_date", "issue_date", "due_date", "contact"})
 public interface InvoiceDto {
 
@@ -26,10 +29,11 @@ public interface InvoiceDto {
 
     UUID getDocumentId();
 
+
     InvoiceType getType();
 
-    RegisterDto getRegister();
-    String getRegisterCode();
+    @Value( "#{target.register.registerId}")
+    UUID getRegisterRegisterId();
 
     PeriodDto getPeriod();
     PeriodDto getInvoicePeriod();
@@ -61,8 +65,7 @@ public interface InvoiceDto {
         private UUID invoiceId;
         private InvoiceType type;
 
-        private RegisterDto register;
-        private String registerCode;
+        private UUID registerId;
 
         private PeriodDto period;
         private PeriodDto invoicePeriod;
@@ -83,12 +86,9 @@ public interface InvoiceDto {
         @Override public InvoiceType getType() {
             return type;
         }
-        @Override public RegisterDto getRegister() {
-            return register;
-        }
 
-        @Override public String getRegisterCode() {
-            return registerCode;
+        @Override public UUID getRegisterRegisterId() {
+            return registerId;
         }
 
         @Override public PeriodDto getPeriod() {
@@ -128,6 +128,5 @@ public interface InvoiceDto {
         @Override public BigDecimal getAmount() {
             return amount;
         }
-
     }
 }

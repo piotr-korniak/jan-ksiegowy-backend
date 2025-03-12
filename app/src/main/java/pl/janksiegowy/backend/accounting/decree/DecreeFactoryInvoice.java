@@ -54,8 +54,8 @@ public class DecreeFactoryInvoice {
                                             .reduce( BigDecimal.ZERO, BigDecimal::add);
                                 }
                                 @Override public BigDecimal visitKwotaBrutto() {
-                                    return BigDecimal.ZERO;
-                                    /*    return invoice.getRegisterKind().accept( new VatRegisterTypeVisitor<BigDecimal>() {
+                                    //return BigDecimal.ZERO;
+                                    return invoice.getRegisterKind().accept( new VatRegisterTypeVisitor<BigDecimal>() {
                                         @Override public BigDecimal visitDomestic() {
                                             return invoice.getSubTotal().add( invoice.getTaxTotal());
                                         }
@@ -65,7 +65,6 @@ public class DecreeFactoryInvoice {
                                         @Override public BigDecimal visitWorld() {
                                             return invoice.getSubTotal();
                                         }});
-                                */
                                 }
 
                                 @Override public BigDecimal visitKwotaVAT() {

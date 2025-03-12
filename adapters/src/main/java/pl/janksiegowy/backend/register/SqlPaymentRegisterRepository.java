@@ -16,9 +16,6 @@ public interface SqlPaymentRegisterRepository extends JpaRepository<Register, UU
     List<BankAccount> findByType( PaymentRegisterType paymentRegisterType);
 }
 
-interface SqlPaymentRegisterQueryRepository extends PaymentRegisterQueryRepository,
-                                                    Repository<Register, UUID> {}
-
 @org.springframework.stereotype.Repository
 @AllArgsConstructor
 class PaymentRegisterRepositoryImpl implements PaymentRegisterRepository {

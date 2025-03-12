@@ -41,6 +41,6 @@ public class ContractFacade {
                 }
             });
         log.warn( "Contracts migration complete!");
-        return String.format( "%-50s %13s", "Contracts migration complete, added: ", counters[1]+ "/"+ counters[0]);
+        return "%-40s %16s".formatted( "Contracts migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }
 }

@@ -5,7 +5,6 @@ import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.accounting.decree.DecreeType;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -19,8 +18,8 @@ public interface DecreeDto {
     UUID getDecreeId();
     LocalDate getDate();
     String getNumber();
-    RegisterDto getRegister();
-    String getRegisterCode();
+    //RegisterDto getRegister();
+    UUID getRegisterRegisterId();
     List<DecreeLineDto> getLines();
     DecreeType getType();
     String getDocument();
@@ -33,8 +32,8 @@ public interface DecreeDto {
         private UUID degreeId;
         private String number;
         private LocalDate date;
-        private RegisterDto register;
-        private String registerCode;
+        //private RegisterDto register;
+        private UUID registerId;
         private List<DecreeLineDto> lines;
         private DecreeType type;
         private String document;
@@ -48,12 +47,12 @@ public interface DecreeDto {
         @Override public String getNumber() {
             return number;
         }
-        @Override public RegisterDto getRegister() {
-            return register;
+        @Override public UUID getRegisterRegisterId() {
+            return registerId;
         }
-        @Override public String getRegisterCode() {
+/*      @Override public String getRegisterCode() {
             return registerCode;
-        }
+        }*/
         @Override public List<DecreeLineDto> getLines() {
             return lines;
         }

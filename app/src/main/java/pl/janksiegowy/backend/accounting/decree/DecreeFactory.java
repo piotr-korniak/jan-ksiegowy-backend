@@ -65,7 +65,7 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisi
                         .map( decreeLineDto-> line.from( decreeLineDto).setDecree( decree))
                         .collect( Collectors.toList())));
 
-        return registerRepository.findAccountRegisterByCode( source.getRegisterCode())
+        return registerRepository.findAccountRegisterByRegisterId( source.getRegisterRegisterId())
                 .map( register-> decree.setRegister( register)
                         .setDate( source.getDate())
                         .setDocument( source.getDocument())
@@ -73,7 +73,7 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisi
                                 .orElseGet(()-> numerators.increment( NumeratorCode.AC,
                                         register.getCode(), source.getDate())))
                         .setPeriod( period.findMonthPeriodOrAdd( source.getDate())))
-                .orElseThrow(()-> new NoSuchElementException( "Register not found: " + source.getRegisterCode()));
+                .orElseThrow(()-> new NoSuchElementException( "Account Register not found!"));
     }
 
 
@@ -112,8 +112,7 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisi
                     .degreeId( decreeId)
                     .date( date)
                     .document( document)
-                    .register( RegisterDto.create()
-                            .registerId( template.getRegister().getRegisterId())));
+                    .registerId( template.getRegister().getRegisterId()));
 
             template.getItems().forEach( templateItem->
                 getAccount( templateItem).ifPresent( accountDto->

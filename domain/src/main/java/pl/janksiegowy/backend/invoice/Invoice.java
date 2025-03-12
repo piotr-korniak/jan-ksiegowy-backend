@@ -8,13 +8,16 @@ import pl.janksiegowy.backend.finances.document.Document;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.metric.Metric;
 import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegister;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
+import pl.janksiegowy.backend.register.invoice.PurchaseRegister;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -32,6 +35,12 @@ public abstract class Invoice extends Document {
     @Column( table= TABLE_NAME, name= "DATE")
     private LocalDate invoiceDate;
 /*
+    @Column( table= TABLE_NAME, name= "REGISTER_ID")
+    protected UUID registerId;
+*/
+
+
+    /*
     @ManyToOne
     @JoinColumn( table= TABLE_NAME, name= "PERIOD_ID", updatable= false, insertable= false)
     private MonthPeriod invoicePeriod;

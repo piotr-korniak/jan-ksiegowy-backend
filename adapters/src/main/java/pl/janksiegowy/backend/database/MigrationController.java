@@ -11,7 +11,7 @@ import pl.janksiegowy.backend.entity.EntityMigrationService;
 import pl.janksiegowy.backend.finances.charge.ChargeMigrationService;
 import pl.janksiegowy.backend.finances.notice.NoticeFacade;
 import pl.janksiegowy.backend.finances.share.ShareMigrationService;
-import pl.janksiegowy.backend.invoice.InvoiceMigrationService;
+import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineMigration;
 import pl.janksiegowy.backend.item.ItemFacade;
 import pl.janksiegowy.backend.metric.MetricFacade;
@@ -42,9 +42,9 @@ public class MigrationController {
     private final NumeratorFacade numeratorFacade;
     private final ItemFacade itemFacade;
     private final RegisterFacade registerFacade;
+    private final InvoiceFacade invoiceFacade;
 
     public MigrationController( final NoticeFacade noticeFacade,
-                               final InvoiceMigrationService migrationService,
                                final MigrationExecutor migrationExecutor,
                                final ShareMigrationService shareMigration,
                                final InvoiceLineMigration invoiceLinesMigration,
@@ -60,8 +60,8 @@ public class MigrationController {
                                final PeriodFacade periodFacade,
                                final NumeratorFacade numeratorFacade,
                                 final ItemFacade itemFacade,
-                                final RegisterFacade registerFacade) {
-        this.invoiceMigration = migrationService;
+                                final RegisterFacade registerFacade,
+                                final InvoiceFacade invoiceFacade) {
         this.migrationExecutor= migrationExecutor;
 
         this.shareMigration= shareMigration;
@@ -80,10 +80,10 @@ public class MigrationController {
         this.numeratorFacade= numeratorFacade;
         this.itemFacade = itemFacade;
         this.registerFacade= registerFacade;
+        this.invoiceFacade= invoiceFacade;
     }
 
     private final MigrationExecutor migrationExecutor;
-    private final InvoiceMigrationService invoiceMigration;
     private final ShareMigrationService shareMigration;
     private final InvoiceLineMigration invoiceLinesMigration;
     private final ChargeMigrationService chargesMigration;
@@ -94,7 +94,7 @@ public class MigrationController {
     @PostMapping( "/v2/migrate/invoice")
     public ResponseEntity<String> invoiceMigrate() {
         log.warn( "Invoices migration complete!");
-        return ResponseEntity.ok( invoiceMigration.init());
+        return ResponseEntity.ok( invoiceFacade.migrate());
     }
 
     @PostMapping( "/v2/migrate/line")
@@ -133,9 +133,6 @@ public class MigrationController {
 
     @PostMapping( "/v2/migrate/register")
     public ResponseEntity<String> registerMigrate() {
-        //registers.initInvoiceRegisters();
-        //registers.initAccountingRegisters( getAccountingRegister());
-        log.warn( "Registers configuration complete!");
         return ResponseEntity.ok( registerFacade.migrate());
     }
 

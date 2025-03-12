@@ -27,8 +27,7 @@ public abstract class DecreeBuilder<T> {
     public DecreeMap build( Entity entity, T indicators, DecreeDto.Proxy decreeDto) {
         return templates.findByDocumentTypeAndDate( getTemplateType(), decreeDto.getDate())
             .map(template-> {
-                var decree= new DecreeMap( decreeDto.register(RegisterDto.create()
-                        .registerId(template.getRegister().getRegisterId())));
+                var decree= new DecreeMap( decreeDto.registerId( template.getRegister().getRegisterId()));
 
                 template.getItems()
                     .forEach(templateItem-> getAccount( templateItem, entity)

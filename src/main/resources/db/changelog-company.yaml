@@ -45,6 +45,5 @@ databaseChangeLog:
       file: db/company/22-payslip_lines_upgrade.sql
   - include:
       file: db/company/23-declarations.sql
-
-
-
+  - include:
+      file: db/company/24-report_schemas_upgrade.sql

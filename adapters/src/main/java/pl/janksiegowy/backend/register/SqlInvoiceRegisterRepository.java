@@ -9,10 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SqlInvoiceRegisterRepository extends JpaRepository<InvoiceRegister, UUID> {
-    Register findByTypeAndCode( InvoiceRegisterType type, String code);
+
 }
-interface SqlInvoiceRegisterQueryRepository extends InvoiceRegisterQueryRepository,
-                                                    Repository<InvoiceRegister, UUID> {}
 
 @org.springframework.stereotype.Repository
 @AllArgsConstructor

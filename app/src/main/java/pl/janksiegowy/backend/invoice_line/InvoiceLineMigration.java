@@ -12,8 +12,6 @@ import pl.janksiegowy.backend.item.ItemQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.Util;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 @Service
 @AllArgsConstructor
 public class InvoiceLineMigration {

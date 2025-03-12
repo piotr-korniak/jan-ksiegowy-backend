@@ -1,12 +1,17 @@
 package pl.janksiegowy.backend.invoice;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import pl.janksiegowy.backend.finances.document.Document;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind;
+import pl.janksiegowy.backend.register.invoice.InvoiceRegister;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
 import pl.janksiegowy.backend.register.invoice.PurchaseRegister;
 
 import java.math.BigDecimal;
+import java.util.UUID;
+
+@Getter
 
 @Entity
 @DiscriminatorValue( "P")
@@ -20,7 +25,7 @@ public class PurchaseInvoice extends Invoice {
     @JoinColumn( table= TABLE_NAME)
     private PurchaseRegister register;
 
-    @Override public InvoiceRegisterKind getRegisterKind() {
+    public InvoiceRegisterKind getRegisterKind() {
         return register.getKind();
     }
 

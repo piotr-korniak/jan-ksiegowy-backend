@@ -1,15 +1,18 @@
 package pl.janksiegowy.backend.accounting.template.dto;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import pl.janksiegowy.backend.accounting.account.AccountType;
 import pl.janksiegowy.backend.accounting.template.TemplateType;
 import pl.janksiegowy.backend.entity.EntityType;
-import pl.janksiegowy.backend.entity.dto.EntityDto;
+import pl.janksiegowy.backend.register.RegisterQueryRepository;
+import pl.janksiegowy.backend.register.dto.RegisterDto;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public interface TemplateDto {
@@ -21,7 +24,7 @@ public interface TemplateDto {
     LocalDate getDate();
     String getCode();
     TemplateType getDocumentType();
-    String getRegisterCode();
+    UUID getRegisterRegisterId();
     List<? extends TemplateLineDto> getLines();
     String getName();
 
@@ -31,13 +34,23 @@ public interface TemplateDto {
     @Accessors( fluent= true, chain= true)
     class Proxy implements TemplateDto {
 
+        public Proxy() {}
+
+        @JsonCreator
+        public Proxy( @JsonProperty( "registerCode") String registerCode,
+                      @JacksonInject RegisterQueryRepository registers) {
+            registerId= registers.findAccountRegisterByCode( registerCode)
+                    .map( RegisterDto::getRegisterId)
+                    .orElseThrow(()-> new NoSuchElementException( "Register not found: "+ registerCode));
+        }
+
         private UUID templateId;
         private LocalDate date;
         private String code;
         private TemplateType documentType;
         private EntityType entityType;
         private List<TemplateLineDto.Proxy> lines;
-        private String registerCode;
+        private UUID registerId;
         private String name;
 
         @Override public UUID getTemplateId() {
@@ -52,8 +65,8 @@ public interface TemplateDto {
         @Override public TemplateType getDocumentType() {
             return documentType;
         }
-        @Override public String getRegisterCode() {
-            return registerCode;
+        @Override public UUID getRegisterRegisterId() {
+            return registerId;
         }
         @Override public List<? extends TemplateLineDto> getLines() {
             return lines;

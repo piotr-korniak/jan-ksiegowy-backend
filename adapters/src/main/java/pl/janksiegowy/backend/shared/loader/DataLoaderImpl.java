@@ -1,5 +1,6 @@
 package pl.janksiegowy.backend.shared.loader;
 
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.SneakyThrows;
 import org.springframework.core.io.ResourceLoader;
+import pl.janksiegowy.backend.register.RegisterQueryRepository;
 import pl.janksiegowy.backend.shared.DataLoader;
 
 import java.io.*;
@@ -52,6 +54,15 @@ public class DataLoaderImpl implements DataLoader {
         return mapper.readValue( getReader( filePath),
                 mapper.getTypeFactory().constructCollectionType( List.class, clazz));
     }
+
+    @SneakyThrows
+    public <T, D> List<T> loadYml( String filePath, Class<? extends T> clazz, Class<D> injectClass, D dependency) {
+        ObjectMapper mapper= yamlMapper;
+        return mapper.setInjectableValues( new InjectableValues.Std()
+                .addValue( injectClass, dependency)).readValue( getReader( filePath),
+                mapper.getTypeFactory().constructCollectionType( List.class, clazz));
+    }
+
 
     @SneakyThrows
     public <T> List<T> loadCsv( String filePath, Class<? extends T> clazz) {

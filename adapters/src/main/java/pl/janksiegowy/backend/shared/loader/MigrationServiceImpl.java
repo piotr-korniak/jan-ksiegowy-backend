@@ -6,9 +6,12 @@ import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateMap;
 import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
+import pl.janksiegowy.backend.invoice.dto.InvoiceCsv;
+import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.item.dto.ItemDto;
 import pl.janksiegowy.backend.metric.dto.MetricDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
+import pl.janksiegowy.backend.register.RegisterQueryRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.report.dto.ReportSchemaDto;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
@@ -23,6 +26,7 @@ import java.util.List;
 public class MigrationServiceImpl implements MigrationService {
 
     private final DataLoader dataLoader;
+    private final RegisterQueryRepository registers;
 
     @Override public List<ReportSchemaDto> loadReportSchemas() {
         return dataLoader.loadCsv("report_schemas.csv", ReportSchemaDto.Proxy.class);
@@ -62,8 +66,14 @@ public class MigrationServiceImpl implements MigrationService {
     }
 
     @Override
+    public List<InvoiceCsv> loadInvoices() {
+        return dataLoader.loadCsv("invoices.csv", InvoiceCsv.class, row-> !row.startsWith( "---"));
+    }
+
+    @Override
     public List<TemplateDto> loadTemplates() {
-        return dataLoader.loadYml( "templates.yaml", TemplateDto.Proxy.class);
+        return dataLoader.loadYml( "templates.yaml",
+                TemplateDto.Proxy.class, RegisterQueryRepository.class, registers);
     }
 
 }

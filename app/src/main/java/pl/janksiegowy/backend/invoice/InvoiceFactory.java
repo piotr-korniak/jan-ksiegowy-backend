@@ -10,9 +10,6 @@ import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.RegisterRepository;
-import pl.janksiegowy.backend.register.invoice.InvoiceRegisterRepository;
-import pl.janksiegowy.backend.register.invoice.PurchaseRegister;
-import pl.janksiegowy.backend.register.invoice.SalesRegister;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
@@ -41,7 +38,7 @@ public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
     }
 
     @Override public Invoice visitSalesInvoice( InvoiceDto source) {
-        var invoice= update( source, registerRepository.findSalesRegisterByCode( source.getRegisterCode())
+        var invoice= update( source, registerRepository.findSalesRegisterByRegisterId( source.getRegisterRegisterId())
                 .map( register-> new SalesInvoice()
                         .setRegister( register))
                 .orElseThrow());
@@ -56,7 +53,7 @@ public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
     }
 
     @Override public Invoice visitPurchaseInvoice( InvoiceDto source) {
-        return update( source, registerRepository.findPurchaseRegisterByCode( source.getRegisterCode())
+        return update( source, registerRepository.findPurchaseRegisterById( source.getRegisterRegisterId())
                 .map( register-> new PurchaseInvoice()
                                 .setRegister( register))
                 .orElseThrow());

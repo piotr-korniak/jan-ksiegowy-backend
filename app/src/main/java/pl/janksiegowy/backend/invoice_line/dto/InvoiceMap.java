@@ -4,7 +4,6 @@ import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.shared.financial.PaymentMetod;
 
 import java.math.BigDecimal;
@@ -34,13 +33,8 @@ public class InvoiceMap implements InvoiceDto {
     }
 
     @Override
-    public RegisterDto getRegister() {
-        return invoice.getRegister();
-    }
-
-    @Override
-    public String getRegisterCode() {
-        return invoice.getRegisterCode();
+    public UUID getRegisterRegisterId() {
+        return invoice.getRegisterRegisterId();
     }
 
     @Override

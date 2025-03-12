@@ -1,6 +1,5 @@
 package pl.janksiegowy.backend.accounting.template.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.janksiegowy.backend.accounting.template.TemplateType;
 import pl.janksiegowy.backend.entity.EntityType;
 
@@ -39,8 +38,8 @@ public class TemplateMap implements TemplateDto{
     @Override public TemplateType getDocumentType() {
         return template.getDocumentType();
     }
-    @Override public String getRegisterCode() {
-        return template.getRegisterCode();
+    @Override public UUID getRegisterRegisterId() {
+        return template.getRegisterRegisterId();
     }
 
     @Override public List<TemplateLineDto> getLines() {

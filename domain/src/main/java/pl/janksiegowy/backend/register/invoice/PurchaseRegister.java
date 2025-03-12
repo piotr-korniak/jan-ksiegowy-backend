@@ -13,4 +13,5 @@ public class PurchaseRegister extends InvoiceRegister {
     @Override public RegisterType getType() {
         return RegisterType.P;
     }
+
 }

@@ -1,0 +1,6 @@
+--liquibase formatted sql
+--changeset piotrkorniak:24
+
+ALTER TABLE REPORT_SCHEMAS
+    ALTER COLUMN FUNCTION TYPE VARCHAR(48),
+    ALTER COLUMN PARAMETERS TYPE VARCHAR(192);
