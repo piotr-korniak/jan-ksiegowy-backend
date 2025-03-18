@@ -1,8 +1,8 @@
 package pl.janksiegowy.backend.entity;
 
 import pl.janksiegowy.backend.entity.dto.EntityDto;
-import pl.janksiegowy.backend.invoice.dto.InvoiceViewDto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +16,8 @@ public interface EntityQueryRepository {
     }
 
     Optional<EntityDto> findByTypeAndTaxNumber( EntityType type, String taxNumber);
-    List<EntityDto> findByCountryAndTaxNumberAndTypes( Country country, String taxNumber, EntityType... types);
+    Optional<EntityDto> findByCountryAndTaxNumberAndDateAndTypeIn(
+            Country country, String taxNumber, LocalDate date, EntityType... types);
 
     <T> List<T> findByType( Class<T> tClass, EntityType type);
 }

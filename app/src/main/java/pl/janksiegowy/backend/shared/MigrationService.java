@@ -2,6 +2,7 @@ package pl.janksiegowy.backend.shared;
 
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
+import pl.janksiegowy.backend.entity.dto.EntityCsv;
 import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
 import pl.janksiegowy.backend.invoice.dto.InvoiceCsv;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
@@ -33,4 +34,6 @@ public interface MigrationService {
     List<RegisterDto> loadRegisters();
 
     List<InvoiceCsv> loadInvoices();
+
+    List<EntityCsv> loadEntity();
 }

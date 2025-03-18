@@ -43,7 +43,7 @@ public class Factory_FA_2_v1_0e extends Factory_FA {
                     setAdres( new TAdres() {{
                         kodKraju= TKodKraju.fromValue( entity.getCountry().name());
                         adresL1= entity.getAddress();
-                        adresL2= entity.getPostcode()+ " "+ entity.getTown();
+                        adresL2= entity.getPostalCode()+ " "+ entity.getCity();
                     }});
                 }});
             }}).setFa( new Faktura_FA_2.Fa() {{

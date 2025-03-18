@@ -18,13 +18,9 @@ public interface SqlItemRepository extends JpaRepository<Item, Long> {
             "ON M.itemId= P.itemId AND (P.date <= :date AND M.date < P.date)"+
             "WHERE M.itemId= :itemId AND M.date <= :date AND P.date IS NULL")
     Optional<Item> findByItemIdAndDate( UUID itemId, LocalDate date);
+
     Optional<Item> findItemByItemIdAndDate( UUID itemId, LocalDate date);
 
-    @Query( value= "FROM Item M " +
-            "LEFT OUTER JOIN Item P "+
-            "ON M.itemId= P.itemId AND (P.date <= :date AND M.date < P.date)"+
-            "WHERE M.code= :code AND M.date <= :date AND P.date IS NULL")
-    Optional<Item> findItemByCodeAndDate( String code, LocalDate date);
 }
 
 interface ItemQueryRepositoryImpl extends ItemQueryRepository, Repository<Item, Long> {
@@ -35,6 +31,12 @@ interface ItemQueryRepositoryImpl extends ItemQueryRepository, Repository<Item, 
             "ON M.itemId= P.itemId AND M.date < P.date "+
             "WHERE M.code= :code AND P.date IS NULL")
     Optional<ItemDto> findByCode( String code);
+
+    @Query( value= "FROM Item M " +
+            "LEFT OUTER JOIN Item P "+
+            "ON M.itemId= P.itemId AND (P.date <= :date AND M.date < P.date)"+
+            "WHERE M.code= :code AND M.date <= :date AND P.date IS NULL")
+    Optional<ItemDto> findByCodeAndDate( String code, LocalDate date);
 }
 
 @org.springframework.stereotype.Repository
@@ -56,7 +58,4 @@ class ItemRepositoryImpl implements ItemRepository {
         return repository.findItemByItemIdAndDate( itemId, date);
     }
 
-    @Override public Optional<Item> findItemByCodeAndDate( String code, LocalDate date) {
-        return repository.findItemByCodeAndDate( code, date);
-    }
 }

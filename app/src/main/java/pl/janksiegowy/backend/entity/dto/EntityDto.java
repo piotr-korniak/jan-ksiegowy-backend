@@ -28,8 +28,8 @@ public interface EntityDto {
     String getAccountNumber();
     Country getCountry();
     String getAddress();
-    String getPostcode();
-    String getTown();
+    String getPostalCode();
+    String getCity();
     boolean isSupplier();
     boolean isCustomer();
 
@@ -45,8 +45,8 @@ public interface EntityDto {
         private String accountNumber;
         private Country country;
         private String address;
-        private String postcode;
-        private String town;
+        private String postalCode;
+        private String city;
         private boolean supplier;
         private boolean customer;
 
@@ -74,11 +74,11 @@ public interface EntityDto {
         @Override public String getAddress() {
             return address;
         }
-        @Override public String getPostcode() {
-            return postcode;
+        @Override public String getPostalCode() {
+            return postalCode;
         }
-        @Override public String getTown() {
-            return town;
+        @Override public String getCity() {
+            return city;
         }
         @Override public boolean isSupplier() {
             return supplier;

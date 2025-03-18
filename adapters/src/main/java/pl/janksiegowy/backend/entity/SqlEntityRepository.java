@@ -1,8 +1,6 @@
 package pl.janksiegowy.backend.entity;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -29,18 +27,20 @@ public interface SqlEntityRepository extends JpaRepository<Entity, Long> {
             "WHERE M.date <= :date AND P.date IS NULL AND "+
             "M.taxNumber= :taxNumber AND M.country= :country AND M.type IN :types ")
 
-    Optional<Entity> findByCountryAndTaxNumberAndTypesAndDate(
+    Optional<Entity> findByCountryAndTaxNumberAndDateAndTypes(
             Country country, String taxNumber, LocalDate date, EntityType... types);
 }
 
 interface SqlEntityQueryRepository extends EntityQueryRepository, Repository<Entity, Long> {
+
     @Override
     @Query( value= "SELECT M " +
             "FROM Entity M " +
             "LEFT OUTER JOIN Entity P "+
             "ON M.entityId= P.entityId AND M.date < P.date "+
             "WHERE M.taxNumber= :taxNumber AND M.country= :country AND M.type IN :types AND P.date IS NULL")
-    List<EntityDto> findByCountryAndTaxNumberAndTypes( Country country, String taxNumber, EntityType... types);
+    Optional<EntityDto> findByCountryAndTaxNumberAndDateAndTypeIn(
+            Country country, String taxNumber, LocalDate date, EntityType... types);
 
     @Override
     @Query( value= "SELECT M " +
@@ -89,9 +89,9 @@ class EntityRepositoryImpl implements EntityRepository {
     }
 
     @Override
-    public Optional<Entity> findByCountryAndTaxNumberAndTypesAndDate(
+    public Optional<Entity> findByCountryAndTaxNumberAndDateAndTypes(
             Country entityCountry, String entityTaxNumber, LocalDate date, EntityType... types) {
-        return repository.findByCountryAndTaxNumberAndTypesAndDate( entityCountry, entityTaxNumber, date, types)
+        return repository.findByCountryAndTaxNumberAndDateAndTypes( entityCountry, entityTaxNumber, date, types)
                 .stream().findFirst();
     }
 }

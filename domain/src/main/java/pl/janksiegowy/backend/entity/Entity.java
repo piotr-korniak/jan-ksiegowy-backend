@@ -37,8 +37,8 @@ public abstract class Entity {
 
     private String name;
     private String address;
-    private String postcode;
-    private String town;
+    private String postalCode;
+    private String city;
 
     private String accountNumber;
 

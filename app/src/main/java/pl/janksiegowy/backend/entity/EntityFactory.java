@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 @Log4j2
 @AllArgsConstructor
@@ -16,33 +17,25 @@ public class EntityFactory implements EntityTypeVisitor<Entity> {
     private final NumeratorFacade numerators;
 
     public Entity from( EntityDto source) {     // New Entity
-        return update( source, source.getType()
-                .accept( this)
-                    .setEntityId( UUID.randomUUID())
-                    .setAccountNumber( EntityType.R == source.getType()?
-                            source.getTaxNumber(): numerators.increment( NumeratorCode.EN,
-                            EntityType.B== source.getType()?
-                                    EntityType.C.name(): source.getType().name()))
-                    .setDate( LocalDate.EPOCH.plusDays( 3)));
-    }
-
-    public Entity update( EntityDto source) {   // New Entity history
-        return update( source, source.getType()
-                .accept( this)
-                    .setEntityId( source.getEntityId())
-                    .setAccountNumber( source.getAccountNumber())
-                    .setDate( source.getDate()));
+        return update( source, source.getType().accept( this)
+                .setEntityId( Optional.of( source.getEntityId()).orElseGet( UUID::randomUUID))
+                .setAccountNumber( Optional.of( source.getAccountNumber()).orElseGet(()->
+                        EntityType.R == source.getType()
+                                ? source.getTaxNumber()
+                                : numerators.increment( NumeratorCode.EN, EntityType.B== source.getType() ?
+                                EntityType.C.name(): source.getType().name())))
+                .setDate( Optional.of( source.getDate() ).orElseGet(()-> LocalDate.EPOCH))
+        );
     }
 
     public Entity update( EntityDto source, Entity entity) {
         return entity                           // Update Entity history
                 .setName( source.getName())
-                //.setType( source.getType())
                 .setTaxNumber( source.getTaxNumber())
                 .setCountry( source.getCountry())
                 .setAddress( source.getAddress())
-                .setPostcode( source.getPostcode())
-                .setTown( source.getTown())
+                .setPostalCode( source.getPostalCode())
+                .setCity( source.getCity())
                 .setCustomer( source.isCustomer())
                 .setSupplier( source.isSupplier());
     }

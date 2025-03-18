@@ -53,8 +53,8 @@ public class EntityMigrationService {
                             .name( fields[1])
                             .taxNumber( taxNumber)
                             .address( fields[3])
-                            .postcode( fields[4])
-                            .town( fields[5])
+                            .postalCode( fields[4])
+                            .city( fields[5])
                             .supplier( role.isSupplier())
                             .customer( role.isCustomer())
                             .country( country));

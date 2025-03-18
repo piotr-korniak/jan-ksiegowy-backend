@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateMap;
+import pl.janksiegowy.backend.entity.dto.EntityCsv;
 import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
 import pl.janksiegowy.backend.invoice.dto.InvoiceCsv;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
@@ -68,6 +69,11 @@ public class MigrationServiceImpl implements MigrationService {
     @Override
     public List<InvoiceCsv> loadInvoices() {
         return dataLoader.loadCsv("invoices.csv", InvoiceCsv.class, row-> !row.startsWith( "---"));
+    }
+
+    @Override
+    public List<EntityCsv> loadEntity() {
+        return dataLoader.loadCsv("entities.csv", EntityCsv.class);
     }
 
     @Override

@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.janksiegowy.backend.accounting.account.AccountFacade;
 import pl.janksiegowy.backend.accounting.template.TemplateFacade;
+import pl.janksiegowy.backend.entity.EntityFacade;
+import pl.janksiegowy.backend.entity.EntityFactory;
 import pl.janksiegowy.backend.entity.EntityMigrationService;
 import pl.janksiegowy.backend.finances.charge.ChargeMigrationService;
 import pl.janksiegowy.backend.finances.notice.NoticeFacade;
+import pl.janksiegowy.backend.finances.share.ShareFacade;
 import pl.janksiegowy.backend.finances.share.ShareMigrationService;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineMigration;
@@ -43,8 +46,9 @@ public class MigrationController {
     private final ItemFacade itemFacade;
     private final RegisterFacade registerFacade;
     private final InvoiceFacade invoiceFacade;
+    private final EntityFacade entityFacade;
 
-    public MigrationController( final NoticeFacade noticeFacade,
+    public MigrationController(final NoticeFacade noticeFacade,
                                final MigrationExecutor migrationExecutor,
                                final ShareMigrationService shareMigration,
                                final InvoiceLineMigration invoiceLinesMigration,
@@ -59,9 +63,10 @@ public class MigrationController {
                                final TemplateFacade templateFacade,
                                final PeriodFacade periodFacade,
                                final NumeratorFacade numeratorFacade,
-                                final ItemFacade itemFacade,
-                                final RegisterFacade registerFacade,
-                                final InvoiceFacade invoiceFacade) {
+                               final ItemFacade itemFacade,
+                               final RegisterFacade registerFacade,
+                               final InvoiceFacade invoiceFacade,
+                               final EntityFacade entityFacade) {
         this.migrationExecutor= migrationExecutor;
 
         this.shareMigration= shareMigration;
@@ -81,6 +86,7 @@ public class MigrationController {
         this.itemFacade = itemFacade;
         this.registerFacade= registerFacade;
         this.invoiceFacade= invoiceFacade;
+        this.entityFacade= entityFacade;
     }
 
     private final MigrationExecutor migrationExecutor;
@@ -128,7 +134,7 @@ public class MigrationController {
 
     @PostMapping( "/v2/migrate/entity")
     public ResponseEntity<String> entityEntity() {
-        return ResponseEntity.ok( entityMigrationService.init());
+        return ResponseEntity.ok( entityFacade.migrate());
     }
 
     @PostMapping( "/v2/migrate/register")

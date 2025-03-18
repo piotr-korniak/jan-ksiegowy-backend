@@ -17,7 +17,7 @@ public class NoticeFactory implements NoteTypeVisitor<Note> {
     private final PeriodFacade periods;
 
     public Note from( NoticeDto source) {
-        return entityRepository.findByCountryAndTaxNumberAndTypesAndDate(
+        return entityRepository.findByCountryAndTaxNumberAndDateAndTypes(
                         source.getEntityCountry(),
                         source.getEntityTaxNumber(),
                         source.getDate(),

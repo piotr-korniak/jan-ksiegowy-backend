@@ -11,5 +11,4 @@ public interface ItemRepository {
     Optional<Item> findByItemIdAndDate( UUID itemId, LocalDate date);
     Optional<Item> findItemByItemIdAndDate( UUID itemId, LocalDate date);
 
-    Optional<Item> findItemByCodeAndDate(String code, LocalDate date);
 }

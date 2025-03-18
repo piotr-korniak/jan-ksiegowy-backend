@@ -13,7 +13,7 @@ public class ItemFactory implements ItemTypeVisitor<Item> {
         return update( source, source.getType()
                 .accept(this))
                     .setItemId( Optional.ofNullable( source.getItemId()).orElseGet( UUID::randomUUID))
-                    .setDate( Optional.ofNullable( source.getDate()).orElseGet(()->LocalDate.EPOCH));
+                    .setDate( Optional.ofNullable( source.getDate()).orElseGet(()-> LocalDate.EPOCH));
     }
 
     Item update( ItemDto source, Item item) {

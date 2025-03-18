@@ -55,16 +55,16 @@ public interface InvoiceCsv {
 
         Country country= Country.PL;
 
-        @JsonProperty("Amount")
+        @JsonProperty( "Amount")
         BigDecimal amount;
 
-        @JsonProperty("Issue Date")
+        @JsonProperty( "Issue Date")
         LocalDate issueDate;
 
-        @JsonProperty("Invoice Date")
+        @JsonProperty( "Invoice Date")
         LocalDate invoiceDate;
 
-        @JsonProperty("Due Date")
+        @JsonProperty( "Due Date")
         LocalDate dueDate;
 
         @JsonProperty( "Payment Metod")
