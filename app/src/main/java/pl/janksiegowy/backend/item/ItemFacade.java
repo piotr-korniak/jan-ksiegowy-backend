@@ -32,14 +32,22 @@ public class ItemFacade {
         migrationService.loadItems().forEach( item-> {
             counters[0]++;
 
-            var date= Optional.ofNullable( item.getDate()).orElseGet(()-> LocalDate.EPOCH);
-            if( items.findByCodeAndDate( item.getCode(), date)
-                    .map(existing-> !existing.getDate().equals( date))
-                    .orElse(true)) {
-                counters[1]++;
-                repository.save( factory.from( updateSold( (ItemDto.Proxy) item)));
+            if( item instanceof ItemDto.Proxy proxyItem) {
+                var date= Optional.ofNullable( item.getDate()).orElseGet(()-> LocalDate.EPOCH);
+
+                items.findByCodeAndDate( item.getCode(), date)
+                        .ifPresentOrElse(existing-> {
+                            if (!existing.getDate().equals( date)) {
+                                proxyItem.itemId( existing.getItemId());
+                                repository.save( factory.from( updateSold( proxyItem)));
+                                counters[1]++;
+                            }
+                        }, ()-> {
+                            repository.save( factory.from(updateSold( proxyItem)));
+                            counters[1]++;
+                        });
             }
-            
+
         });
         log.warn( "Items migration complete!");
         return "%-40s %16s".formatted("Items migration complete, added: ", counters[1]+ "/"+ counters[0]);
