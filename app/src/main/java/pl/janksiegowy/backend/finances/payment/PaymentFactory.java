@@ -35,8 +35,8 @@ public class PaymentFactory {
                             .setNumber( Optional.ofNullable( source.getNumber())
                                     .orElseGet( ()-> numerators.increment(
                                             switch ( register.getType()) {
-                                                case B -> NumeratorCode.BR;
-                                                case C -> NumeratorCode.CR;
+                                                case A -> NumeratorCode.BR;
+                                                case D -> NumeratorCode.CR;
                                                 default ->
                                                         throw new IllegalStateException("Unexpected value: " + register.getType());
                                             },
@@ -46,8 +46,8 @@ public class PaymentFactory {
                         var number= Optional.ofNullable( source.getNumber())
                                 .orElseGet( ()-> numerators.increment(
                                         switch ( register.getType()) {
-                                            case B -> NumeratorCode.BS;
-                                            case C -> NumeratorCode.CS;
+                                            case A -> NumeratorCode.BS;
+                                            case D -> NumeratorCode.CS;
                                             default ->
                                                     throw new IllegalStateException("Unexpected value: " + register.getType());
                                         },

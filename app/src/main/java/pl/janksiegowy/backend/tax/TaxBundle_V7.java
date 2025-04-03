@@ -16,7 +16,7 @@ public class TaxBundle_V7 implements TaxBundle {
     @Override
     public List<TaxType> taxesToProcess( MonthPeriod monthPeriod) {
         //return List.of( TaxType.VQ, TaxType.CM, TaxType.ZD);
-        //return List.of( TaxType.ZD);
+        //return List.of( TaxType.CM);
         return List.of( TaxType.VQ, TaxType.CM);
     }
 

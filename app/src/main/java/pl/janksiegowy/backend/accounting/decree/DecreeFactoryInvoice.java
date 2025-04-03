@@ -73,8 +73,7 @@ public class DecreeFactoryInvoice {
                                             .reduce( BigDecimal.ZERO, BigDecimal::add);
                                 }
                                 @Override public BigDecimal visitOdliczenieVAT() {
-                                    return BigDecimal.ZERO;
-                                /*    return invoice.getRegisterKind().accept( new VatRegisterTypeVisitor<BigDecimal>() {
+                                    return invoice.getRegisterKind().accept( new VatRegisterTypeVisitor<BigDecimal>() {
                                         @Override public BigDecimal visitDomestic() {
                                             return BigDecimal.ZERO;
                                         }
@@ -83,7 +82,7 @@ public class DecreeFactoryInvoice {
                                         }
                                         @Override public BigDecimal visitWorld() {
                                             return visitKwotaVAT();
-                                        }});*/
+                                        }});
                                 }
                                 @Override public BigDecimal visitKwotaMaterialowKUP() {
                                     return invoice.getLineItems().stream()

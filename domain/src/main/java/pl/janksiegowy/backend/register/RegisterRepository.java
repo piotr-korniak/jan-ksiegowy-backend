@@ -17,7 +17,7 @@ public interface RegisterRepository {
     }
 
     default Optional<AccountingRegister> findAccountRegisterByRegisterId( UUID registerId) {
-        return findByTypeAndRegisterId( RegisterType.A, registerId).map( r-> (AccountingRegister) r);
+        return findByTypeAndRegisterId( RegisterType.R, registerId).map( r-> (AccountingRegister) r);
     };
 
     default Optional<PurchaseRegister> findPurchaseRegisterById( UUID registerId) {

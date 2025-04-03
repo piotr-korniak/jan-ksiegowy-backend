@@ -20,9 +20,9 @@ public class EntityFacade {
     public Entity save( EntityDto source) {
         return repository.save( Optional.ofNullable( source.getEntityId())
                 .map( entityId-> repository.findEntityByEntityIdAndDate( entityId, source.getDate())
-                        .map( entity-> factory.update( source, entity))     // Update Entity history
-                        .orElse( factory.from( source)))                  // New Entity history
-                .orElse( factory.from( source))                             // New Entity
+                        .map( entity-> factory.update( source, entity))   // Update Entity history
+                        .orElse( factory.from( source)))                        // New Entity history
+                .orElse( factory.from( source))                                 // New Entity
         );
     }
 
@@ -38,7 +38,7 @@ public class EntityFacade {
 
             if( existingEntity.map(existing-> !existing.getDate().equals( date)).orElse(true)) {
 
-                save( existingEntity
+                repository.save( factory.from( existingEntity
                         .map( existing-> EntityDto.create()
                                 .entityId( existing.getEntityId())
                                 .accountNumber( existing.getAccountNumber()))
@@ -52,7 +52,7 @@ public class EntityFacade {
                         .city( entity.getCity())
                         .supplier( entity.getRole().isSupplier())
                         .customer( entity.getRole().isCustomer())
-                        .country( entity.getCountry())
+                        .country( entity.getCountry()))
                 );
                 counters[1]++;
             }

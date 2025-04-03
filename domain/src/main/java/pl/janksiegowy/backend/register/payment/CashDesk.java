@@ -6,10 +6,10 @@ import jakarta.persistence.Entity;
 import pl.janksiegowy.backend.register.RegisterType;
 
 @Entity
-@DiscriminatorValue( value= "C")
+@DiscriminatorValue( value= "D")
 public class CashDesk extends PaymentRegister{
 
     @Override public RegisterType getType() {
-        return RegisterType.C;
+        return RegisterType.D;
     }
 }

@@ -29,21 +29,19 @@ public class TrialBalanceSheetController {
         System.err.println( "endDate: " + endDate);
 
         var header = Arrays.asList( "Konto", "Nazwa",
-                "Początkowe Dt", "Początkowe Ct", "Obroty Dt", "Obroty Ct",
-                "Narastające Ct", "Narastające Dt", "Końcowe Dt", "Końcowe Ct");
+                "Początkowe Dt", "Początkowe Ct",
+                "Obroty Dt", "Obroty Ct",
+                "Narastające Dt", "Narastające Ct",
+                "Końcowe Dt", "Końcowe Ct");
 
         var data= trialBalanceSheet.printTrialBalanceSheet( beginDate, endDate).stream()
                 .map(dto -> Arrays.asList(
                         dto.getNumber(),
                         dto.getName(),
-                        dto.getOpeningDebitBalance(),
-                        dto.getOpeningCreditBalance(),
-                        dto.getDebitTurnover(),
-                        dto.getCreditTurnover(),
-                        dto.getCumulativeDebitTurnover(),
-                        dto.getCumulativeCreditTurnover(),
-                        dto.getClosingDebitBalance(),
-                        dto.getClosingCreditBalance()
+                        dto.getOpeningDebitBalance(), dto.getOpeningCreditBalance(),
+                        dto.getDebitTurnover(), dto.getCreditTurnover(),
+                        dto.getCumulativeDebitTurnover(), dto.getCumulativeCreditTurnover(),
+                        dto.getClosingDebitBalance(), dto.getClosingCreditBalance()
                 )).toList();
 
         Map<String, Object> result = new LinkedHashMap<>();

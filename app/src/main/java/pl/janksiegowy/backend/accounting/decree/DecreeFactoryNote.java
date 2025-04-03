@@ -18,7 +18,11 @@ public class DecreeFactoryNote implements NoteTypeVisitor<TemplateType> {
 
     private final TemplateRepository templates;
     public DecreeDto to( Note note) {
-        return templates.findByDocumentTypeAndDate( note.getType().accept( this), note.getIssueDate())
+
+        var documentType= note.getType().accept( this);
+
+        return templates.findByDocumentTypeAndDateAndPaymentType( documentType, note.getIssueDate(), note.getEntity().getType())
+                .or(()-> templates.findByDocumentTypeAndDate( documentType, note.getIssueDate()))
                 .map( template -> new DecreeFactory.Builder() {
                     @Override public BigDecimal getValue( TemplateLine line) {
                         return ((FinanceTemplateLine)line).getFunction()

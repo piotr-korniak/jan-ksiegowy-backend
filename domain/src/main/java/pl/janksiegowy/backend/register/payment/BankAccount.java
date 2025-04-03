@@ -13,7 +13,7 @@ import pl.janksiegowy.backend.shared.financial.Currency;
 @Accessors( chain= true)
 
 @Entity
-@DiscriminatorValue( value= "B")
+@DiscriminatorValue( value= "A")
 @SecondaryTable( name= BankAccount.TABLE_NAME, pkJoinColumns= @PrimaryKeyJoinColumn( name="ID"))
 public class BankAccount extends PaymentRegister {
     static final String TABLE_NAME= "BANK_ACCOUNTS";
@@ -26,6 +26,6 @@ public class BankAccount extends PaymentRegister {
     private Currency currency;
 
     @Override public RegisterType getType() {
-        return RegisterType.B;
+        return RegisterType.A;
     }
 }

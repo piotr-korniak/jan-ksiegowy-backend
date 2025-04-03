@@ -39,9 +39,11 @@ public class CloseMonthFactory extends DecreeBuilder<Map<WageIndicatorCode, BigD
 
     public DecreeDto create( MonthPeriod month) {
 
-        var indicators= Map.of( WageIndicatorCode.KW_NET,
+        var indicators= Map.of(
+                WageIndicatorCode.KW_NET,
                 payslips.sumByTypeAndPeriodAndDueDate(
                         EmploymentPayslip.class, month, month.getEnd().plusDays( 10)),
+
                 WageIndicatorCode.UB_ZUS,
                 statements.sumByTypeAndPeriodAndDueDate(
                         Declaration_DRA.class, month, month.getEnd().plusDays( 15)));

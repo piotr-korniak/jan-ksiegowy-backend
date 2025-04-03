@@ -5,19 +5,19 @@ import pl.janksiegowy.backend.register.payment.PaymentRegisterType;
 public enum RegisterType {
 
     /** Accounting Registers */
-    A {
+    R {
         @Override public <T, S> T accept( RegisterTypeVisitor<T, S> visitor, S source) {
             return visitor.visitAccountingRegister( source);
         }
     },
 
-    B {
+    A {
         @Override public <T, S> T accept( RegisterTypeVisitor<T, S> visitor, S source) {
             return visitor.visitBankAccount( source);
         }
     },
 
-    C {
+    D {
         @Override public <T, S> T accept(RegisterTypeVisitor<T, S> visitor, S source) {
             return visitor.visitCashDesk( source);
         }

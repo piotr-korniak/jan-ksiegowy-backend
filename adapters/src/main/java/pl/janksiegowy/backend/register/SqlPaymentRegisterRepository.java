@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface SqlPaymentRegisterRepository extends JpaRepository<Register, UUID> {
     Optional<Register> findByCode( String code);
 
-    List<BankAccount> findByType( PaymentRegisterType paymentRegisterType);
+    List<BankAccount> findByType( RegisterType registerType);
 }
 
 @org.springframework.stereotype.Repository
@@ -33,6 +33,6 @@ class PaymentRegisterRepositoryImpl implements PaymentRegisterRepository {
 
     @Override
     public List<BankAccount> findBankAccounts() {
-        return repository.findByType( PaymentRegisterType.A);
+        return repository.findByType( RegisterType.A);
     }
 }

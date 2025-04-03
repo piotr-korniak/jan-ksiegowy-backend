@@ -7,11 +7,11 @@ import pl.janksiegowy.backend.register.RegisterType;
 
 @Getter
 @Entity
-@DiscriminatorValue( value= "A")
+@DiscriminatorValue( value= "R")
 public class AccountingRegister extends Register {
 
     @Override public RegisterType getType() {
-        return RegisterType.A;
+        return RegisterType.R;
     }
 }
 

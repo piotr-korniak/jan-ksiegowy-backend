@@ -18,7 +18,11 @@ public class DecreeFactoryCharge implements ChargeType.ChargeTypeVisitor<Templat
 
     private final TemplateRepository templates;
     public DecreeDto to( Charge charge) {
-        return templates.findByDocumentTypeAndDate( charge.getType().accept( this), charge.getIssueDate())
+
+        var documentTyp= charge.getType().accept( this);
+
+        return templates.findByDocumentTypeAndDateAndPaymentType( documentTyp, charge.getIssueDate(), charge.getEntity().getType())
+                .or(()-> templates.findByDocumentTypeAndDate( documentTyp, charge.getIssueDate()))
                 .map( template-> new DecreeFactory.Builder() {
                     @Override public BigDecimal getValue(TemplateLine line) {
                         return ((FinanceTemplateLine)line).getFunction()

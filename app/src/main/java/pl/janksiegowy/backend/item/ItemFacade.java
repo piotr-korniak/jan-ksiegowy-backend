@@ -21,9 +21,9 @@ public class ItemFacade {
         return repository.save(
                 Optional.ofNullable( source.getItemId())
                         .map( itemId-> repository.findItemByItemIdAndDate( itemId, source.getDate())
-                                .map( item-> factory.update( source, item))
-                                .orElseGet(()-> factory.from( source)))
-                        .orElseGet(()-> factory.from( source)));
+                                .map( item-> factory.update( source, item)) // Update Item history
+                                .orElseGet(()-> factory.from( source)))          // New Item history
+                        .orElseGet(()-> factory.from( source)));                 // New Item
     }
 
     public String migrate() {
@@ -37,18 +37,18 @@ public class ItemFacade {
 
                 items.findByCodeAndDate( item.getCode(), date)
                         .ifPresentOrElse(existing-> {
-                            if (!existing.getDate().equals( date)) {
+                            if( !existing.getDate().equals( date)) {
                                 proxyItem.itemId( existing.getItemId());
                                 repository.save( factory.from( updateSold( proxyItem)));
                                 counters[1]++;
                             }
                         }, ()-> {
-                            repository.save( factory.from(updateSold( proxyItem)));
+                            repository.save( factory.from( updateSold( proxyItem)));
                             counters[1]++;
                         });
             }
-
         });
+        
         log.warn( "Items migration complete!");
         return "%-40s %16s".formatted("Items migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }
