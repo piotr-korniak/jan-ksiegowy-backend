@@ -4,7 +4,7 @@ import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.shared.financial.PaymentMetod;
+import pl.janksiegowy.backend.shared.financial.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -65,7 +65,7 @@ public class InvoiceMap implements InvoiceDto {
     @Override public List<InvoiceLineDto> getLineItems() {
         return lines;
     }
-    @Override public PaymentMetod getPaymentMetod() {
+    @Override public PaymentMethod getPaymentMetod() {
         return invoice.getPaymentMetod();
     }
 
@@ -79,6 +79,11 @@ public class InvoiceMap implements InvoiceDto {
 
     @Override public BigDecimal getAmount() {
         return invoice.getAmount();
+    }
+
+    @Override
+    public String getCorrection() {
+        return invoice.getCorrection();
     }
 
     public InvoiceMap add(InvoiceLineDto line) {

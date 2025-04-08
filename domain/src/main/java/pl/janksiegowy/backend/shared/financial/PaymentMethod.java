@@ -1,6 +1,6 @@
 package pl.janksiegowy.backend.shared.financial;
 
-public enum PaymentMetod {
+public enum PaymentMethod {
 
     CASH,
     CARD,

@@ -11,7 +11,7 @@ import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.invoice.InvoiceType;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
-import pl.janksiegowy.backend.shared.financial.PaymentMetod;
+import pl.janksiegowy.backend.shared.financial.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -51,11 +51,13 @@ public interface InvoiceDto {
     @JsonProperty( "line_items")
     List<InvoiceLineDto> getLineItems();
 
-    PaymentMetod getPaymentMetod();
+    PaymentMethod getPaymentMetod();
 
     BigDecimal getSubTotal();
     BigDecimal getTaxTotal();
     BigDecimal getAmount();
+
+    String getCorrection();
 
 
     @Setter
@@ -75,10 +77,11 @@ public interface InvoiceDto {
         private LocalDate dueDate;
         private EntityDto entity;
         private List<InvoiceLineDto> items;
-        private PaymentMetod paymentMetod;
+        private PaymentMethod paymentMetod;
         private BigDecimal subTotal;
         private BigDecimal taxTotal;
         private BigDecimal amount;
+        private String correction;
 
         @Override public UUID getDocumentId() {
             return invoiceId;
@@ -115,7 +118,7 @@ public interface InvoiceDto {
         @Override public List<InvoiceLineDto> getLineItems() {
             return items;
         }
-        @Override public PaymentMetod getPaymentMetod() {
+        @Override public PaymentMethod getPaymentMetod() {
             return paymentMetod;
         }
 
@@ -127,6 +130,11 @@ public interface InvoiceDto {
         }
         @Override public BigDecimal getAmount() {
             return amount;
+        }
+
+        @Override
+        public String getCorrection() {
+            return correction;
         }
     }
 }

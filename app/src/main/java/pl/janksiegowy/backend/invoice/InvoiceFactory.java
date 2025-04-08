@@ -11,7 +11,7 @@ import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.RegisterRepository;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
-import pl.janksiegowy.backend.shared.financial.PaymentMetod;
+import pl.janksiegowy.backend.shared.financial.PaymentMethod;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
 import pl.janksiegowy.backend.declaration.Factory_FA;
 
@@ -44,7 +44,7 @@ public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
                 .orElseThrow());
 
         var x= Factory_FA.create().prepare( (SalesInvoice) invoice);
-        if( PaymentMetod.TRANSFER== source.getPaymentMetod()) {
+        if( PaymentMethod.TRANSFER== source.getPaymentMetod()) {
             bankAccounts.findBankAccounts().forEach( bankAccount-> {
                 x.addBankAccount( bankAccount.getName(), bankAccount.getBankNumber());
             });
@@ -69,7 +69,10 @@ public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
                 .ifPresent( invoiceLines->update( invoiceLines, invoice, source.getInvoiceDate()));
 
         if( source.getPaymentMetod()!= null)
-            invoice.setPaymentMetod( source.getPaymentMetod());
+            invoice.setPaymentMethod( source.getPaymentMetod());
+
+        if( source.getCorrection()!= null)
+            invoice.setCorrection( source.getCorrection());
 
         //decrees.findById( invoice.getDocumentId())
         //        .ifPresent( invoice::setDecree);

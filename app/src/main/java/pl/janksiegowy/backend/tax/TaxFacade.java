@@ -17,7 +17,7 @@ public class TaxFacade {
     public List<StatementDto> calculate( MonthPeriod period) {
 
         System.err.println( "Calculate: "+ period.getId());
-        taxCalculatorBundles.forEach( taxCalculatorBundle -> {
+        taxCalculatorBundles.forEach( taxCalculatorBundle-> {
             System.err.println( "calculator: "+
                     taxCalculatorBundle.getDateApplicable()+ " : "+
                     taxCalculatorBundle.getClass().getSimpleName());

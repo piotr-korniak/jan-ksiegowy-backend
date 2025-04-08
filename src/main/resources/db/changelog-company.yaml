@@ -49,3 +49,5 @@ databaseChangeLog:
       file: db/company/24-report_schemas_upgrade.sql
   - include:
       file: db/company/25-entities_upgrade.sql
+  - include:
+      file: db/company/26-invoices_upgrade.sql

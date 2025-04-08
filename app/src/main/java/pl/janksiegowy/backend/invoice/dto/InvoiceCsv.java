@@ -2,12 +2,14 @@ package pl.janksiegowy.backend.invoice.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.Country;
 import pl.janksiegowy.backend.invoice.InvoiceType;
-import pl.janksiegowy.backend.shared.financial.PaymentMetod;
+import pl.janksiegowy.backend.shared.financial.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,8 +26,10 @@ public interface InvoiceCsv {
     LocalDate getIssuedDate();
     LocalDate getInvoicedDate();
     LocalDate getDueDate();
-    PaymentMetod getPaymentMethod();
+    PaymentMethod getPaymentMethod();
     boolean isPaymentMethod();
+    String getCorrection();
+    boolean isCorrection();
 
     @Setter
     @Accessors( fluent= true, chain= true)
@@ -67,9 +71,12 @@ public interface InvoiceCsv {
         @JsonProperty( "Due Date")
         LocalDate dueDate;
 
-        @JsonProperty( "Payment Metod")
-        PaymentMetod paymentMetod;
+        @JsonProperty( "Payment Method")
+        @JsonDeserialize( converter= PaymentMethodDeserializer.class)
+        PaymentMethod paymentMethod;
 
+        @JsonProperty( "Correction")
+        String correction;
 
         @Override public InvoiceType getType() {
             return type;
@@ -107,12 +114,22 @@ public interface InvoiceCsv {
             return dueDate;
         }
 
-        @Override public PaymentMetod getPaymentMethod() {
-            return paymentMetod;
+        @Override public PaymentMethod getPaymentMethod() {
+            return paymentMethod;
         }
 
         public boolean isPaymentMethod() {
-            return paymentMetod != null;
+            return paymentMethod != null;
+        }
+
+        @Override
+        public String getCorrection() {
+            return correction;
+        }
+
+        @Override
+        public boolean isCorrection() {
+            return correction != null;
         }
     }
 }

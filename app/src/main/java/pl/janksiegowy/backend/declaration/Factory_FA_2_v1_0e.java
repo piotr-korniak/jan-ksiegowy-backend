@@ -55,8 +55,8 @@ public class Factory_FA_2_v1_0e extends Factory_FA {
 
                 setPlatnosc( new Platnosc() {{
                     this.dataZaplaty= Util.toGregorian( invoice.getDueDate());
-                    if( invoice.getPaymentMetod()!= null)
-                        setFormaPlatnosci( BigInteger.valueOf( invoice.getPaymentMetod().ordinal()+ 1));
+                    if( invoice.getPaymentMethod()!= null)
+                        setFormaPlatnosci( BigInteger.valueOf( invoice.getPaymentMethod().ordinal()+ 1));
 
 
                 }});

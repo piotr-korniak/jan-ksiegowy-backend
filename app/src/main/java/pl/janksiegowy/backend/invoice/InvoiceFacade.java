@@ -53,6 +53,8 @@ public class InvoiceFacade implements InvoiceTypeVisitor<InvoiceDto.Proxy, Invoi
                                 .dueDate( invoice.getDueDate()))
                         .map( proxy-> invoice.isPaymentMethod()
                                 ? proxy.paymentMetod( invoice.getPaymentMethod()): proxy)
+                        .map( proxy -> invoice.isCorrection()
+                                ? proxy.correction( invoice.getCorrection()): proxy)
                         .orElseThrow(()-> new NoSuchElementException(
                                 "Not found contact with tax number: " + invoice.getTaxNumber())));
                 counters[1]++;
