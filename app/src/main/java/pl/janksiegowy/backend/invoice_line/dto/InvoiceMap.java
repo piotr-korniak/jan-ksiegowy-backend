@@ -65,8 +65,8 @@ public class InvoiceMap implements InvoiceDto {
     @Override public List<InvoiceLineDto> getLineItems() {
         return lines;
     }
-    @Override public PaymentMethod getPaymentMetod() {
-        return invoice.getPaymentMetod();
+    @Override public PaymentMethod getPaymentMethod() {
+        return invoice.getPaymentMethod();
     }
 
     @Override public BigDecimal getSubTotal() {

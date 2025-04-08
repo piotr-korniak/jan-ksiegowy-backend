@@ -51,7 +51,7 @@ public interface InvoiceDto {
     @JsonProperty( "line_items")
     List<InvoiceLineDto> getLineItems();
 
-    PaymentMethod getPaymentMetod();
+    PaymentMethod getPaymentMethod();
 
     BigDecimal getSubTotal();
     BigDecimal getTaxTotal();
@@ -77,7 +77,7 @@ public interface InvoiceDto {
         private LocalDate dueDate;
         private EntityDto entity;
         private List<InvoiceLineDto> items;
-        private PaymentMethod paymentMetod;
+        private PaymentMethod paymentMethod;
         private BigDecimal subTotal;
         private BigDecimal taxTotal;
         private BigDecimal amount;
@@ -118,8 +118,8 @@ public interface InvoiceDto {
         @Override public List<InvoiceLineDto> getLineItems() {
             return items;
         }
-        @Override public PaymentMethod getPaymentMetod() {
-            return paymentMetod;
+        @Override public PaymentMethod getPaymentMethod() {
+            return paymentMethod;
         }
 
         @Override public BigDecimal getSubTotal() {

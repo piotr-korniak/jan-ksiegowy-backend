@@ -52,7 +52,7 @@ public class InvoiceFacade implements InvoiceTypeVisitor<InvoiceDto.Proxy, Invoi
                                 .invoiceDate( invoice.getInvoicedDate())
                                 .dueDate( invoice.getDueDate()))
                         .map( proxy-> invoice.isPaymentMethod()
-                                ? proxy.paymentMetod( invoice.getPaymentMethod()): proxy)
+                                ? proxy.paymentMethod( invoice.getPaymentMethod()): proxy)
                         .map( proxy -> invoice.isCorrection()
                                 ? proxy.correction( invoice.getCorrection()): proxy)
                         .orElseThrow(()-> new NoSuchElementException(

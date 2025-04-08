@@ -44,7 +44,7 @@ public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
                 .orElseThrow());
 
         var x= Factory_FA.create().prepare( (SalesInvoice) invoice);
-        if( PaymentMethod.TRANSFER== source.getPaymentMetod()) {
+        if( PaymentMethod.TRANSFER== source.getPaymentMethod()) {
             bankAccounts.findBankAccounts().forEach( bankAccount-> {
                 x.addBankAccount( bankAccount.getName(), bankAccount.getBankNumber());
             });
@@ -68,8 +68,8 @@ public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
         Optional.ofNullable( source.getLineItems())
                 .ifPresent( invoiceLines->update( invoiceLines, invoice, source.getInvoiceDate()));
 
-        if( source.getPaymentMetod()!= null)
-            invoice.setPaymentMethod( source.getPaymentMetod());
+        if( source.getPaymentMethod()!= null)
+            invoice.setPaymentMethod( source.getPaymentMethod());
 
         if( source.getCorrection()!= null)
             invoice.setCorrection( source.getCorrection());
