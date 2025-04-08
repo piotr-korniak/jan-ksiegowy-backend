@@ -31,7 +31,7 @@ public class MetricFacade {
                 });
 
         log.warn( "Metrics migration complete!");
-        return String.format( "%-40s %16s", "Metrics migration complete, added: ", counters[1]+ "/"+ counters[0]);
+        return String.format( "%-50s %13s", "Metrics migration complete, added: ", counters[1]+ "/"+ counters[0]);
     }
 
 }

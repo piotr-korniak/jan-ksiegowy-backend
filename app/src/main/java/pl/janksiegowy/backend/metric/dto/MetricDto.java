@@ -1,5 +1,6 @@
 package pl.janksiegowy.backend.metric.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByNames;
 import com.opencsv.bean.CsvDate;
@@ -36,48 +37,49 @@ public interface MetricDto {
     @Accessors( fluent= true, chain= true)
     class Proxy implements MetricDto {
 
-        @CsvBindByName( column= "Date")
-        @CsvDate( "dd.MM.yyyy")
+        @JsonProperty( "Date")
         private LocalDate id;
 
-        @CsvBindByName( column= "Tax Number")
+        @JsonProperty( "Tax Number")
         private String taxNumber;
 
-        @CsvBindByName( column= "Registration Number")
+        @JsonProperty( "Registration Number")
         private String registrationNumber;
 
-        @CsvBindByName( column= "Business Number")
+        @JsonProperty( "Business Number")
         private String businessNumber;
 
-        @CsvBindByName
+        @JsonProperty( "Name")
         private String name;
 
-        @CsvBindByName
+        @JsonProperty( "Address")
         private String address;
 
-        @CsvBindByName
+        @JsonProperty( "Town")
         private String town;
 
-        @CsvBindByName
+        @JsonProperty( "Postcode")
         private String postcode;
 
-        @CsvBindByName
+        @JsonProperty( "Country")
         private String country;
 
-        @CsvBindByName
+        @JsonProperty( "Capital")
         private BigDecimal capital;
 
-        @CsvBindByName
+        @JsonProperty( "VAT Quarterly")
         private boolean vatQuarterly;
-        @CsvBindByName
+
+        @JsonProperty( "CIT Quarterly")
         private boolean citQuarterly;
 
-        @CsvBindByName
+        @JsonProperty( "VAT PL")
         private boolean vatPL;
-        @CsvBindByName
+
+        @JsonProperty( "VAT UE")
         private boolean vatUE;
 
-        @CsvBindByName
+        @JsonProperty( "RC Code")
         private String rcCode;
 
         @Override public LocalDate getId() {
