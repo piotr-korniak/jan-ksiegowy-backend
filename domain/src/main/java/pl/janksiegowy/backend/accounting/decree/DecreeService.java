@@ -1,11 +1,11 @@
 package pl.janksiegowy.backend.accounting.decree;
 
 import pl.janksiegowy.backend.finances.document.Document;
-import pl.janksiegowy.backend.salary.payslip.Payslip;
+import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
 
 public interface DecreeService {
 
     Decree book( Document document);
-    Decree book( Payslip payslip);
+    Decree book( PayrollPayslip payslip);
     Decree save( Decree decree);
 }

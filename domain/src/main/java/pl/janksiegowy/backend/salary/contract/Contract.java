@@ -37,9 +37,7 @@ public abstract class Contract {
     @Column( insertable= false, updatable= false)
     private ContractType type;
 
-    public ContractType getType() {
-        return ContractType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
-    }
+    public abstract ContractType getType();
 
     public Contract setSalary( BigDecimal salary) {
         this.salary= salary;

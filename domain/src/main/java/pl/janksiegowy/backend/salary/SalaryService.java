@@ -2,10 +2,10 @@ package pl.janksiegowy.backend.salary;
 
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.salary.contract.Contract;
-import pl.janksiegowy.backend.salary.payslip.Payslip;
+import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
 
 public interface SalaryService {
 
-    Payslip save( Payslip source);
-    Payslip calculatePayslip( Contract contract, MonthPeriod period);
+    PayrollPayslip save(PayrollPayslip source);
+    PayrollPayslip calculatePayslip(Contract contract, MonthPeriod period);
 }

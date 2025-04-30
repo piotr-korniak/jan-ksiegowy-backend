@@ -12,10 +12,10 @@ import java.util.UUID;
 
 public interface PayslipQueryRepository {
 
-    Optional<UUID> findByContractIdAndPeriod( UUID entity, Period period);
+    Optional<PayslipDto> findByContractIdAndPeriod(UUID entity, Period period);
     List<PayslipDto> findBySettlementPeriod( MonthPeriod period);
 
-    BigDecimal sumByTypeAndPeriodAndDueDate( Class<? extends Payslip> type, MonthPeriod month, LocalDate date);
+    BigDecimal sumByTypeAndPeriodAndDueDate(Class<? extends PayrollPayslip> type, MonthPeriod month, LocalDate date);
 
-    List<PayslipDto> findByTypeAndPeriodAndDueDate( Class<? extends Payslip> type, LocalDate start, LocalDate end);
+    List<PayslipDto> findByTypeAndPeriodAndDueDate(Class<? extends PayrollPayslip> type, LocalDate start, LocalDate end);
 }

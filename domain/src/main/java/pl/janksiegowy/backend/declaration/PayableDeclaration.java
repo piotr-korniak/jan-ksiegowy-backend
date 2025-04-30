@@ -18,8 +18,7 @@ import java.time.LocalDate;
 
 @Entity
 //@DiscriminatorValue( "S")
-@SecondaryTable( name= PayableDeclaration.TABLE_NAME,
-        pkJoinColumns= @PrimaryKeyJoinColumn( name="DOCUMENT_ID"))
+@SecondaryTable( name= PayableDeclaration.TABLE_NAME, pkJoinColumns= @PrimaryKeyJoinColumn( name="DOCUMENT_ID"))
 public abstract class PayableDeclaration extends Declaration {
     static final String TABLE_NAME= "SETTLEMENTS";
 

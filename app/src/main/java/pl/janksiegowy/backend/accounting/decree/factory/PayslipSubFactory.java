@@ -3,13 +3,13 @@ package pl.janksiegowy.backend.accounting.decree.factory;
 
 import org.springframework.stereotype.Component;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
+import pl.janksiegowy.backend.accounting.decree.DecreeQueryRepository;
 import pl.janksiegowy.backend.accounting.decree.DecreeType;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.entity.Entity;
-import pl.janksiegowy.backend.finances.document.DocumentQueryRepository;
 import pl.janksiegowy.backend.salary.WageIndicatorCode;
-import pl.janksiegowy.backend.salary.payslip.Payslip;
+import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -20,27 +20,28 @@ import static pl.janksiegowy.backend.accounting.decree.DecreeFacadeTools.expandE
 @Component
 public class PayslipSubFactory extends DecreeBuilder<Map<WageIndicatorCode, BigDecimal>> {
 
-    private final DocumentQueryRepository documents;
+    private final DecreeQueryRepository decrees;
 
     public PayslipSubFactory( final TemplateRepository templates,
-                              final DocumentQueryRepository documents) {
+                              final DecreeQueryRepository decrees) {
         super( templates);
-        this.documents= documents;
+        this.decrees= decrees;
     }
 
-    public DecreeDto create( Payslip payslip) {
-        return documents.findByDocumentId( payslip.getPayslipId())
-                .map( document-> build(
-                        payslip.getEntity(),
+    public DecreeDto create( PayrollPayslip payslip) {
+
+        var decree= build( payslip.getEntity(),
                         payslip.getElements(),
-                        Optional.ofNullable( document.getDecree())
-                                .map( decree-> DecreeDto.create()
-                                        .number( decree.getNumber()))
-                                .orElseGet( DecreeDto::create)
+                        DecreeDto.create()
+                                .document( payslip.getNumber())
                                 .date( payslip.getSettlementDate())
                                 .degreeId( payslip.getPayslipId())
-                                .type( DecreeType.D)))
-                .orElseThrow();
+                                .type( DecreeType.D));
+
+        decrees.findProjectedByDecreeId( payslip.getPayslipId())
+                .ifPresent( dto-> decree.setNumer( dto.getNumber()));
+
+        return decree;
     }
 
     @Override

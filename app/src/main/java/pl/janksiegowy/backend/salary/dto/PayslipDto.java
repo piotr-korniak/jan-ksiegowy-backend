@@ -18,7 +18,7 @@ public interface PayslipDto {
         return new Proxy();
     }
 
-    UUID getDocumentId();
+    UUID getPayslipId();
     String getNumber();
     LocalDate getDate();
     EntityDto getEntity();
@@ -38,7 +38,7 @@ public interface PayslipDto {
     @Accessors( fluent= true, chain= true)
     class Proxy implements PayslipDto {
 
-        private UUID documentId;
+        private UUID payslipId;
         private String number;
         private LocalDate date;
         private LocalDate dueDate;
@@ -51,8 +51,8 @@ public interface PayslipDto {
 
         private Map<WageIndicatorCode, BigDecimal> elements;
 
-        @Override public UUID getDocumentId() {
-            return documentId;
+        @Override public UUID getPayslipId() {
+            return payslipId;
         }
         @Override public String getNumber() {
             return number;

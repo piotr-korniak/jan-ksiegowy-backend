@@ -1,74 +1,63 @@
 package pl.janksiegowy.backend.salary.strategy;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.janksiegowy.backend.period.Period;
-import pl.janksiegowy.backend.period.PeriodQueryRepository;
+import pl.janksiegowy.backend.salary.WageIndicatorCode;
+import pl.janksiegowy.backend.salary.contract.Contract;
 import pl.janksiegowy.backend.salary.contract.ContractType;
-import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.salary.dto.PayslipDto;
 import pl.janksiegowy.backend.salary.payslip.PayslipQueryRepository;
+import pl.janksiegowy.backend.shared.indicator.IndicatorsProperties;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Component
-@AllArgsConstructor
-public class ServiceStrategy implements SalaryStrategy<ContractDto, Interpreter, PayslipDto> {
+public class ServiceStrategy extends EmploymentStrategy
+        implements SalaryStrategy<Contract, Interpreter, PayslipDto> {
 
-    private final PeriodQueryRepository periodQueryRepository;
     private final PayslipQueryRepository payslips;
+
+    public ServiceStrategy( PayslipQueryRepository payslips, IndicatorsProperties indicators) {
+        super( payslips, indicators);
+        this.payslips = payslips;
+    }
 
     @Override
     public boolean isApplicable( ContractType contractType) {
-        return contractType== ContractType.W;
+        return ContractType.W== contractType;
     }
 
+
     @Override
-    public Interpreter calculate(ContractDto contract, Period period) {
-        System.err.println( "Liczymy zlecenie!!!");
-        var inter= config();
-        inter.setVariable( "brutto", contract.getSalary());
-        inter.interpret( "koszty", "[brutto]* [koszty]");
-        inter.interpret( "dochod", "[brutto]- [koszty]");
-        inter.interpret( "podatek", "[dochod]* [podatek]");
-        inter.interpret( "netto", "[brutto]- [podatek]");
-
-        System.err.println( "Netto: "+ inter.getVariable("netto"));
-        System.err.println( "Podatek: "+ inter.getVariable("podatek"));
-
-        var payslip= payslips.findByContractIdAndPeriod( contract.getContractId(), period)
-                .map( payslipId-> PayslipDto.create().documentId( payslipId))
-                .orElseGet( PayslipDto::create);
-
-        System.err.println( "PayslipDto: "+payslip.getDocumentId());
-/*
-        return PayslipMap.create(
-                        payslips.findByContractIdAndPeriod( contract.getContractId(), period)
-                                .map( payslipId-> PayslipDto.create().documentId( payslipId))
-                                .orElseGet( PayslipDto::create)
-                        .date( period.getBegin())
-                        .dueDate( period.getEnd().plusDays( 10))
-                        .number( contract.getNumber().replace( "Umowa", "Rachunek"))
-                        .amount( inter.getVariable("netto"))
-                        .entity( contract.getEntity())
-                        .contract( contract))
-                .addLine( PayslipLineDto.create()
-                        .itemCode( WageIndicatorCode.KW_ZAL)
-                        .amount( inter.getVariable("podatek")))
-                .addLine( PayslipLineDto.create()
-                        .itemCode( WageIndicatorCode.KW_BRT)
-                        .amount( inter.getVariable("brutto")))
-                .addLine( PayslipLineDto.create()
-                        .itemCode( WageIndicatorCode.KW_NET)
-                        .amount( inter.getVariable("netto")));*/
-        return inter;
+    public PayslipDto factory( Contract contract, Period period, Interpreter calculation) {
+        return payslips.findByContractIdAndPeriod( contract.getContractId(), period)
+                .map( payslipDto-> PayslipDto.create()
+                        .payslipId( payslipDto.getPayslipId())
+                        .number( payslipDto.getNumber()))
+                .orElseGet( PayslipDto::create)
+                .date( period.getBegin())
+                .dueDate( period.getEnd().plusDays( 10))
+                .type( ContractType.W)
+                .amount( calculation.getVariable("netto"))
+                .entityId( contract.getEntity().getEntityId())
+                .contractId( contract.getContractId())
+                .elements( Map.ofEntries(
+                        Map.entry( WageIndicatorCode.KW_BRT, calculation.getVariable("brutto")),
+                        Map.entry( WageIndicatorCode.KW_NET, calculation.getVariable("netto")),
+                        Map.entry( WageIndicatorCode.KW_ZAL, calculation.getVariable("podatek"))
+                ));
     }
 
-    @Override
-    public PayslipDto factory(ContractDto contract, Period period, Interpreter calculation) {
-        return null;
+    @Override public Interpreter calculate( Contract contract, Period period) {
+        return config()
+                .setVariable( "brutto", contract.getSalary())
+                .interpret( "koszty", "[brutto]* [koszty]")
+                .interpret( "dochod", "[brutto]- [koszty]")
+                .interpret( "podatek", "[dochod]* [podatek]")
+                .interpret( "netto", "[brutto]- [podatek]");
     }
 
     @Override

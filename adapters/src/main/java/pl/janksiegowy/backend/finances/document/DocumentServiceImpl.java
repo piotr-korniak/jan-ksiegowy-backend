@@ -12,7 +12,6 @@ import pl.janksiegowy.backend.finances.payment.PaymentRepository;
 import pl.janksiegowy.backend.finances.settlement.SettlementService;
 import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
-import pl.janksiegowy.backend.salary.payslip.PayslipDocument;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -61,10 +60,6 @@ public class DocumentServiceImpl implements DocumentService {
                         return null;
                     }
 
-                    @Override
-                    public Void visit(PayslipDocument payslip) {
-                        return null;
-                    }
                 });
 
             },

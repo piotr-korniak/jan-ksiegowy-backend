@@ -103,7 +103,9 @@ public abstract class EmploymentStrategy {
 
     protected PayslipDto factoryPayslip( Contract contract, Period period, Interpreter calculation) {
         return payslips.findByContractIdAndPeriod( contract.getContractId(), period)
-                .map( payslipId-> PayslipDto.create().documentId( payslipId))
+                .map( payslipDto-> PayslipDto.create()
+                        .payslipId( payslipDto.getPayslipId())
+                        .number( payslipDto.getNumber()))
                 .orElseGet( PayslipDto::create)
                     .date( period.getBegin())
                     .dueDate( period.getEnd().plusDays( 10))

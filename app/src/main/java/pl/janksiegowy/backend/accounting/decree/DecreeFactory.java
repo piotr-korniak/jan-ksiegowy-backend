@@ -21,10 +21,8 @@ import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.RegisterRepository;
-import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.salary.PayslipRepository;
-import pl.janksiegowy.backend.salary.payslip.PayslipDocument;
-import pl.janksiegowy.backend.salary.payslip.Payslip;
+import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.finances.document.Document.DocumentVisitor;
@@ -85,11 +83,11 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisi
         return new DecreeFactoryStatement( templates).to( statement);
     }
 
-    public DecreeDto to( Payslip payslip) {
+    public DecreeDto to( PayrollPayslip payslip) {
         return payslipSubFactory.create( payslip);
     }
 
-    public DecreeDto to(MonthPeriod month) {
+    public DecreeDto to( MonthPeriod month) {
         return closeMonthFactory.create( month);
     }
 
@@ -154,7 +152,5 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisi
         return DecreeFactoryShare.create( templates).to( share);
     }
 
-    @Override public DecreeDto visit( PayslipDocument payslip) {
-        return null;// new FactoryPayslip( templates).to( payslip);
-    }
+
 }

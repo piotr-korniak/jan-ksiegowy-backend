@@ -6,4 +6,8 @@ import jakarta.persistence.Entity;
 @Entity
 @DiscriminatorValue( value= "E")
 public class EmploymentContract extends Contract {
+
+    @Override public ContractType getType() {
+        return ContractType.E;
+    }
 }

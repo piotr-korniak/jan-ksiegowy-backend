@@ -91,7 +91,6 @@ public abstract class Settlement {
     public abstract List<Clearing> getClearings();
 
     public interface SettlementVisitor<T> {
-        T visit( PayslipSettlement payslip);
         T visit( LevyCharge charge);
         T visit( FeeCharge fee);
 

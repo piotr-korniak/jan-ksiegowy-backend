@@ -10,8 +10,7 @@ import pl.janksiegowy.backend.finances.notice.Note;
 import pl.janksiegowy.backend.finances.payment.Payment;
 import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
-import pl.janksiegowy.backend.salary.payslip.PayslipDocument;
-import pl.janksiegowy.backend.salary.payslip.Payslip;
+import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
 
 @Service
 @AllArgsConstructor
@@ -25,7 +24,7 @@ public class DecreeServiceImpl implements DecreeService, DocumentVisitor<DecreeD
     }
 
     @Override
-    public Decree book( Payslip payslip) {
+    public Decree book( PayrollPayslip payslip) {
         return decreeFactory.from( decreeFactory.to( payslip));
     }
 
@@ -59,7 +58,4 @@ public class DecreeServiceImpl implements DecreeService, DocumentVisitor<DecreeD
         return null;
     }
 
-    @Override public DecreeDto visit( PayslipDocument payslip) {
-        return null;
-    }
 }

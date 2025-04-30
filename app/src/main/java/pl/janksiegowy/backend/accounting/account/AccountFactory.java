@@ -14,8 +14,7 @@ public class AccountFactory implements AccountTypeVisitor<Account> {
 
     public Account from( AccountDto source) {
         return source.getType().accept( this)
-                .setId( Optional.ofNullable( source.getId())
-                        .orElseGet( UUID::randomUUID))
+                .setId( Optional.ofNullable( source.getId()).orElseGet( UUID::randomUUID))
                 .setParent( Optional.ofNullable( source.getParent())
                         .map( parentNumber-> accounts.findByNumber( parentNumber)
                                 .orElseThrow())

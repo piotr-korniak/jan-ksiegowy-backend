@@ -21,6 +21,10 @@ public class NumeratorFacade {
         return numerators.save( factory.from( source));
     }
 
+    public String increment( NumeratorCode code, LocalDate... date) {
+        return increment( code, "", date);
+    }
+
     public String increment( NumeratorCode code, String type, LocalDate... date) {
         StringBuffer result= new StringBuffer();
 

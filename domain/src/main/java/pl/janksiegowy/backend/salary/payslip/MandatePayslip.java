@@ -5,6 +5,6 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue( value= "M")
-public class MandatePayslip extends Payslip {
+public class MandatePayslip extends PayrollPayslip {
     // Specyficzne dla umowy zlecenie
 }

@@ -3,7 +3,7 @@ package pl.janksiegowy.backend.salary;
 import lombok.AllArgsConstructor;
 import pl.janksiegowy.backend.accounting.decree.DecreeService;
 import pl.janksiegowy.backend.period.MonthPeriod;
-import pl.janksiegowy.backend.salary.payslip.Payslip;
+import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
 
 @AllArgsConstructor
 public class SalaryFacade {
@@ -13,7 +13,7 @@ public class SalaryFacade {
     private final DecreeService decreeService;
 
 
-    public Payslip approval( Payslip payslip) {
+    public PayrollPayslip approval( PayrollPayslip payslip) {
         decreeService.save( decreeService.book( payslip));
         return payslip;
     }

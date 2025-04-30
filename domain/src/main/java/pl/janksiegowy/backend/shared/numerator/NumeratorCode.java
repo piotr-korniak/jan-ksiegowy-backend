@@ -8,8 +8,11 @@ public enum NumeratorCode {
     CS, // Cash Spend
     EN, // Entity
     RE, // Accounting Registers
-    SI, ST; // Sales Invoice
+    SI, ST, // Sales Invoice
 
-
+    // Payroll:
+    PE, // Employment payslip
+    PM, // Mandate payslip
+    PW; // Work contract payslip
 
 }
