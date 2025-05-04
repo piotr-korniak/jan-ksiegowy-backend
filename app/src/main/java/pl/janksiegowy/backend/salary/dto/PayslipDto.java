@@ -18,7 +18,7 @@ public interface PayslipDto {
         return new Proxy();
     }
 
-    UUID getPayslipId();
+    UUID getDocumentId();
     String getNumber();
     LocalDate getDate();
     EntityDto getEntity();
@@ -32,13 +32,13 @@ public interface PayslipDto {
     LocalDate getDueDate();
     BigDecimal getAmount();
 
-    ContractType getType();
+    ContractType getContractType();
 
     @Setter
     @Accessors( fluent= true, chain= true)
     class Proxy implements PayslipDto {
 
-        private UUID payslipId;
+        private UUID documentId;
         private String number;
         private LocalDate date;
         private LocalDate dueDate;
@@ -47,12 +47,12 @@ public interface PayslipDto {
         private BigDecimal amount;
         private ContractDto contract;
         private UUID contractId;
-        private ContractType type;
+        private ContractType contractType;
 
         private Map<WageIndicatorCode, BigDecimal> elements;
 
-        @Override public UUID getPayslipId() {
-            return payslipId;
+        @Override public UUID getDocumentId() {
+            return documentId;
         }
         @Override public String getNumber() {
             return number;
@@ -93,8 +93,8 @@ public interface PayslipDto {
             return amount;
         }
 
-        @Override public ContractType getType() {
-            return type;
+        @Override public ContractType getContractType() {
+            return contractType;
         }
 
 

@@ -3,17 +3,13 @@ package pl.janksiegowy.backend.accounting.decree.factory;
 import org.springframework.stereotype.Component;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.decree.DecreeQueryRepository;
-import pl.janksiegowy.backend.accounting.decree.DecreeType;
 import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
-import pl.janksiegowy.backend.declaration.Declaration_DRA;
 import pl.janksiegowy.backend.declaration.StatementQueryRepository;
 import pl.janksiegowy.backend.entity.Entity;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.salary.WageIndicatorCode;
-import pl.janksiegowy.backend.salary.payslip.EmploymentPayslip;
 import pl.janksiegowy.backend.salary.payslip.PayslipQueryRepository;
-import pl.janksiegowy.backend.shared.Util;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -38,8 +34,8 @@ public class CloseMonthFactory extends DecreeBuilder<Map<WageIndicatorCode, BigD
     }
 
     public DecreeDto create( MonthPeriod month) {
-
-        var indicators= Map.of(
+/*
+        var indicators= Map.of();
                 WageIndicatorCode.KW_NET,
                 payslips.sumByTypeAndPeriodAndDueDate(
                         EmploymentPayslip.class, month, month.getEnd().plusDays( 10)),
@@ -55,6 +51,8 @@ public class CloseMonthFactory extends DecreeBuilder<Map<WageIndicatorCode, BigD
                 .type( DecreeType.D)
                 .document( "ZM "+ month.getId())
                 .date( month.getEnd()));
+  */
+        return null;
     }
 
 

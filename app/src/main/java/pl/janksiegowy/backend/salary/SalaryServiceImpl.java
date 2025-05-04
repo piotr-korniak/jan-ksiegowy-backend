@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.salary.contract.Contract;
 import pl.janksiegowy.backend.salary.dto.PayslipDto;
-import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
+import pl.janksiegowy.backend.salary.payslip.Payslip;
 import pl.janksiegowy.backend.salary.strategy.SalaryStrategy;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
 
@@ -21,12 +21,12 @@ public class SalaryServiceImpl implements SalaryService {
     private final List<SalaryStrategy<Contract, Interpreter, PayslipDto>> strategies;
 
     @Override
-    public PayrollPayslip save(PayrollPayslip source) {
+    public Payslip save( Payslip source) {
         return repository.save( source);
     }
 
     @Override
-    public PayrollPayslip calculatePayslip(Contract contract, MonthPeriod period) {
+    public Payslip calculatePayslip( Contract contract, MonthPeriod period) {
 
         var strategy = strategies.stream()
                 .filter(s-> s.isApplicable( contract.getType()) &&

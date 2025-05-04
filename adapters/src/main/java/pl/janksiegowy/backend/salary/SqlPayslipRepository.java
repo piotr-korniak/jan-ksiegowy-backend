@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.Period;
+import pl.janksiegowy.backend.salary.contract.Contract;
 import pl.janksiegowy.backend.salary.dto.PayslipDto;
-import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
+import pl.janksiegowy.backend.salary.payslip.Payslip;
 import pl.janksiegowy.backend.salary.payslip.PayslipQueryRepository;
 
 import java.math.BigDecimal;
@@ -16,27 +17,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface SqlPayslipRepository extends JpaRepository<PayrollPayslip, UUID> {
+public interface SqlPayslipRepository extends JpaRepository<Payslip, UUID> {
 }
 
-interface SqlPayslipQueryRepository extends PayslipQueryRepository, Repository<PayrollPayslip, UUID> {
+interface SqlPayslipQueryRepository extends PayslipQueryRepository, Repository<Payslip, UUID> {
 
     @Override
-    @Query( "SELECT p FROM PayrollPayslip p " +
-            "LEFT JOIN Clearing c ON p.payslipId= c.payableId " +
-            "WHERE TYPE(p)= :type AND c.date BETWEEN :startDate AND :endDate")
-    List<PayslipDto> findByTypeAndPeriodAndDueDate( Class<? extends PayrollPayslip> type,
+    @Query( "SELECT p FROM Payslip p " +
+            "LEFT JOIN Clearing c ON p.documentId= c.payableId " +
+            "LEFT JOIN Contract con ON p.contract.contractId= con.contractId " +
+            "WHERE TYPE(con)= :type AND c.date BETWEEN :startDate AND :endDate")
+    List<PayslipDto> findByTypeAndPeriodAndDueDate( Class<? extends Contract> type,
                                                     LocalDate startDate, LocalDate endDate);
 
     @Override
-    @Query( "SELECT p FROM PayrollPayslip p WHERE p.contract.contractId= :contractId AND p.settlementPeriod= :period")
+    @Query( "SELECT p FROM Payslip p WHERE p.contract.contractId= :contractId AND p.period= :period")
     Optional<PayslipDto> findByContractIdAndPeriod( UUID contractId, Period period);
 
     @Override
-    @Query( "SELECT coalesce( sum( c.amount), 0) FROM PayrollPayslip p " +
-            "LEFT JOIN Clearing c ON p.payslipId= c.payableId " +
-            "WHERE TYPE(p)= :type AND p.settlementPeriod= :month AND c.date <= :date")
-    BigDecimal sumByTypeAndPeriodAndDueDate(Class<? extends PayrollPayslip> type, MonthPeriod month, LocalDate date);
+    @Query( "SELECT coalesce( sum( c.amount), 0) FROM Payslip p " +
+            "LEFT JOIN Clearing c ON p.contractId= c.payableId " +
+            "LEFT JOIN Contract con ON p.contract.contractId= con.contractId " +
+            "WHERE TYPE(con)= :type AND p.period= :month AND c.date <= :date")
+    BigDecimal sumByTypeAndPeriodAndDueDate( Class<? extends Contract> type, MonthPeriod month, LocalDate date);
 }
 
 @org.springframework.stereotype.Repository
@@ -44,11 +47,11 @@ interface SqlPayslipQueryRepository extends PayslipQueryRepository, Repository<P
 class PayslipRepositoryImpl implements PayslipRepository {
 
     private final SqlPayslipRepository repository;
-    @Override public PayrollPayslip save(PayrollPayslip payslip) {
+    @Override public Payslip save( Payslip payslip) {
         return repository.save( payslip);
     }
 
-    @Override public Optional<PayrollPayslip> findById(UUID payslipId) {
+    @Override public Optional<Payslip> findById(UUID payslipId) {
         return repository.findById( payslipId);
     }
 }

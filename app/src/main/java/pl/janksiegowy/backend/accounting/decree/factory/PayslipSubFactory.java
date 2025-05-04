@@ -9,7 +9,7 @@ import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.entity.Entity;
 import pl.janksiegowy.backend.salary.WageIndicatorCode;
-import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
+import pl.janksiegowy.backend.salary.payslip.Payslip;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -28,17 +28,17 @@ public class PayslipSubFactory extends DecreeBuilder<Map<WageIndicatorCode, BigD
         this.decrees= decrees;
     }
 
-    public DecreeDto create( PayrollPayslip payslip) {
+    public DecreeDto create( Payslip payslip) {
 
         var decree= build( payslip.getEntity(),
                         payslip.getElements(),
                         DecreeDto.create()
                                 .document( payslip.getNumber())
-                                .date( payslip.getSettlementDate())
-                                .degreeId( payslip.getPayslipId())
+                                .date( payslip.getIssueDate())
+                                .degreeId( payslip.getDocumentId())
                                 .type( DecreeType.D));
 
-        decrees.findProjectedByDecreeId( payslip.getPayslipId())
+        decrees.findProjectedByDecreeId( payslip.getDocumentId())
                 .ifPresent( dto-> decree.setNumer( dto.getNumber()));
 
         return decree;

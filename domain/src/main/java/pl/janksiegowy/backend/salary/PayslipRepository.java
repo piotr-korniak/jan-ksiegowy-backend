@@ -1,12 +1,12 @@
 package pl.janksiegowy.backend.salary;
 
-import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
+import pl.janksiegowy.backend.salary.payslip.Payslip;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface PayslipRepository {
 
-    public PayrollPayslip save(PayrollPayslip payslip);
-    Optional<PayrollPayslip> findById(UUID payslipId);
+    public Payslip save( Payslip payslip);
+    Optional<Payslip> findById( UUID payslipId);
 }

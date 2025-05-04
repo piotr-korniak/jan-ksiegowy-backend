@@ -12,6 +12,7 @@ import pl.janksiegowy.backend.finances.payment.PaymentRepository;
 import pl.janksiegowy.backend.finances.settlement.SettlementService;
 import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
+import pl.janksiegowy.backend.salary.payslip.Payslip;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -57,6 +58,11 @@ public class DocumentServiceImpl implements DocumentService {
 
                     @Override
                     public Void visit(Share share) {
+                        return null;
+                    }
+
+                    @Override
+                    public Void visit(Payslip payslip) {
                         return null;
                     }
 

@@ -19,7 +19,7 @@ public class Calculate_PIT implements CalculateStrategy<Interpreter> {
     public Interpreter calculate( MonthPeriod period) {
         var items= new Interpreter();
 
-        payslips.findBySettlementPeriod( period)
+        payslips.findByPeriod( period)
             .forEach( payslipDto-> payslipDto.getElements()
                 .forEach( (itemCode, amount)-> items.add( itemCode.name(), amount)));
 

@@ -22,7 +22,7 @@ import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.RegisterRepository;
 import pl.janksiegowy.backend.salary.PayslipRepository;
-import pl.janksiegowy.backend.salary.payslip.PayrollPayslip;
+import pl.janksiegowy.backend.salary.payslip.Payslip;
 import pl.janksiegowy.backend.shared.numerator.NumeratorCode;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
 import pl.janksiegowy.backend.finances.document.Document.DocumentVisitor;
@@ -51,7 +51,6 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisi
     private final PayslipRepository payslipRepository;
 
     public Decree from( DecreeDto source) {
-        System.err.println( "Type: "+ source.getType());
         return update( source, source.getType().accept( this)
                 .setDecreeId( Optional.ofNullable( source.getDecreeId())
                         .orElseGet( UUID::randomUUID)));
@@ -81,10 +80,6 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisi
 
     public DecreeDto to( PayableDeclaration statement) {
         return new DecreeFactoryStatement( templates).to( statement);
-    }
-
-    public DecreeDto to( PayrollPayslip payslip) {
-        return payslipSubFactory.create( payslip);
     }
 
     public DecreeDto to( MonthPeriod month) {
@@ -150,6 +145,11 @@ public class DecreeFactory implements DocumentVisitor<DecreeDto>, DecreeTypeVisi
 
     @Override public DecreeDto visit( Share share) {
         return DecreeFactoryShare.create( templates).to( share);
+    }
+
+    @Override
+    public DecreeDto visit( Payslip payslip) {
+        return payslipSubFactory.create( payslip);
     }
 
 

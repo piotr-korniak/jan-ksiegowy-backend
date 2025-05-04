@@ -13,7 +13,7 @@ import pl.janksiegowy.backend.finances.payment.PaymentType.PaymentTypeVisitor;
 import pl.janksiegowy.backend.finances.payment.dto.ClearingDto;
 import pl.janksiegowy.backend.finances.settlement.SettlementKind.SettlementKindVisitor;
 import pl.janksiegowy.backend.salary.PayslipRepository;
-import pl.janksiegowy.backend.salary.payslip.EmploymentPayslip;
+import pl.janksiegowy.backend.salary.contract.ContractType;
 
 import java.math.BigDecimal;
 import java.util.NoSuchElementException;
@@ -180,8 +180,8 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType>, S
 
     private boolean isIncluded( ClearingDto clearing) {
         return !payslipRepository.findById( clearing.getPayableId())
-                .map( payslip -> payslip instanceof EmploymentPayslip&&
-                        !clearing.getDate().isAfter( payslip.getSettlementDue()))
+                .map( payslip-> ContractType.E== payslip.getContract().getType()&&
+                        !clearing.getDate().isAfter( payslip.getDueDate()))
                 .orElseGet(()-> false);
     }
 

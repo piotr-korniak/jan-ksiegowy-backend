@@ -13,6 +13,7 @@ import pl.janksiegowy.backend.finances.settlement.SettlementKind;
 import pl.janksiegowy.backend.finances.share.Share;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.salary.payslip.Payslip;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -86,7 +87,7 @@ public abstract class Document {
         T visit( Note note);
         T visit( Charge charge);
         T visit( Share share);
-
+        T visit( Payslip payslip);
     }
 
 }

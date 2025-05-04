@@ -8,5 +8,5 @@ import java.util.UUID;
 public interface DecreeQueryRepository {
 
     Optional<DecreeDto> findByDocument( final String name);
-    Optional<DecreeDto> findProjectedByDecreeId(final UUID degreeId);
+    Optional<DecreeDto> findProjectedByDecreeId( final UUID degreeId);
 }
