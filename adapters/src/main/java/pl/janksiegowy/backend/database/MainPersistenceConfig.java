@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -21,7 +20,8 @@ import java.util.Map;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages= { "pl.janksiegowy.backend.tenant"},
+        basePackages= { "pl.janksiegowy.backend.authorization.tenant",
+                        "pl.janksiegowy.backend.authorization.user"},
         entityManagerFactoryRef= "mainEntityManagerFactory",
         transactionManagerRef= "mainTransactionManager"
 )
@@ -47,7 +47,8 @@ public class MainPersistenceConfig {
 
         emf.setPersistenceUnitName( "main-persistence-unit");
         //emf.setPackagesToScan( entityPackages); // entityManger packages
-        emf.setPackagesToScan( "pl.janksiegowy.backend.tenant");
+        emf.setPackagesToScan( "pl.janksiegowy.backend.authorization.tenant",
+                                "pl.janksiegowy.backend.authorization.user");
         emf.setDataSource( dataSource);
 
         emf.setJpaVendorAdapter( new HibernateJpaVendorAdapter());

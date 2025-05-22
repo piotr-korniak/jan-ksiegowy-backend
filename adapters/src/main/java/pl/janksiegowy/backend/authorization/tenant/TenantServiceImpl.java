@@ -1,13 +1,11 @@
-package pl.janksiegowy.backend.tenant;
+package pl.janksiegowy.backend.authorization.tenant;
 
-import jakarta.annotation.PostConstruct;
 import liquibase.exception.LiquibaseException;
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +13,7 @@ import org.springframework.jdbc.core.StatementCallback;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.stereotype.Service;
 import pl.janksiegowy.backend.database.LiquibaseConfig;
+import pl.janksiegowy.backend.tenant.TenantService;
 import pl.janksiegowy.backend.tenant.dto.TenantDto;
 
 import javax.sql.DataSource;
@@ -23,7 +22,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @Service
-@DependsOn( "mainLiquibase")
+//@DependsOn( "mainLiquibase")
 @EnableConfigurationProperties( LiquibaseProperties.class)
 public class TenantServiceImpl implements TenantService {
     private static final String VALID_DATABASE_NAME_REGEXP= "[A-Za-z0-9_]*";
@@ -86,7 +85,7 @@ public class TenantServiceImpl implements TenantService {
         tenants.save( from( tenant));
     }
 
-    private Tenant from( TenantDto source) {
+    private Tenant from(TenantDto source) {
         return new Tenant()
                 .setId( source.getId())
                 .setName( source.getName())

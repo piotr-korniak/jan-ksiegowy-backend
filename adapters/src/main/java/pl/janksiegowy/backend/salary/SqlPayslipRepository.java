@@ -7,6 +7,7 @@ import org.springframework.data.repository.Repository;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.salary.contract.Contract;
+import pl.janksiegowy.backend.salary.contract.ContractType;
 import pl.janksiegowy.backend.salary.dto.PayslipDto;
 import pl.janksiegowy.backend.salary.payslip.Payslip;
 import pl.janksiegowy.backend.salary.payslip.PayslipQueryRepository;
@@ -26,8 +27,8 @@ interface SqlPayslipQueryRepository extends PayslipQueryRepository, Repository<P
     @Query( "SELECT p FROM Payslip p " +
             "LEFT JOIN Clearing c ON p.documentId= c.payableId " +
             "LEFT JOIN Contract con ON p.contract.contractId= con.contractId " +
-            "WHERE TYPE(con)= :type AND c.date BETWEEN :startDate AND :endDate")
-    List<PayslipDto> findByTypeAndPeriodAndDueDate( Class<? extends Contract> type,
+            "WHERE con.type= :type AND c.date BETWEEN :startDate AND :endDate")
+    List<PayslipDto> findByTypeAndPeriodAndDueDate( ContractType type,
                                                     LocalDate startDate, LocalDate endDate);
 
     @Override
@@ -38,8 +39,8 @@ interface SqlPayslipQueryRepository extends PayslipQueryRepository, Repository<P
     @Query( "SELECT coalesce( sum( c.amount), 0) FROM Payslip p " +
             "LEFT JOIN Clearing c ON p.contractId= c.payableId " +
             "LEFT JOIN Contract con ON p.contract.contractId= con.contractId " +
-            "WHERE TYPE(con)= :type AND p.period= :month AND c.date <= :date")
-    BigDecimal sumByTypeAndPeriodAndDueDate( Class<? extends Contract> type, MonthPeriod month, LocalDate date);
+            "WHERE con.type= :type AND p.period= :month AND c.date <= :date")
+    BigDecimal sumByTypeAndPeriodAndDueDate( ContractType type, MonthPeriod month, LocalDate date);
 }
 
 @org.springframework.stereotype.Repository

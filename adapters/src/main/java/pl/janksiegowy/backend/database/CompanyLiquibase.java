@@ -8,9 +8,8 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
 import pl.janksiegowy.backend.company.Company;
 import pl.janksiegowy.backend.company.SqlCompanyRepository;
-import pl.janksiegowy.backend.database.LiquibaseConfig;
-import pl.janksiegowy.backend.tenant.SqlTenantRepository;
-import pl.janksiegowy.backend.tenant.Tenant;
+import pl.janksiegowy.backend.authorization.tenant.SqlTenantRepository;
+import pl.janksiegowy.backend.authorization.tenant.Tenant;
 import pl.janksiegowy.backend.database.TenantContext.Context;
 
 public class CompanyLiquibase implements InitializingBean {

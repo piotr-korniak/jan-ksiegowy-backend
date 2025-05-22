@@ -34,15 +34,12 @@ public class SalaryFactory  {
                         .setDates( source.getDate(), source.getDueDate())
                         .setNumber( Optional.ofNullable( source.getNumber())
                                 .orElseGet(()-> numerators.increment( source.getContractType()
-                                                .accept( PayslipNumeratorResolver.INSTANCE), source.getDate())))
+                                        .accept( PayslipNumeratorResolver.INSTANCE), source.getDate())))
                         .setEntity( entity)
                         .setPeriod( period)
-                        //.setSettlementPeriod( period)
                         .setAmount( source.getAmount())
-                        //.setPayslipId
-
-                            .setDocumentId( Optional.ofNullable( source.getDocumentId())
-                                    .orElseGet( UUID::randomUUID))
+                        .setDocumentId( Optional.ofNullable( source.getDocumentId())
+                                .orElseGet( UUID::randomUUID))
                     ).orElseThrow())
                 .orElseThrow();
     }

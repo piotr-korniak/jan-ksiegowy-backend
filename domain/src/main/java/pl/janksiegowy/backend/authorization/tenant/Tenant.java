@@ -1,4 +1,4 @@
-package pl.janksiegowy.backend.tenant;
+package pl.janksiegowy.backend.authorization.tenant;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

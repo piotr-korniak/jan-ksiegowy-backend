@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
-import pl.janksiegowy.backend.tenant.SqlTenantRepository;
-import pl.janksiegowy.backend.tenant.Tenant;
+import pl.janksiegowy.backend.authorization.tenant.SqlTenantRepository;
+import pl.janksiegowy.backend.authorization.tenant.Tenant;
 
 public class TenantLiquibase implements InitializingBean {
 

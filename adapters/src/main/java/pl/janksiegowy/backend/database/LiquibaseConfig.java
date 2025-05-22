@@ -1,10 +1,8 @@
 package pl.janksiegowy.backend.database;
 
-import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseDataSource;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -39,7 +37,7 @@ public class LiquibaseConfig {
     public LiquibaseProperties companyLiquibaseProperties() {
         return new LiquibaseProperties();
     }
-
+/*
     @Bean
     public SpringLiquibase mainLiquibase( @LiquibaseDataSource final HikariDataSource mainDataSource) {
         System.err.println( "Main Liquibase...");
@@ -48,9 +46,9 @@ public class LiquibaseConfig {
         springLiquibase.setDataSource( mainDataSource);
         return springLiquibase;
     }
-
+*/
     @Bean
-    @DependsOn( "mainLiquibase")
+//    @DependsOn( "mainLiquibase")
     public TenantLiquibase tenantLiquibase(){
         System.err.println( "Tenant Liquibase...");
         return new TenantLiquibase();

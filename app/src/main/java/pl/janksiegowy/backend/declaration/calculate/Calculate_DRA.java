@@ -3,6 +3,7 @@ package pl.janksiegowy.backend.declaration.calculate;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.janksiegowy.backend.period.MonthPeriod;
+import pl.janksiegowy.backend.salary.contract.ContractType;
 import pl.janksiegowy.backend.salary.contract.EmploymentContract;
 import pl.janksiegowy.backend.salary.payslip.PayslipQueryRepository;
 import pl.janksiegowy.backend.shared.interpreter.Interpreter;
@@ -19,7 +20,7 @@ public class Calculate_DRA implements CalculateStrategy<Interpreter>{
     @Override public Interpreter calculate( MonthPeriod period) {
         var items= new Interpreter();
 
-        payslips.findByTypeAndPeriodAndDueDate( EmploymentContract.class, period.getBegin(), period.getEnd())
+        payslips.findByTypeAndPeriodAndDueDate( ContractType.E, period.getBegin(), period.getEnd())
                 .forEach( payslipDto-> payslipDto.getElements()
                         .forEach((itemCode, amount)-> items.add( itemCode.name(), amount)));
 
