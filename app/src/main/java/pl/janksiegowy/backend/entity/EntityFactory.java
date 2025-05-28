@@ -18,8 +18,8 @@ public class EntityFactory implements EntityTypeVisitor<Entity> {
 
     public Entity from( EntityDto source) {     // New Entity
         return update( source, source.getType().accept( this)
-                .setEntityId( Optional.of( source.getEntityId()).orElseGet( UUID::randomUUID))
-                .setAccountNumber( Optional.of( source.getAccountNumber()).orElseGet(()->
+                .setEntityId( Optional.ofNullable( source.getEntityId()).orElseGet( UUID::randomUUID))
+                .setAccountNumber( Optional.ofNullable( source.getAccountNumber()).orElseGet(()->
                         EntityType.R == source.getType()
                                 ? source.getTaxNumber()
                                 : numerators.increment( NumeratorCode.EN, EntityType.B== source.getType() ?
