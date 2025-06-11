@@ -43,7 +43,7 @@ public class SettlementFactory implements SettlementKindVisitor<Settlement> {
                     case R -> SettlementKind.C;
                     case E -> SettlementKind.D;})
                 .number( payment.getNumber())
-                .entity( EntityDto.create()
+                .entity( EntityDto.create( payment.getEntity().getTaxNumber())
                         .entityId( payment.getEntity().getEntityId()))
                 .date( payment.getIssueDate())
                 .due( payment.getIssueDate())

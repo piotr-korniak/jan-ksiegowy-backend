@@ -1,8 +1,8 @@
 package pl.janksiegowy.backend.entity.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import pl.janksiegowy.backend.entity.EntityType;
@@ -12,14 +12,13 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @JsonDeserialize( as= EntityDto.Proxy.class)
-@JsonPropertyOrder( { "ContactId", "Name"})
+@JsonIgnoreProperties( ignoreUnknown= true)
 public interface EntityDto {
 
-    static Proxy create() {
+    static Proxy create( String taxNumber) {
         return new Proxy();
     }
 
-    @JsonProperty( "ContactId")
     UUID getEntityId();
     String getName();
     LocalDate getDate();
@@ -38,17 +37,49 @@ public interface EntityDto {
     class Proxy implements EntityDto {
 
         private UUID entityId;
+
+        @JsonAlias( "Name")
         private String name;
+
+        @JsonAlias( "Date")
         private LocalDate date;
+
+        @JsonAlias( "Type")
+        @NotNull( message= "Type is require")
         private EntityType type;
+
+        @JsonAlias( "Tax Number")
         private String taxNumber;
+
         private String accountNumber;
-        private Country country;
+
+        @JsonAlias( "Country")
+        private Country country= Country.PL;
+
+        @JsonAlias( "Address")
         private String address;
+
+        @JsonAlias( "PostalCode")
         private String postalCode;
+
+        @JsonAlias( "City")
         private String city;
+
         private boolean supplier;
         private boolean customer;
+
+        public Proxy setTaxNumber( String taxNumber) {
+            if( taxNumber.isEmpty())
+                return this;
+
+            this.taxNumber= taxNumber.replaceAll("[^a-zA-Z0-9]", "");
+
+            if (!this.taxNumber.matches("\\d+")) {
+                this.country= Country.valueOf( this.taxNumber.substring( 0, 2));
+                this.taxNumber= this.taxNumber.substring(2);
+            }
+            return this;
+        }
 
         @Override public UUID getEntityId() {
             return entityId;

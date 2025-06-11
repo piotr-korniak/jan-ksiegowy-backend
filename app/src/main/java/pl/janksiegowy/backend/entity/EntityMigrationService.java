@@ -44,10 +44,10 @@ public class EntityMigrationService {
 
             var role= EntityRole.values()[Integer.parseInt( fields[6])];
             facade.save( entity
-                    .map( entityDto-> EntityDto.create()    // new Entity history
+                    .map( entityDto-> EntityDto.create( taxNumber)    // new Entity history
                             .entityId( entityDto.getEntityId())
                             .accountNumber( entityDto.getAccountNumber()))
-                    .orElse( EntityDto.create())            // new Entity
+                    .orElse( EntityDto.create( taxNumber))            // new Entity
                             .date( history.date)            // both of the above!
                             .type( type)
                             .name( fields[1])

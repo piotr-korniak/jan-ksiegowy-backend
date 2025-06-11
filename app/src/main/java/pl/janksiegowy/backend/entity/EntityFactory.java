@@ -24,7 +24,7 @@ public class EntityFactory implements EntityTypeVisitor<Entity> {
                                 ? source.getTaxNumber()
                                 : numerators.increment( NumeratorCode.EN, EntityType.B== source.getType() ?
                                 EntityType.C.name(): source.getType().name())))
-                .setDate( Optional.of( source.getDate() ).orElseGet(()-> LocalDate.EPOCH))
+                .setDate( Optional.ofNullable( source.getDate()).orElseGet(()-> LocalDate.EPOCH))
         );
     }
 

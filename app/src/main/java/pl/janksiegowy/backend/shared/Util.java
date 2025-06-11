@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.GregorianCalendar;
@@ -22,6 +23,7 @@ public class Util {
 
     private static final DateTimeFormatter dd_MM_yyyy= DateTimeFormatter.ofPattern( "dd.MM.yyyy");
     private static final DateTimeFormatter yyyy_MM_dd= DateTimeFormatter.ofPattern( "yyyy-MM-dd");
+    private static final DateTimeFormatter yyyy_MM_dd_HH_mm_ss= DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss");
     public static final DecimalFormat N_NNN_NN_0_00= new DecimalFormat( "#,###,##0.00");
     private static final Pattern INVALID_FILENAME_CHARS= Pattern.compile("[^a-zA-Z0-9-_.]");
     private static final DatatypeFactory datatypeFactory;
@@ -97,6 +99,9 @@ public class Util {
 
     public static String toString( LocalDate date) {
         return date.format( dd_MM_yyyy );
+    }
+    public static String toString(LocalDateTime dateTime) {
+        return dateTime.format( yyyy_MM_dd_HH_mm_ss);
     }
     public static String toString( BigDecimal decimal) {
         return N_NNN_NN_0_00.format( decimal);

@@ -39,14 +39,14 @@ public class EntityFacade {
             if( existingEntity.map(existing-> !existing.getDate().equals( date)).orElse(true)) {
 
                 repository.save( factory.from( existingEntity
-                        .map( existing-> EntityDto.create()
+                        .map( existing-> EntityDto.create( entity.getTaxNumber())
                                 .entityId( existing.getEntityId())
                                 .accountNumber( existing.getAccountNumber()))
-                        .orElse( EntityDto.create())
+                        .orElse( EntityDto.create( entity.getTaxNumber()))
                         .date( date)                // both of the above!
                         .type( entity.getType())
                         .name( entity.getName())
-                        .taxNumber( entity.getTaxNumber())
+                        //.taxNumber( entity.getTaxNumber())
                         .address( entity.getAddress())
                         .postalCode( entity.getPostalCode())
                         .city( entity.getCity())
