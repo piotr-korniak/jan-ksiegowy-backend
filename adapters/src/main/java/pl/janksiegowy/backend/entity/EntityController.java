@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.janksiegowy.backend.entity.dto.ContactDto;
 import pl.janksiegowy.backend.entity.dto.EntitiesDto;
-import pl.janksiegowy.backend.entity.dto.EntityCsv;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.subdomain.TenantController;
 

@@ -10,6 +10,7 @@ import pl.janksiegowy.backend.entity.Country;
 
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.function.Function;
 
 @JsonDeserialize( as= EntityDto.Proxy.class)
 @JsonIgnoreProperties( ignoreUnknown= true)
@@ -79,6 +80,14 @@ public interface EntityDto {
                 this.taxNumber= this.taxNumber.substring(2);
             }
             return this;
+        }
+
+        public Proxy taxNumber( String taxNumber) {
+            return setTaxNumber( taxNumber);
+        }
+
+        public EntityDto applyIf( boolean condition, Function<Proxy, Proxy> function) {
+            return condition ? function.apply(this) : this;
         }
 
         @Override public UUID getEntityId() {
