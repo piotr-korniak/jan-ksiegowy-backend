@@ -8,11 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.janksiegowy.backend.accounting.account.AccountFacade;
 import pl.janksiegowy.backend.accounting.template.TemplateFacade;
 import pl.janksiegowy.backend.entity.EntityFacade;
-import pl.janksiegowy.backend.entity.EntityFactory;
-import pl.janksiegowy.backend.entity.EntityMigrationService;
 import pl.janksiegowy.backend.finances.charge.ChargeMigrationService;
 import pl.janksiegowy.backend.finances.notice.NoticeFacade;
-import pl.janksiegowy.backend.finances.share.ShareFacade;
 import pl.janksiegowy.backend.finances.share.ShareMigrationService;
 import pl.janksiegowy.backend.invoice.InvoiceFacade;
 import pl.janksiegowy.backend.invoice_line.InvoiceLineMigration;
@@ -54,7 +51,6 @@ public class MigrationController {
                                final InvoiceLineMigration invoiceLinesMigration,
                                final ChargeMigrationService chargesMigration,
                                final PaymentMigrationService paymentsMigration,
-                               final EntityMigrationService entityMigrationService,
                                final ReportFacade reportFacade,
                                final ContractFacade contractFacade,
                                final MetricFacade metricFacade,
@@ -73,7 +69,6 @@ public class MigrationController {
         this.invoiceLinesMigration= invoiceLinesMigration;
         this.chargesMigration= chargesMigration;
         this.paymentsMigration= paymentsMigration;
-        this.entityMigrationService= entityMigrationService;
         this.reportFacade = reportFacade;
         this.noticeFacade= noticeFacade;
         this.contractFacade= contractFacade;
@@ -94,8 +89,6 @@ public class MigrationController {
     private final InvoiceLineMigration invoiceLinesMigration;
     private final ChargeMigrationService chargesMigration;
     private final PaymentMigrationService paymentsMigration;
-    private final EntityMigrationService entityMigrationService;
-
 
     @PostMapping( "/v2/migrate/invoice")
     public ResponseEntity<String> invoiceMigrate() {

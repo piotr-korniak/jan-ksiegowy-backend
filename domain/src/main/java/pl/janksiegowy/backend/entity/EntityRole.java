@@ -5,43 +5,24 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum EntityRole {
 
-    NONE( 0),
-
-    SUPPLIER( 1) {
-        @Override public boolean isSupplier() {
-            return true;
-        }
-    },
-
-    CUSTOMER( 2) {
-        @Override public boolean isCustomer() {
-            return true;
-        }
-    },
-
-    BOTH( 3) {
-        @Override public boolean isSupplier() {
-            return true;
-        }
-
-        @Override public boolean isCustomer() {
-            return true;
-        }
-    };
+    NONE( 0),       // 0 - brak ról
+    SUPPLIER( 1),   // 1 - tylko dostawca
+    CUSTOMER( 2),   // 2 - tylko klient
+    BOTH( 3);       // 3 - dostawca i klient
 
     private final int value;
 
-    EntityRole(int value) {
+    EntityRole( int value) {
         this.value = value;
     }
 
     public boolean isSupplier() {
-        return false;
-    };
+        return this == SUPPLIER || this == BOTH;
+    }
 
     public boolean isCustomer() {
-        return false;
-    };
+        return this == CUSTOMER || this == BOTH;
+    }
 
     @JsonValue
     public int getValue() {
@@ -50,6 +31,7 @@ public enum EntityRole {
 
     @JsonCreator
     public static EntityRole fromValue( int value) {
+        System.out.println("Trying to convert: " + value); // DEBUG
         for( EntityRole role: EntityRole.values()) {
             if( role.getValue() == value) {
                 return role;

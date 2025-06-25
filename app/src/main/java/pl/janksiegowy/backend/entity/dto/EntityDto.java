@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.janksiegowy.backend.entity.EntityRole;
 import pl.janksiegowy.backend.entity.EntityType;
 import pl.janksiegowy.backend.entity.Country;
 
@@ -66,8 +67,8 @@ public interface EntityDto {
         @JsonAlias( "City")
         private String city;
 
-        private boolean supplier;
-        private boolean customer;
+        @JsonSetter( "Role")
+        private EntityRole role;
 
         public Proxy setTaxNumber( String taxNumber) {
             if( taxNumber.isEmpty())
@@ -75,7 +76,7 @@ public interface EntityDto {
 
             this.taxNumber= taxNumber.replaceAll("[^a-zA-Z0-9]", "");
 
-            if (!this.taxNumber.matches("\\d+")) {
+            if( !this.taxNumber.matches("\\d+")) {
                 this.country= Country.valueOf( this.taxNumber.substring( 0, 2));
                 this.taxNumber= this.taxNumber.substring(2);
             }
@@ -121,10 +122,10 @@ public interface EntityDto {
             return city;
         }
         @Override public boolean isSupplier() {
-            return supplier;
+            return role!= null && role.isSupplier();
         }
         @Override public boolean isCustomer() {
-            return customer;
+            return role!= null && role.isCustomer();
         }
 
     }

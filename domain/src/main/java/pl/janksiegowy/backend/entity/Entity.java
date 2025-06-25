@@ -28,9 +28,7 @@ public abstract class Entity {
     @Enumerated( EnumType.STRING)
     private EntityType type;
 
-    public EntityType getType() {
-        return EntityType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
-    }
+    public abstract EntityType getType();
 
     private LocalDate date;
     private String taxNumber;
@@ -50,10 +48,17 @@ public abstract class Entity {
 
 }
 
+@Getter
+@Setter
+@Accessors( chain= true)
+
 @jakarta.persistence.Entity
 @DiscriminatorValue( value= "B")
 class Bank extends Entity {
 
+    @Override public EntityType getType() {
+        return EntityType.B;
+    }
 }
 
 @Getter
@@ -64,7 +69,11 @@ class Bank extends Entity {
 @DiscriminatorValue( value= "C")
 class Contact extends Entity {
 
+    @Override public EntityType getType() {
+        return EntityType.C;
+    }
 }
+
 @Getter
 @Setter
 @Accessors( chain= true)
@@ -73,6 +82,9 @@ class Contact extends Entity {
 @DiscriminatorValue( value= "R")
 class Revenue extends Entity {
 
+    @Override public EntityType getType() {
+        return EntityType.R;
+    }
 }
 
 @Getter
@@ -83,6 +95,9 @@ class Revenue extends Entity {
 @DiscriminatorValue( value= "S")
 class Shareholders extends Entity {
 
+    @Override public EntityType getType() {
+        return EntityType.S;
+    }
 }
 
 @Getter
@@ -93,4 +108,7 @@ class Shareholders extends Entity {
 @DiscriminatorValue( value= "E")
 class Employee extends Entity {
 
+    @Override public EntityType getType() {
+        return EntityType.E;
+    }
 }
