@@ -37,6 +37,10 @@ public class PaymentReceipt extends Payment {
         return kind;
     }
 
+    @Override public PaymentType getType() {
+        return PaymentType.R;
+    }
+
     @Override
     public SettlementKind getSettlementKind() {
         return kind;

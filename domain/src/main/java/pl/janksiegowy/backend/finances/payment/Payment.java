@@ -24,22 +24,14 @@ public abstract class Payment extends Document {
     @JoinColumn( table= TABLE_NAME)
     private PaymentRegister register;
 
-    @Enumerated(EnumType.STRING)
-    @Column( insertable= false, updatable= false)
-    private PaymentType type;
-
-    public PaymentType getType() {
-        return PaymentType.valueOf( getClass().getAnnotation( DiscriminatorValue.class).value());
-    }
-
+    public abstract PaymentType getType();
     public abstract SettlementKind getSettlementKind();
+
+    public abstract Set<Clearing> getClearings();
+    public abstract Payment setClearings( Set<Clearing> clearings);
 
     @Override public <T> T accept( DocumentVisitor<T> visitor ) {
         return visitor.visit( this);
     }
-
-    public abstract Set<Clearing> getClearings();
-
-    public abstract Payment setClearings( Set<Clearing> clearings);
 
 }

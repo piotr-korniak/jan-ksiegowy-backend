@@ -35,6 +35,10 @@ public class PaymentExpense extends Payment {
         return kind;
     }
 
+    @Override public PaymentType getType() {
+        return PaymentType.E;
+    }
+
     @Override
     public SettlementKind getSettlementKind() {
         return kind;
