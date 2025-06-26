@@ -24,6 +24,10 @@ public abstract class Payment extends Document {
     @JoinColumn( table= TABLE_NAME)
     private PaymentRegister register;
 
+    @Enumerated(EnumType.STRING)
+    @Column( insertable= false, updatable= false)
+    private PaymentType type;
+
     public abstract PaymentType getType();
     public abstract SettlementKind getSettlementKind();
 
