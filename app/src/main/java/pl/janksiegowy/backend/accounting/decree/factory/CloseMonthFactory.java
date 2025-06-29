@@ -38,12 +38,16 @@ public class CloseMonthFactory extends DecreeBuilder<Map<WageIndicatorCode, BigD
 
     public DecreeDto create( MonthPeriod month) {
 
+        var kwNet= payslips.sumByTypeAndPeriodAndDueDate(
+                ContractType.E, month, month.getEnd().plusDays( 10));
+        var ubZus= statements.sumByTypeAndPeriodAndDueDate(
+                Declaration_DRA.class, month, month.getEnd().plusDays( 15));
         var indicators= Map.of(
-                WageIndicatorCode.KW_NET,
-                payslips.sumByTypeAndPeriodAndDueDate( ContractType.E, month, month.getEnd().plusDays( 10)),
-                WageIndicatorCode.UB_ZUS,
-                statements.sumByTypeAndPeriodAndDueDate(
-                        Declaration_DRA.class, month, month.getEnd().plusDays( 15)));
+                WageIndicatorCode.KW_NET, kwNet,
+                WageIndicatorCode.UB_ZUS, ubZus);
+
+        System.err.println( "KW_NET: "+ kwNet);
+        System.err.println( "UB_ZUS: "+ ubZus);
 
         return build( null, indicators, decrees.findByDocument( "ZM "+ month.getId())
                 .map( decreeDto -> DecreeDto.create()

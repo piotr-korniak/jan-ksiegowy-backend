@@ -37,8 +37,8 @@ interface SqlPayslipQueryRepository extends PayslipQueryRepository, Repository<P
 
     @Override
     @Query( "SELECT coalesce( sum( c.amount), 0) FROM Payslip p " +
-            "LEFT JOIN Clearing c ON p.contractId= c.payableId " +
-            "LEFT JOIN Contract con ON p.contract.contractId= con.contractId " +
+            "LEFT JOIN Clearing c ON p.documentId= c.payableId " +
+            "LEFT JOIN Contract con ON p.contractId= con.contractId " +
             "WHERE con.type= :type AND p.period= :month AND c.date <= :date")
     BigDecimal sumByTypeAndPeriodAndDueDate( ContractType type, MonthPeriod month, LocalDate date);
 }
