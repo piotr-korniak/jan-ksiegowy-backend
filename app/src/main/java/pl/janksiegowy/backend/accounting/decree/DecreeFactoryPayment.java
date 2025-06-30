@@ -179,7 +179,7 @@ public class DecreeFactoryPayment implements PaymentTypeVisitor<TemplateType>, S
     }
 
     private boolean isIncluded( ClearingDto clearing) {
-        return !payslipRepository.findById( clearing.getPayableId())
+        return !payslipRepository.findByIdWithContract( clearing.getPayableId())
                 .map( payslip-> ContractType.E== payslip.getContract().getType()&&
                         !clearing.getDate().isAfter( payslip.getDueDate()))
                 .orElseGet(()-> false);

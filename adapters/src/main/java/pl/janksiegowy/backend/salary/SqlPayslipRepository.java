@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 import pl.janksiegowy.backend.period.MonthPeriod;
 import pl.janksiegowy.backend.period.Period;
 import pl.janksiegowy.backend.salary.contract.Contract;
@@ -19,6 +20,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SqlPayslipRepository extends JpaRepository<Payslip, UUID> {
+
+    @Query( "SELECT p FROM Payslip p "+
+            "LEFT JOIN FETCH p.contract "+
+            "WHERE p.documentId= :id")
+    Optional<Payslip> findByIdWithContract( @Param( "id") UUID id);
 }
 
 interface SqlPayslipQueryRepository extends PayslipQueryRepository, Repository<Payslip, UUID> {
@@ -54,5 +60,10 @@ class PayslipRepositoryImpl implements PayslipRepository {
 
     @Override public Optional<Payslip> findById(UUID payslipId) {
         return repository.findById( payslipId);
+    }
+
+    @Override
+    public Optional<Payslip> findByIdWithContract( UUID id) {
+        return repository.findByIdWithContract( id);
     }
 }
