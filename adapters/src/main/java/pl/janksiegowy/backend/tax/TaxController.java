@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.declaration.StatementFacade;
-import pl.janksiegowy.backend.subdomain.TenantController;
+import pl.janksiegowy.backend.subdomain.DomainController;
 
-@TenantController
+@DomainController
 @RequestMapping( "/v2/tax/{periodId}")
 @AllArgsConstructor
 public class TaxController {

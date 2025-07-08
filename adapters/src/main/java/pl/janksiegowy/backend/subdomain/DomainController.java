@@ -10,8 +10,7 @@ import java.lang.annotation.Target;
 
 @Controller
 @RequestMapping
-@Target({ ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention( RetentionPolicy.RUNTIME)
-public @interface SubdomainController {
-    String[] value();
+public @interface DomainController {
 }

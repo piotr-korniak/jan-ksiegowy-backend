@@ -39,13 +39,25 @@ public enum RegisterType {
 
     public interface RegisterTypeVisitor<T, S> {
 
-        T visitAccountingRegister( S source);
+        default T visitAccountingRegister( S source) {
+            throw new UnsupportedOperationException( "Accounting register not supported");
+        }
 
-        T visitBankAccount( S source);
-        T visitCashDesk( S source);
+        default T visitBankAccount( S source) {
+            throw new UnsupportedOperationException( "Bank account not supported");
+        }
 
-        T visitSalesRegister( S source);
-        T visitPurchaseRegister( S source);
+        default T visitCashDesk( S source) {
+            throw new UnsupportedOperationException( "Cash desk not supported");
+        }
+
+        default T visitSalesRegister( S source) {
+            throw new UnsupportedOperationException( "Sales register not supported");
+        }
+
+        default T visitPurchaseRegister( S source) {
+            throw new UnsupportedOperationException( "Purchase register not supported");
+        }
     }
 
 }

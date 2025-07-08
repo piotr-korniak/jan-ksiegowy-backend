@@ -31,10 +31,9 @@ public class DatabaseWarmUp implements ApplicationListener<ContextRefreshedEvent
 
     @Override
     public void onApplicationEvent( @NonNull ContextRefreshedEvent event) {
-
         tenants.init();
 
-        TenantContext.setCurrentTenant( TenantContext.Context.create().tenant( "eleftheria"));  //.setCurrentTenant( "eleftheria");
+        TenantContext.setCurrentTenant( TenantContext.Context.create().tenant( "test"));  //.setCurrentTenant( "eleftheria");
         companies.init();
     }
 }

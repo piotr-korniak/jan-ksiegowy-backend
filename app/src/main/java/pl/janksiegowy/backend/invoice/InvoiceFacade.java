@@ -8,6 +8,7 @@ import pl.janksiegowy.backend.finances.settlement.SettlementQueryRepository;
 import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
 import pl.janksiegowy.backend.invoice.dto.InvoiceCsv;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
+import pl.janksiegowy.backend.invoice.dto.InvoiceRequest;
 import pl.janksiegowy.backend.register.RegisterQueryRepository;
 import pl.janksiegowy.backend.shared.MigrationService;
 
@@ -25,6 +26,10 @@ public class InvoiceFacade implements InvoiceTypeVisitor<InvoiceDto.Proxy, Invoi
     private final MigrationService migrationService;
 
     private final DecreeFacade decrees;
+
+    public void save( InvoiceRequest source) {
+        invoice.from( source);
+    }
 
     public Invoice save( InvoiceDto source) {
         return invoices.save( invoice.from( source));
@@ -80,4 +85,6 @@ public class InvoiceFacade implements InvoiceTypeVisitor<InvoiceDto.Proxy, Invoi
                         .type( InvoiceType.P))
                 .orElseThrow(()-> new NoSuchElementException( "Not found register code: "+ source.getRegisterCode()));
     }
+
+
 }

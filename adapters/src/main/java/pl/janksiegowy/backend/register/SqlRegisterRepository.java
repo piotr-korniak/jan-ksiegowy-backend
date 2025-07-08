@@ -37,4 +37,9 @@ class RegisterRepositoryImpl implements RegisterRepository {
     @Override public Register save( Register register) {
         return repository.save( register);
     }
+
+    @Override
+    public Optional<Register> findById( UUID registerId) {
+        return repository.findById( registerId);
+    }
 }

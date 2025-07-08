@@ -26,4 +26,5 @@ public interface RegisterRepository {
 
     Register save( Register register);
 
+    Optional<Register> findById( UUID registerId);
 }

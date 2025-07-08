@@ -1,44 +1,50 @@
 package pl.janksiegowy.backend.invoice;
 
 import lombok.AllArgsConstructor;
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import pl.janksiegowy.backend.entity.EntityResponse;
+import pl.janksiegowy.backend.invoice.dto.InvoiceRequest;
 import pl.janksiegowy.backend.invoice.dto.InvoiceViewDto;
 import pl.janksiegowy.backend.invoice_fop.InvoicePdfGenerator;
 import pl.janksiegowy.backend.shared.Util;
-import pl.janksiegowy.backend.subdomain.TenantController;
+import pl.janksiegowy.backend.subdomain.DomainController;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
 //@RestController
-@TenantController
+@DomainController
 @RequestMapping( "/v2/invoices")
 @AllArgsConstructor
 public class InvoiceController {
 
     private final InvoiceQueryRepository query;
     private final InvoiceRepository invoices;
+    private final InvoiceFacade facade;
 
     @GetMapping
     ResponseEntity<List<InvoiceViewDto>> list() {
         return ResponseEntity.ok( query.findBy( InvoiceViewDto.class));
+    }
+
+    @PostMapping
+    ResponseEntity<String> createInvoice( @RequestBody InvoiceRequest invoice) {
+        System.err.println( "Otrzymany JSON: " + invoice.getRegisterId());
+
+        facade.save( invoice);
+
+        return ResponseEntity.ok( "Ok!");
     }
 
     @GetMapping( value = "/pdf/{invoiceId}", produces= "application/pdf")

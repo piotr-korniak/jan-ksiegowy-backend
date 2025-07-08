@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -30,11 +31,9 @@ public abstract class Invoice extends Document {
 
     @Column( table= TABLE_NAME, name= "DATE")
     private LocalDate invoiceDate;
-/*
-    @Column( table= TABLE_NAME, name= "REGISTER_ID")
-    protected UUID registerId;
-*/
 
+    @Column( table= TABLE_NAME, name= "REGISTER_ID", updatable= false, insertable= false)
+    protected UUID registerId;
 
     /*
     @ManyToOne

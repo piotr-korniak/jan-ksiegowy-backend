@@ -11,14 +11,10 @@ import pl.janksiegowy.backend.tenant.TenantQueryRepository;
 public class TenantRequestCondition implements RequestCondition<TenantRequestCondition> {
 
     private final TenantQueryRepository tenants;
-    @Override
-    public TenantRequestCondition combine( TenantRequestCondition other) {
-        return null;
-    }
+
 
     @Override
     public TenantRequestCondition getMatchingCondition( HttpServletRequest request) {
-        System.err.println( "getMatchingCondition: "+ request.getServerName().replaceAll("\\..*", ""));
 
         return tenants.findByCode( request.getServerName().replaceAll("\\..*", ""))
                 .map( tenantDto -> {
@@ -27,6 +23,11 @@ public class TenantRequestCondition implements RequestCondition<TenantRequestCon
                             .company( "pl5862321911"));
                     return this;
                 }).orElse( null);
+    }
+
+    @Override
+    public TenantRequestCondition combine( TenantRequestCondition other) {
+        return this;
     }
 
     @Override

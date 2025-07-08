@@ -5,14 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.janksiegowy.backend.subdomain.TenantController;
+import pl.janksiegowy.backend.subdomain.DomainController;
 import pl.janksiegowy.backend.user.UserFacade;
 import pl.janksiegowy.backend.user.UserQueryRepository;
 import pl.janksiegowy.backend.user.dto.UserDto;
 
 import java.util.Map;
 
-@TenantController
+@DomainController
 @RequestMapping( "/v2/users")
 @AllArgsConstructor
 public class UserController {

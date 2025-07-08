@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import pl.janksiegowy.backend.entity.dto.ContactDto;
 import pl.janksiegowy.backend.entity.dto.EntitiesDto;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
-import pl.janksiegowy.backend.subdomain.TenantController;
+import pl.janksiegowy.backend.subdomain.DomainController;
 
 import java.util.Optional;
 
-@TenantController
+@DomainController
 @RequestMapping( "/v2/entities")
 @AllArgsConstructor
 public class EntityController {

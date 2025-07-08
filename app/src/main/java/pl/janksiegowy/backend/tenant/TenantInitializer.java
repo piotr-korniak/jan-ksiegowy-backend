@@ -12,9 +12,15 @@ public class TenantInitializer {
 
     public void init() {
 
+        System.out.println( "Tenant initializer!");
+
         tenant.create( TenantDto.create()
                 .code( "Eleftheria")
                 .name( "Grupa Eleftheria")
+                .password( "Sylwi@1970"));
+        tenant.create( TenantDto.create()
+                .code( "Test")
+                .name( "Grupa Testowa")
                 .password( "Sylwi@1970"));
     }
 }

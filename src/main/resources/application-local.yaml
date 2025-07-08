@@ -15,9 +15,9 @@ server:
 databases:
   main:
     datasource:
-      url: jdbc:postgresql://localhost:6543/postgres
-      username: postgres
-      password: Sylwia70
+      url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:6543}/${DB_NAME:postgres}
+      username: ${DB_USERNAME:postgres}
+      password: ${DB_PASSWORD:Sylwia70}
       hikari:
         schema: jan
         poolName: mainDataSource
@@ -27,7 +27,7 @@ databases:
       changeLog: classpath:db/changelog-main.yaml
   tenant:
     datasource:
-      url-prefix: jdbc:postgresql://localhost:6543/
+      url-prefix: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:6543}/
     cache:
       maximumSize: 2
       expireAfterAccess: 10
@@ -39,4 +39,4 @@ databases:
 
 dataLoader:
   files:
-    path: file:/Dane/OneDrive/Dokumenty/Firmowe
+    path: file:/Dane/Piotr/OneDrive/Dokumenty/Firmowe

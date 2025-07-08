@@ -6,14 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.janksiegowy.backend.subdomain.TenantController;
+import pl.janksiegowy.backend.subdomain.DomainController;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@TenantController
+@DomainController
 @RequestMapping( "/v2/trial-balance-sheet/{beginDate}/{endDate}")
 @AllArgsConstructor
 public class TrialBalanceSheetController {

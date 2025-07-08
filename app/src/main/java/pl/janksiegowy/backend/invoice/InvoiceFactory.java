@@ -5,11 +5,16 @@ import lombok.extern.log4j.Log4j2;
 import pl.janksiegowy.backend.entity.EntityRepository;
 import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
+import pl.janksiegowy.backend.invoice.dto.InvoiceRequest;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodFacade;
+import pl.janksiegowy.backend.register.Register;
 import pl.janksiegowy.backend.register.RegisterRepository;
+import pl.janksiegowy.backend.register.RegisterType;
+import pl.janksiegowy.backend.register.invoice.PurchaseRegister;
+import pl.janksiegowy.backend.register.invoice.SalesRegister;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.shared.financial.PaymentMethod;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
@@ -24,7 +29,9 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @AllArgsConstructor
-public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
+public class InvoiceFactory implements
+        InvoiceTypeVisitor<Invoice, InvoiceDto>,
+        RegisterType.RegisterTypeVisitor<Invoice, Register> {
 
     private final EntityRepository entities;
     private final MetricRepository metrics;
@@ -32,6 +39,24 @@ public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
     private final PaymentRegisterRepository bankAccounts;
     private final InvoiceLineFactory line;
     private final RegisterRepository registerRepository;
+
+    @Override
+    public Invoice visitSalesRegister( Register register) {
+        return new SalesInvoice()
+                .setRegister( (SalesRegister)register)
+                ;
+    }
+
+    @Override
+    public Invoice visitPurchaseRegister( Register register) {
+        return new PurchaseInvoice().setRegister( (PurchaseRegister)register);
+    }
+
+    public Invoice from( InvoiceRequest source) {
+        return registerRepository.findById( source.getRegisterId())
+            .map( register-> register.getType().accept( this, register))
+            .orElseThrow(()-> new IllegalArgumentException( "Not found register code: "+ source.getRegisterId()));
+    }
 
     public Invoice from( InvoiceDto source) {
         return source.getType().accept( this, source);
@@ -98,4 +123,5 @@ public class InvoiceFactory implements InvoiceTypeVisitor<Invoice, InvoiceDto>{
                                 .setInvoice( invoice))
                 .collect( Collectors.toList()));
     }
+
 }

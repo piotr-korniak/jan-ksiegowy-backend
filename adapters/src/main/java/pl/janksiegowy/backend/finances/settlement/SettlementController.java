@@ -11,13 +11,13 @@ import pl.janksiegowy.backend.finances.settlement.dto.EntityReport;
 import pl.janksiegowy.backend.finances.settlement.dto.SettlementReportLine;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.report.Summary;
-import pl.janksiegowy.backend.subdomain.TenantController;
+import pl.janksiegowy.backend.subdomain.DomainController;
 
 import java.util.*;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-@TenantController
+@DomainController
 @RequestMapping( "/v2/settlement")
 @AllArgsConstructor
 public class SettlementController extends DocumentConverter {
