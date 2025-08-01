@@ -5,14 +5,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.UuidGenerator;
-import pl.janksiegowy.backend.shared.financial.TaxRate;
 import pl.janksiegowy.backend.invoice.Invoice;
+import pl.janksiegowy.backend.invoice.InvoiceLineId;
+import pl.janksiegowy.backend.invoice.TaxedAmount;
 import pl.janksiegowy.backend.item.Item;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.UUID;
+import java.util.function.Function;
 
 @Getter
 @Setter
@@ -22,27 +21,27 @@ import java.util.UUID;
 @Table( name= "INVOICES_LINES")
 public class InvoiceLine {
 
-    @Id
-    //@UuidGenerator
-    private UUID id;
+    @EmbeddedId
+    private InvoiceLineId id;
 
     @ManyToOne
     @JoinColumn( name= "INVOICE_ID")
     private Invoice invoice;
 
-    @Enumerated( EnumType.STRING)
-    private TaxRate taxRate;
+    @Embedded
+    private TaxedAmount amount;
 
     @ManyToOne( fetch= FetchType.EAGER)
     private Item item;
 
     //private BigInteger no;
 
-    private BigDecimal amount;
-    private BigDecimal tax;
-
     private BigDecimal base;
     private BigDecimal vat;
     private BigDecimal cit;
+
+    public InvoiceLine applyIf( boolean condition, Function<InvoiceLine, InvoiceLine> function) {
+        return condition? function.apply(this): this;
+    }
 
 }

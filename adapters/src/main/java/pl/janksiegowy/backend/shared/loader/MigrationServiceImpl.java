@@ -4,16 +4,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
+import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
 import pl.janksiegowy.backend.invoice.dto.InvoiceCsv;
+import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineCsv;
 import pl.janksiegowy.backend.item.dto.ItemDto;
 import pl.janksiegowy.backend.metric.dto.MetricDto;
 import pl.janksiegowy.backend.period.dto.PeriodDto;
 import pl.janksiegowy.backend.register.RegisterQueryRepository;
 import pl.janksiegowy.backend.register.dto.RegisterDto;
 import pl.janksiegowy.backend.report.dto.ReportSchemaDto;
-import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.MigrationService;
 import pl.janksiegowy.backend.shared.numerator.dto.NumeratorDto;
@@ -67,6 +68,11 @@ public class MigrationServiceImpl implements MigrationService {
     @Override
     public List<InvoiceCsv> loadInvoices() {
         return dataLoader.loadCsv("invoices.csv", InvoiceCsv.class, row-> !row.startsWith( "---"));
+    }
+
+    @Override
+    public List<InvoiceLineCsv> loadInvoiceLines() {
+        return dataLoader.loadCsv("lines.csv", InvoiceLineCsv.class, row-> !row.startsWith( "---"));
     }
 
     @Override

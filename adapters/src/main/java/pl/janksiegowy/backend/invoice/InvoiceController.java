@@ -1,24 +1,22 @@
 package pl.janksiegowy.backend.invoice;
 
 import lombok.AllArgsConstructor;
-import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.janksiegowy.backend.entity.EntityResponse;
 import pl.janksiegowy.backend.invoice.dto.InvoiceRequest;
 import pl.janksiegowy.backend.invoice.dto.InvoiceViewDto;
 import pl.janksiegowy.backend.invoice_fop.InvoicePdfGenerator;
 import pl.janksiegowy.backend.shared.Util;
+import pl.janksiegowy.backend.shared.fop.FopService;
 import pl.janksiegowy.backend.subdomain.DomainController;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.StringReader;
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +30,7 @@ public class InvoiceController {
     private final InvoiceQueryRepository query;
     private final InvoiceRepository invoices;
     private final InvoiceFacade facade;
+    private final FopService fopService;
 
     @GetMapping
     ResponseEntity<List<InvoiceViewDto>> list() {
@@ -53,8 +52,7 @@ public class InvoiceController {
         return invoices.findByInvoiceId( invoiceId).map( invoice -> {
             try {
                 var xslFo= new InvoicePdfGenerator().generate( invoice);
-                var fopFactory= FopFactory.newInstance(
-                        new File( "./src/main/resources/fop/fop.xml"));
+                var fopFactory= fopService.getFopFactory();
                 var outStream= new ByteArrayOutputStream();
 
                 // Setup FOP transformer

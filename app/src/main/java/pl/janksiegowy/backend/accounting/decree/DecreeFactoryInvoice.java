@@ -6,12 +6,10 @@ import pl.janksiegowy.backend.accounting.decree.dto.DecreeDto;
 import pl.janksiegowy.backend.accounting.template.*;
 import pl.janksiegowy.backend.invoice.Invoice;
 import pl.janksiegowy.backend.invoice.InvoiceType;
-import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
 import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.item.ItemType;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind.VatRegisterTypeVisitor;
 import pl.janksiegowy.backend.shared.Util;
-
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -49,7 +47,7 @@ public class DecreeFactoryInvoice {
                                 @Override public BigDecimal visitKwotaUslugNUP() {
                                     return invoice.getLineItems().stream()
                                             .filter( line-> ItemType.S== line.getItem().getType())
-                                            .map( line-> line.getAmount().add( line.getTax())
+                                            .map( line-> line.getAmount().gross()
                                                     .subtract( line.getVat()).subtract( line.getCit()))
                                             .reduce( BigDecimal.ZERO, BigDecimal::add);
                                 }
@@ -92,7 +90,7 @@ public class DecreeFactoryInvoice {
                                 @Override public BigDecimal visitKwotaMaterialowNUP() {
                                     return invoice.getLineItems().stream()
                                             .filter( line-> ItemType.M== line.getItem().getType())
-                                            .map( line-> line.getAmount().add( line.getTax())
+                                            .map( line-> line.getAmount().gross()
                                                     .subtract( line.getVat()).subtract( line.getCit()))
                                             .reduce( BigDecimal.ZERO, BigDecimal::add);
                                 }

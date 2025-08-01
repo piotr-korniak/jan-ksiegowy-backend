@@ -63,14 +63,14 @@ public class Factory_FA_2_v1_0e extends Factory_FA {
 
 
                 invoice.getLineItems().stream().forEach( invoiceLine-> {
-                    switch ( invoiceLine.getTaxRate()) {
+                    switch ( invoiceLine.getAmount().taxRate()) {
                         case S1-> {
-                            p131= Util.addOrAddend( p131, invoiceLine.getAmount());
-                            p141= Util.addOrAddend( p141, invoiceLine.getTax());
+                            p131= Util.addOrAddend( p131, invoiceLine.getAmount().net());
+                            p141= Util.addOrAddend( p141, invoiceLine.getAmount().tax());
                         }
                         case S2-> {
-                            p132= Util.addOrAddend( p132, invoiceLine.getAmount());
-                            p142= Util.addOrAddend( p142, invoiceLine.getTax());
+                            p132= Util.addOrAddend( p132, invoiceLine.getAmount().net());
+                            p142= Util.addOrAddend( p142, invoiceLine.getAmount().tax());
                         }
                     }});
 
@@ -82,15 +82,15 @@ public class Factory_FA_2_v1_0e extends Factory_FA {
                         p7= invoiceLine.getItem().getName();
                         p8A= invoiceLine.getItem().getMeasure();
                         p8B= BigDecimal.ONE;            //  <- fixme
-                        p9A= invoiceLine.getAmount();   //  <- fixme
-                        p11= invoiceLine.getAmount();
-                        p11A= invoiceLine.getAmount().add( invoiceLine.getVat());
+                        p9A= invoiceLine.getAmount().net();   //  <- fixme
+                        p11= invoiceLine.getAmount().net();
+                        p11A= invoiceLine.getAmount().gross();
                         p11Vat= invoiceLine.getVat();
-                        p12= switch ( invoiceLine.getTaxRate()) {
+                        p12= switch ( invoiceLine.getAmount().taxRate()) {
                             case S1-> "23";
                             case S2-> "8";
-                            default ->
-                                    throw new IllegalStateException( "Unexpected value: "+ invoiceLine.getTaxRate());
+                            default -> throw new IllegalStateException(
+                                    "Unexpected value: "+ invoiceLine.getAmount().taxRate());
                         };
                     }}));
             }});

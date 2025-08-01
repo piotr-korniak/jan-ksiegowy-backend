@@ -6,7 +6,9 @@ public enum TaxMethod {
             return visitor.visitNL();
         }
     },
-    V5 { // VAT 50%
+
+    /** VAT 50% */
+    V5 {
         @Override public <T> T accept( TaxMethodVisitor<T> visitor) {
             return visitor.visitV5();
         }
@@ -18,13 +20,14 @@ public enum TaxMethod {
         }
 
     },
+
     NC { // Not CIT
         @Override public <T> T accept( TaxMethodVisitor<T> visitor) {
             return visitor.visitNC();
         }
     },
 
-    /** VAT ot CIT */
+    /** VAT to CIT */
     VC { @Override public <T> T accept( TaxMethodVisitor<T> visitor ) {
             return visitor.visitVC();
     }};

@@ -31,15 +31,18 @@ public class InvoiceConfiguration {
                                 final SettlementQueryRepository settlements,
                                 final EntityQueryRepository entities,
                                 final MigrationService migrationService,
-                                final DecreeFacade decree) {
+                                final PaymentRegisterRepository bankAccount,
+                                final DecreeFacade decreeFacade) {
         return new InvoiceFacade(
                 new InvoiceFactory( entityRepository, metrics, periods, payments,
-                        new InvoiceLineFactory( items), registerRepository),
+                        new InvoiceLineFactory( items), registerRepository, items),
                 invoices,
                 settlements,
                 entities,
                 registers,
-                migrationService, decree);
+                migrationService,
+                bankAccount,
+                decreeFacade);
     }
 
 }

@@ -53,3 +53,6 @@ databaseChangeLog:
       file: db/company/26-invoices_upgrade.sql
   - include:
       file: db/company/27-payments_upgrade.sql
+  - include:
+      file: db/company/28-invoices_lines_upgrade.sql
+

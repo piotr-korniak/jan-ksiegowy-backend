@@ -19,6 +19,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework:spring-tx'
 
     implementation 'org.apache.xmlgraphics:fop:2.9'
 

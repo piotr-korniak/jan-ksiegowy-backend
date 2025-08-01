@@ -72,18 +72,26 @@ public abstract class Invoice extends Document {
     @Column( table= TABLE_NAME)
     private String correction;
 
+    public Invoice addLine( InvoiceLine invoiceLine) {
+        lineItems.add( invoiceLine);
+        sum();
+        return this;
+    }
+
     public Invoice setLineItems( List<InvoiceLine> lineItems) {
         this.lineItems= lineItems;
+        sum();
+        return this;
+    }
 
+    private void sum() {
         subTotal= lineItems.stream()
-                .map( InvoiceLine::getAmount)
+                .map( invoiceLine-> invoiceLine.getAmount().net())
                 .reduce( BigDecimal.ZERO, BigDecimal::add);
 
         taxTotal= lineItems.stream()
-                .map( InvoiceLine::getTax)
+                .map( invoiceLine -> invoiceLine.getAmount().tax())
                 .reduce( BigDecimal.ZERO, BigDecimal::add);
-
-        return this;
     }
 
     public abstract InvoiceRegisterKind getRegisterKind();
@@ -109,4 +117,5 @@ public abstract class Invoice extends Document {
         this.status= status;
         return this;
     }
+
 }

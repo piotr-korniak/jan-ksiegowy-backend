@@ -3,13 +3,11 @@ package pl.janksiegowy.backend.invoice_line;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
-import pl.janksiegowy.backend.shared.financial.TaxMethod;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineSumDto;
 import pl.janksiegowy.backend.invoice_line.dto.JpaInvoiceSumDto;
-import pl.janksiegowy.backend.period.MonthPeriod;
-import pl.janksiegowy.backend.period.QuarterPeriod;
 import pl.janksiegowy.backend.register.invoice.InvoiceRegisterKind;
+import pl.janksiegowy.backend.shared.financial.TaxMethod;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +19,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
 
     @Override
     @Query( value= "SELECT L.invoice.number AS invoiceNumber, " +
-                    "L.invoice.entity.name AS contactName, SUM(L.tax) AS tax "+
+                    "L.invoice.entity.name AS contactName, SUM( L.amount.tax) AS tax "+
                     "FROM InvoiceLine L "+
                     "WHERE L.item.taxMetod IN :taxMetod "+
                     "GROUP BY L.invoice, invoiceNumber, contactName ")
@@ -31,7 +29,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
     @Query( value= "SELECT L.invoice.documentId AS invoiceId, " +
                     "TREAT( L.invoice as SalesInvoice).register.kind AS salesKind, " +
                     "TREAT( L.invoice as PurchaseInvoice).register.kind AS purchaseKind, " +
-                    "L.taxRate AS rate," +
+                    "L.amount.taxRate AS rate," +
                     "SUM( L.base) AS base, SUM( L.vat) AS vat " +
                     "FROM InvoiceLine L "+
                     "WHERE L.invoice.documentId= :id "+
@@ -84,7 +82,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             "   THEN TREAT( L.invoice AS PurchaseInvoice).register.kind ELSE NULL " +
             "END AS purchaseKind, " +
             "L.item.type AS itemType, " +
-            "L.taxRate AS taxRate, " +
+            "L.amount.taxRate AS taxRate, " +
             "SUM( L.base) AS base, SUM( L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat!=0 AND " +
@@ -105,7 +103,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             @Param( "endDate") LocalDate endDate);
 
     @Override
-    @Query( value= "SELECT L.taxRate AS taxRate, " +
+    @Query( value= "SELECT L.amount.taxRate AS taxRate, " +
             "SUM(L.base) AS base, SUM(L.vat) AS vat " +
             "FROM InvoiceLine L " +
             "WHERE vat != 0 AND " +
@@ -162,7 +160,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             @Param( "period") MonthPeriod period);
 */
     @Override
-    @Query( value= "SELECT L.taxRate AS rate, " +
+    @Query( value= "SELECT L.amount.taxRate AS rate, " +
             "CASE WHEN TYPE( L.invoice) = SalesInvoice " +
             "   THEN TREAT( L.invoice AS SalesInvoice).register.kind ELSE NULL " +
             "END AS salesKind, " +
@@ -178,7 +176,7 @@ public interface SqlLineItemQueryRepository extends InvoiceLineQueryRepository, 
             " ( TYPE( L.invoice) = PurchaseInvoice AND " +
             "   GREATEST(L.invoice.invoiceDate, L.invoice.issueDate) BETWEEN :startDate AND :endDate AND"+
             "  TREAT(L.invoice AS PurchaseInvoice).register.kind IN :purchaseKinds)) " +
-            "GROUP BY salesKind, purchaseKind, L.taxRate")
+            "GROUP BY salesKind, purchaseKind, L.amount.taxRate")
     List<JpaInvoiceSumDto> sumByKindAndPeriodGroupByRate(
             @Param( "salesKinds") List<InvoiceRegisterKind> salesKinds,
             @Param( "purchaseKinds") List<InvoiceRegisterKind> purchaseKinds,

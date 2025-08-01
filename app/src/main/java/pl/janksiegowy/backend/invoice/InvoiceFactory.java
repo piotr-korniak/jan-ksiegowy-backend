@@ -2,12 +2,16 @@ package pl.janksiegowy.backend.invoice;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import pl.janksiegowy.backend.declaration.Factory_FA;
 import pl.janksiegowy.backend.entity.EntityRepository;
-import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
 import pl.janksiegowy.backend.invoice.InvoiceType.InvoiceTypeVisitor;
+import pl.janksiegowy.backend.invoice.dto.InvoiceDto;
+import pl.janksiegowy.backend.invoice.dto.InvoiceLineCommand;
 import pl.janksiegowy.backend.invoice.dto.InvoiceRequest;
+import pl.janksiegowy.backend.invoice_line.InvoiceLine;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineDto;
 import pl.janksiegowy.backend.invoice_line.dto.InvoiceLineFactory;
+import pl.janksiegowy.backend.item.ItemRepository;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodFacade;
 import pl.janksiegowy.backend.register.Register;
@@ -18,11 +22,10 @@ import pl.janksiegowy.backend.register.invoice.SalesRegister;
 import pl.janksiegowy.backend.register.payment.PaymentRegisterRepository;
 import pl.janksiegowy.backend.shared.financial.PaymentMethod;
 import pl.janksiegowy.backend.shared.pattern.XmlConverter;
-import pl.janksiegowy.backend.declaration.Factory_FA;
-
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,6 +42,7 @@ public class InvoiceFactory implements
     private final PaymentRegisterRepository bankAccounts;
     private final InvoiceLineFactory line;
     private final RegisterRepository registerRepository;
+    private final ItemRepository items;
 
     @Override
     public Invoice visitSalesRegister( Register register) {
@@ -124,4 +128,37 @@ public class InvoiceFactory implements
                 .collect( Collectors.toList()));
     }
 
+    public InvoiceLine from( InvoiceLineCommand command, LocalDate date) {
+
+        return Optional.ofNullable( command.getItem())
+                .map( itemDto-> items.findByItemIdAndDate( itemDto.getItemId(), date)
+                        .map( item-> item.getTaxMetod()
+                                .accept( new TaxMethodVisitorImpl( new InvoiceLine()
+                                        .setId( command.getInvoiceLineId())
+                                        .setAmount( command.getAmount())))
+                                .setItem( item))
+                        .orElseThrow(()-> new NoSuchElementException( "Not found Item: "+ command.getItem().getCode())))
+                .orElseThrow(()-> new IllegalArgumentException( "Item cannot be null"));
+    }
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
