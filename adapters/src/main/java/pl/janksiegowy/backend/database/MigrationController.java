@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.janksiegowy.backend.accounting.account.AccountFacade;
 import pl.janksiegowy.backend.accounting.template.TemplateFacade;
+import pl.janksiegowy.backend.billing.agreement.AgreementFacade;
 import pl.janksiegowy.backend.entity.EntityFacade;
 import pl.janksiegowy.backend.finances.charge.ChargeMigrationService;
 import pl.janksiegowy.backend.finances.notice.NoticeFacade;
@@ -44,6 +45,7 @@ public class MigrationController {
     private final RegisterFacade registerFacade;
     private final InvoiceFacade invoiceFacade;
     private final EntityFacade entityFacade;
+    private final AgreementFacade agreementFacade;
 
     public MigrationController(final NoticeFacade noticeFacade,
                                final MigrationExecutor migrationExecutor,
@@ -62,7 +64,8 @@ public class MigrationController {
                                final ItemFacade itemFacade,
                                final RegisterFacade registerFacade,
                                final InvoiceFacade invoiceFacade,
-                               final EntityFacade entityFacade) {
+                               final EntityFacade entityFacade,
+                               final AgreementFacade agreementFacade) {
         this.migrationExecutor= migrationExecutor;
 
         this.shareMigration= shareMigration;
@@ -82,6 +85,7 @@ public class MigrationController {
         this.registerFacade= registerFacade;
         this.invoiceFacade= invoiceFacade;
         this.entityFacade= entityFacade;
+        this.agreementFacade= agreementFacade;
     }
 
     private final MigrationExecutor migrationExecutor;
@@ -174,6 +178,12 @@ public class MigrationController {
     public ResponseEntity<String> itemMigrate() {
         return ResponseEntity.ok( itemFacade.migrate());
     }
+
+    @PostMapping( "/v2/migrate/agreement")
+    public ResponseEntity<String> agreementMigrate() {
+        return ResponseEntity.ok( agreementFacade.migrate());
+    }
+
 
     @PostMapping("/v2/update")
     public ResponseEntity<List<String>> migrate( @RequestParam String from) {

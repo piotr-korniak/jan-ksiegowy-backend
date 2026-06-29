@@ -11,7 +11,7 @@ public class CompanyInitializer {
     public void init() {
 
         company.create( CompanyDto.create()
-                .code( "pl5862321911")
-                .name( "Eleutheria Usługi Informatyczne Sp. z o.o."));
+                .code( "pl5882534461")
+                .name( "Eleutheria Rachunkowość Sp. z o.o."));
     }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.janksiegowy.backend.accounting.account.dto.AccountDto;
 import pl.janksiegowy.backend.accounting.template.dto.TemplateDto;
+import pl.janksiegowy.backend.billing.agreement.dto.AgreementCsv;
 import pl.janksiegowy.backend.contract.dto.ContractDto;
 import pl.janksiegowy.backend.entity.dto.EntityDto;
 import pl.janksiegowy.backend.finances.notice.dto.NoticeDto;
@@ -78,6 +79,11 @@ public class MigrationServiceImpl implements MigrationService {
     @Override
     public List<EntityDto> loadEntity() {
         return dataLoader.loadCsv("entities.csv", EntityDto.class);
+    }
+
+    @Override
+    public List<AgreementCsv> loadAgreements() {
+        return dataLoader.loadCsv("agreements.csv", AgreementCsv.class);
     }
 
     @Override

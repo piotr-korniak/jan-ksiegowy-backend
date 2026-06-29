@@ -21,7 +21,7 @@ public class ContractFacade {
     private final EntityQueryRepository entities;
     private final MigrationService migrationService;
 
-    public Contract save(ContractDto source) {
+    public Contract save( ContractDto source) {
         return contractRepository.save( contractFactory.from( source));
     }
 

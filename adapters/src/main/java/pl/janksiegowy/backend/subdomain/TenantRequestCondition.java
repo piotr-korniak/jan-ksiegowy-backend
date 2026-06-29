@@ -2,7 +2,6 @@ package pl.janksiegowy.backend.subdomain;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
 import pl.janksiegowy.backend.database.TenantContext;
 import pl.janksiegowy.backend.tenant.TenantQueryRepository;
@@ -20,7 +19,7 @@ public class TenantRequestCondition implements RequestCondition<TenantRequestCon
                 .map( tenantDto -> {
                     TenantContext.setCurrentTenant( TenantContext.Context.create()
                             .tenant( tenantDto.getCode())
-                            .company( "pl5862321911"));
+                            .company( "pl5882534461"));
                     return this;
                 }).orElse( null);
     }
