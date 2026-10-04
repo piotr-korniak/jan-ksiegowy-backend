@@ -11,12 +11,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pl.janksiegowy.backend.authorization.user.UserAlreadyExistsException;
 import pl.janksiegowy.backend.entity.EntityAlreadyExistsException;
-import pl.janksiegowy.backend.shared.Util;
+import pl.janksiegowy.backend.organization.user.UserAlreadyExistsException;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

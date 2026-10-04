@@ -9,9 +9,7 @@ import pl.janksiegowy.backend.invoice_line.InvoiceLineQueryRepository;
 import pl.janksiegowy.backend.metric.MetricRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.shared.numerator.NumeratorFacade;
-import pl.janksiegowy.backend.subdomain.DomainController;
 
-@DomainController
 @RequestMapping( "/v2/approval/{period}")
 public class StatementController {
 

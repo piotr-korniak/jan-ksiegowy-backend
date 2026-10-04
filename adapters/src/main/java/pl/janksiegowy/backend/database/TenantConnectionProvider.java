@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.stereotype.Component;
-import pl.janksiegowy.backend.tenant.TenantQueryRepository;
-import pl.janksiegowy.backend.tenant.dto.TenantDto;
+import pl.janksiegowy.backend.organization.tenant.TenantQueryRepository;
+import pl.janksiegowy.backend.organization.tenant.dto.TenantDto;
 import pl.janksiegowy.backend.database.TenantContext.Context;
 
 import javax.sql.DataSource;
@@ -39,6 +39,9 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider<C
     @Value( "${databases.tenant.cache.expireAfterAccess:10}")
     private Integer expireAfterAccess;
 
+    @Value( "${databases.main.datasource.password}")
+    private String password;
+
     public TenantConnectionProvider( @Qualifier( "mainDataSource")
                                      DataSource mainDataSource,
                                      @Qualifier( "mainDataSourceProperties")
@@ -58,7 +61,7 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider<C
                 .removalListener( (String key, HikariDataSource dataSource, RemovalCause cause)->
                         dataSource.close())
                 .build( key-> tenants.findByCode( key)
-                                .map( tenantDto-> createAndConfigureDataSource( tenantDto))
+                                .map( this::createAndConfigureDataSource)
                                 .orElseThrow( ()-> new RuntimeException( "No such tenant: " + key))
                     );
     }
@@ -70,7 +73,9 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider<C
                 .url( urlPrefix+ tenantDto.getCode())
                 .build();
         dataSource.setUsername( tenantDto.getCode());
-        dataSource.setPassword( tenantDto.getPassword());
+        //dataSource.setPassword( password);
+        System.err.println( "Username: " + tenantDto.getCode());
+        dataSource.setPassword( "Sylwia70");
         return dataSource;
     }
     public DataSource selectDataSource( String tenantIdentifier) {
@@ -90,6 +95,9 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider<C
 
     @Override
     public Connection getConnection( Context context) throws SQLException {
+        System.err.println( "getConnection" );
+        System.err.println( "tenant: "+ context.getTenant());
+        System.err.println( "company: "+ context.getCompany());
         var connection= selectDataSource( context.getTenant()).getConnection();
         connection.setSchema( context.getCompany());
         return connection;

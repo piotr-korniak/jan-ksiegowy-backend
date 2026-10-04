@@ -23,13 +23,11 @@ import pl.janksiegowy.backend.report.ReportFacade;
 import pl.janksiegowy.backend.contract.ContractFacade;
 import pl.janksiegowy.backend.shared.DataLoader;
 import pl.janksiegowy.backend.shared.numerator.*;
-import pl.janksiegowy.backend.subdomain.DomainController;
 
 import java.util.List;
 
 @Log4j2
 
-@DomainController
 public class MigrationController {
 
     private final ReportFacade reportFacade;

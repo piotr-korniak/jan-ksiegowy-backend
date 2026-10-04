@@ -11,7 +11,6 @@ import pl.janksiegowy.backend.invoice.dto.InvoiceViewDto;
 import pl.janksiegowy.backend.invoice_fop.InvoicePdfGenerator;
 import pl.janksiegowy.backend.shared.Util;
 import pl.janksiegowy.backend.shared.fop.FopService;
-import pl.janksiegowy.backend.subdomain.DomainController;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.UUID;
 
 //@RestController
-@DomainController
 @RequestMapping( "/v2/invoices")
 @AllArgsConstructor
 public class InvoiceController {

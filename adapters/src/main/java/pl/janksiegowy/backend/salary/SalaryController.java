@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.janksiegowy.backend.period.PeriodRepository;
-import pl.janksiegowy.backend.subdomain.DomainController;
 
-@DomainController
 @RequestMapping( "/v2/payroll/{periodId}")
 @AllArgsConstructor
 public class SalaryController {

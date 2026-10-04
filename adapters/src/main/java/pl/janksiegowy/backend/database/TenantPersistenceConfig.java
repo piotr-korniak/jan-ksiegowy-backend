@@ -6,7 +6,6 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,7 +22,7 @@ import java.util.Map;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages= { "pl.janksiegowy.backend.company"},
+        basePackages= { "pl.janksiegowy.backend.organization.company"},
         entityManagerFactoryRef= "tenantEntityManagerFactory",
         transactionManagerRef= "tenantTransactionManager"
 )
@@ -49,7 +48,7 @@ public class TenantPersistenceConfig {
         LocalContainerEntityManagerFactoryBean emf= new LocalContainerEntityManagerFactoryBean();
 
         emf.setPersistenceUnitName( "tenant-persistence-unit");
-        emf.setPackagesToScan( "pl.janksiegowy.backend.company");
+        emf.setPackagesToScan( "pl.janksiegowy.backend.organization.company");
         //emf.setPackagesToScan( entityPackages);
 
         JpaVendorAdapter vendorAdapter= new HibernateJpaVendorAdapter();

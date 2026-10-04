@@ -14,12 +14,10 @@ import pl.janksiegowy.backend.accounting.decree.dto.DecreeMap;
 import pl.janksiegowy.backend.finances.payment.PaymentRepository;
 import pl.janksiegowy.backend.period.PeriodRepository;
 import pl.janksiegowy.backend.register.RegisterQueryRepository;
-import pl.janksiegowy.backend.subdomain.DomainController;
 import pl.janksiegowy.backend.tax.vat.ProfitAndLossItems;
 
 import java.time.LocalDate;
 
-@DomainController
 @RequestMapping( "/v2/decree")
 public class DecreeController {
 

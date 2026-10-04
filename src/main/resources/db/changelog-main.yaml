@@ -3,3 +3,19 @@ databaseChangeLog:
       file: db/main/01-tenants.sql
   - include:
       file: db/main/02-password.sql
+  - include:
+      file: db/main/03-users.sql
+  - include:
+      file: db/main/04-users_upgrade.sql
+  - include:
+      file: db/main/05-memberships.sql
+  - include:
+      file: db/main/06-tenants_upgrade.sql
+  - include:
+      file: db/main/07-users_upgrade_2.sql
+  - include:
+      file: db/main/08-tenants_upgrade.sql
+  - include:
+      file: db/main/09-users_upgrade_3.sql
+  - include:
+      file: db/main/10-memberships_upgrade.sql

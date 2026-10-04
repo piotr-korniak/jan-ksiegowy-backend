@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
-import pl.janksiegowy.backend.company.Company;
-import pl.janksiegowy.backend.company.SqlCompanyRepository;
-import pl.janksiegowy.backend.authorization.tenant.SqlTenantRepository;
-import pl.janksiegowy.backend.authorization.tenant.Tenant;
+import pl.janksiegowy.backend.organization.company.Company;
+import pl.janksiegowy.backend.organization.company.SqlCompanyRepository;
+import pl.janksiegowy.backend.organization.tenant.SqlTenantRepository;
+import pl.janksiegowy.backend.organization.tenant.Tenant;
 import pl.janksiegowy.backend.database.TenantContext.Context;
 
 public class CompanyLiquibase implements InitializingBean {

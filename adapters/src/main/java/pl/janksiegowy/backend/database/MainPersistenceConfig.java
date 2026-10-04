@@ -20,8 +20,9 @@ import java.util.Map;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages= { "pl.janksiegowy.backend.authorization.tenant",
-                        "pl.janksiegowy.backend.authorization.user"},
+        basePackages= { "pl.janksiegowy.backend.organization.tenant",
+                        "pl.janksiegowy.backend.organization.user",
+                        "pl.janksiegowy.backend.organization.membership"},
         entityManagerFactoryRef= "mainEntityManagerFactory",
         transactionManagerRef= "mainTransactionManager"
 )
@@ -47,8 +48,9 @@ public class MainPersistenceConfig {
 
         emf.setPersistenceUnitName( "main-persistence-unit");
         //emf.setPackagesToScan( entityPackages); // entityManger packages
-        emf.setPackagesToScan( "pl.janksiegowy.backend.authorization.tenant",
-                                "pl.janksiegowy.backend.authorization.user");
+        emf.setPackagesToScan( "pl.janksiegowy.backend.organization.tenant",
+                               "pl.janksiegowy.backend.organization.user",
+                               "pl.janksiegowy.backend.organization.membership");
         emf.setDataSource( dataSource);
 
         emf.setJpaVendorAdapter( new HibernateJpaVendorAdapter());
